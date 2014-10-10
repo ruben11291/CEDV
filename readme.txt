@@ -16,7 +16,7 @@
 # Year : 2014
 # Author: Ruben Perez Pascual <ruben11291@gmail.com>
 # Computer Engineer at Universidad de Castilla La Mancha
-# Author: Angel Peralta Lopez <aperaltalo@gmail.com>
+# Author: Angel Peralta Lopez <aperaltalo14@gmail.com>
 # Computer Engineer student at Universidad de Castilla La Mancha
 
 
