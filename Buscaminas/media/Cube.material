@@ -9,7 +9,7 @@ material Cube1
 			specular 0.000000 0.000000 0.000000 63.25
 			texture_unit
 			{
-				texture m.png
+				texture box.jpg
 			}
 		}
 	}

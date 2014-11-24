@@ -59,6 +59,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::OverlayManager* _overlayManager;
   std::vector<Ogre::SceneNode*> *_cubes;
   Ogre::SceneNode* _ground;
+  Ogre::SceneNode* _fnode;
   Ogre::Light* _light,*_light2;
   Ogre::Overlay *_overlay;
   bool _exitGame;

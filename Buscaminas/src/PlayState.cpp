@@ -13,7 +13,7 @@ PlayState::enter ()
   // Se recupera el gestor de escena y la cámara.
   _sceneMgr = _root->getSceneManager("SceneManager");
   _camera = _sceneMgr->getCamera("IntroCamera");
-  _camera->setPosition(Ogre::Vector3(5,10.5,12));
+  _camera->setPosition(Ogre::Vector3(5,10.5,20));
   _camera->lookAt(Ogre::Vector3(1.4,4.3,3));
   _camera->setNearClipDistance(5);
   _camera->setFarClipDistance(10000);
@@ -30,6 +30,11 @@ PlayState::enter ()
   _cubes = new std::vector<Ogre::SceneNode*>();//for locating the cubes when a click was performed
   Ogre::Entity* ent1 = _sceneMgr->createEntity("Cube1.mesh");
   Ogre::Vector3 bbSize = ent1->getMesh()->getBounds().getSize();
+  
+  _fnode = _sceneMgr->createSceneNode();
+  _fnode->setPosition(0.0,4.0,0.0);
+  _sceneMgr->getRootSceneNode()->addChild(_fnode);
+  
   _sceneMgr->destroyEntity(ent1);
 
   int n = 10;//to be done , only for testing
@@ -42,58 +47,64 @@ PlayState::enter ()
       //    ss << j;//add number to the stream
       Ogre::SceneNode* _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
-      _node->setPosition(float(i*bbSize.x),0,float(j*bbSize.x));
-      _node->scale(1,0.5,1);
-      _sceneMgr->getRootSceneNode()->addChild(_node);
+      _node->setPosition(float(i*bbSize.x),0.1,float(j*bbSize.x));
+      _node->scale(1,0.1,1);
+//       _sceneMgr->getRootSceneNode()->addChild(_node);
+      _fnode->addChild(_node);
       _cubes->push_back(_node);
 
       //tapa
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
-      _node->setPosition(float(i*bbSize.x),float(n*bbSize.x),float(j*bbSize.x));
-      _node->scale(1,0.5,1);
-      _sceneMgr->getRootSceneNode()->addChild(_node);
+      _node->setPosition(float(i*bbSize.x),float(n*bbSize.x+0.05),float(j*bbSize.x));
+      _node->scale(1,0,1);
+//       _sceneMgr->getRootSceneNode()->addChild(_node);
+      _fnode->addChild(_node);
       _cubes->push_back(_node);
 
       //lateral izq
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
-      _node->scale(1,0.5,1);
+      _node->scale(1,0,1);
       _node->roll(Ogre::Degree(90),Ogre::Node::TS_PARENT);
-      _node->setPosition(-bbSize.x,float(i*bbSize.x),float(j*bbSize.x));
-      _sceneMgr->getRootSceneNode()->addChild(_node);
+      _node->setPosition(-bbSize.x + 0.25,float(i*bbSize.x + 0.3),float(j*bbSize.x));
+//       _sceneMgr->getRootSceneNode()->addChild(_node);
+      _fnode->addChild(_node);
       _cubes->push_back(_node);
 
       //lateral derecho
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
-      _node->setPosition(n*bbSize.x+bbSize.x,float(i*bbSize.x),float(j*bbSize.x));
-      _node->scale(1,0.5,1);
+      _node->setPosition(n*bbSize.x+bbSize.x-0.75, float(i*bbSize.x +0.3),float(j*bbSize.x));
+      _node->scale(1,0,1);
       _node->roll(Ogre::Degree(90),Ogre::Node::TS_PARENT);
-      _sceneMgr->getRootSceneNode()->addChild(_node);
+//       _sceneMgr->getRootSceneNode()->addChild(_node);
+      _fnode->addChild(_node);
       _cubes->push_back(_node);
 
       //tapa trasera
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
-      _node->setPosition(float(i*bbSize.x),float(j*bbSize.x),-bbSize.x);
-      _node->scale(1,0.5,1);
+      _node->setPosition(float(i*bbSize.x),float(j*bbSize.x+0.3),-bbSize.x +0.25);
+      _node->scale(1,0,1);
       _node->pitch(Ogre::Degree(-90),Ogre::Node::TS_PARENT);
-      _sceneMgr->getRootSceneNode()->addChild(_node);
+//       _sceneMgr->getRootSceneNode()->addChild(_node);
+      _fnode->addChild(_node);
       _cubes->push_back(_node);
 
       //frontal
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
-      _node->setPosition(float(i*bbSize.x),float(j*bbSize.x),n*bbSize.x+bbSize.x);
-      _node->scale(1,0.5,1);
+      _node->setPosition(float(i*bbSize.x),float(j*bbSize.x+0.3),n*bbSize.x+bbSize.x-0.75);
+      _node->scale(1,0,1);
       _node->pitch(Ogre::Degree(-90),Ogre::Node::TS_PARENT);
-      _sceneMgr->getRootSceneNode()->addChild(_node);
+//       _sceneMgr->getRootSceneNode()->addChild(_node);
+       _fnode->addChild(_node);
       _cubes->push_back(_node);
   }
   }
@@ -109,7 +120,7 @@ PlayState::enter ()
 
   _light2 = _sceneMgr->createLight("Light2");
   _light2->setType(Ogre::Light::LT_POINT);
-  _light2->setPosition(8, 8, -2);
+  _light2->setPosition(8, 15, -2);
   _light2->setSpecularColour(0.9, 0.9, 0.9); 
   _light2->setDiffuseColour(0.9, 0.9, 0.9);
 
@@ -199,6 +210,21 @@ PlayState::keyPressed
 
   }
   
+  if(e.key == OIS::KC_Z){
+    r+=180;
+    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+    //(*it)->yaw(Ogre::Degree(r*0.1));
+    _camera->pitch(Ogre::Degree(r*0.1));
+  }
+  
+  if(e.key == OIS::KC_X){
+    r-=180;
+    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+    //(*it)->yaw(Ogre::Degree(r*0.1));
+    _camera->pitch(Ogre::Degree(r*0.1));
+
+  }
+  
   if(e.key == OIS::KC_S){
       Ogre::Vector3 vt(0,0,0);
     Ogre::Real tSpeed = 10.0; 
@@ -211,6 +237,38 @@ PlayState::keyPressed
     vt-= Ogre::Vector3(0,0,-10)*0.05 * 7;   
     _camera->moveRelative(vt * 0.05 * tSpeed);
   }
+  
+  
+  if(e.key == OIS::KC_E){
+    r+=180;
+    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+    //(*it)->yaw(Ogre::Degree(r*0.1));
+    _fnode->yaw(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
+  }
+  
+  if(e.key == OIS::KC_R){
+    r-=180;
+    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+    //(*it)->yaw(Ogre::Degree(r*0.1));
+     _fnode->yaw(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
+
+  }
+  
+  if(e.key == OIS::KC_D){
+    r+=180;
+    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+    //(*it)->yaw(Ogre::Degree(r*0.1));
+    _fnode->pitch(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
+  }
+  
+  if(e.key == OIS::KC_F){
+    r-=180;
+    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+    //(*it)->yaw(Ogre::Degree(r*0.1));
+     _fnode->pitch(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
+
+  }
+  
   
 }
 
