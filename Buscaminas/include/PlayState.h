@@ -25,6 +25,7 @@
 #include <OIS/OIS.h>
 
 #include "GameState.h"
+#include <vector>
 
 class PlayState : public Ogre::Singleton<PlayState>, public GameState
 {
@@ -56,9 +57,13 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::Viewport* _viewport;
   Ogre::Camera* _camera;
   Ogre::OverlayManager* _overlayManager;
-  Ogre::SceneNode* _node;
-
+  std::vector<Ogre::SceneNode*> *_cubes;
+  Ogre::SceneNode* _ground;
+  Ogre::Light* _light,*_light2;
+  Ogre::Overlay *_overlay;
   bool _exitGame;
+
+
 };
 
 #endif
