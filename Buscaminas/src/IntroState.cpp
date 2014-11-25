@@ -4,6 +4,8 @@
 
 template<> IntroState* Ogre::Singleton<IntroState>::msSingleton = 0;
 
+IntroState::IntroState(){
+}
 void
 IntroState::enter ()
 {
@@ -32,7 +34,6 @@ IntroState::enter ()
   
   createGUI();
   
-  _root->startRendering();
   
 }
 

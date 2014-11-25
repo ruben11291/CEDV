@@ -72,18 +72,14 @@ void CreditState::createBackground(){
 void
 CreditState::exit ()
 { 
-  // _root->getAutoCreatedWindow()->removeAllViewports();
-//   _sceneMgr->clearScene();
+  _sceneMgr->clearScene();
   _root->getAutoCreatedWindow()->removeAllViewports();
   _root->destroySceneManager(_sceneMgr);
   delete _rect;
-//   CEGUI::OgreRenderer::destroySystem();
-  //delete _overlay;
-  //delete _ground;
-//   delete _cubes;
-  // delete _sceneMgr;
-  // delete _overlayManager;
-  // delete _root;
+  
+  CEGUI::OgreRenderer::destroySystem();
+  _overlay->hide();
+
   
 }
 

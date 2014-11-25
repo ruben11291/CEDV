@@ -2,6 +2,7 @@
 
 template<> PauseState* Ogre::Singleton<PauseState>::msSingleton = 0;
 
+
 void
 PauseState::enter ()
 {

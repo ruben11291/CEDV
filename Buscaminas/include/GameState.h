@@ -31,10 +31,11 @@
 // Definición base sobre la que extender
 // los estados del juego.
 class GameState {
-
- public:
-  GameState() {}
   
+ public:
+  Ogre::RenderWindow *window;
+ GameState() : window(0){}
+ GameState(Ogre::RenderWindow *w):window(w){}
   // Gestión básica del estado.
   virtual void enter () = 0;
   virtual void exit () = 0;

@@ -27,6 +27,9 @@
 #include "GameState.h"
 #include <vector>
 
+#define STAGE 1 << 0  // Mascara para el escenario
+#define CUBE 1 << 1  // Mascara para objetos de tipo 1
+
 class PlayState : public Ogre::Singleton<PlayState>, public GameState
 {
  public:
@@ -65,7 +68,8 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::Real deltaT;
   bool _exitGame;
 
-
+ private:
+  Ogre::Ray setRayQuery(int posx, int posy, int mask);
 };
 
 #endif

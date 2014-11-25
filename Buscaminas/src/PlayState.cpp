@@ -381,3 +381,11 @@ PlayState::getSingleton ()
 }
 
 
+Ogre::Ray PlayState::setRayQuery(int posx, int posy, int mask) {
+  // Ogre::Ray rayMouse = _camera->getCameraToViewportRay
+  //   (posx/float(_win->getWidth()), posy/float(_win->getHeight()));
+  // _raySceneQuery->setRay(rayMouse);
+  // _raySceneQuery->setSortByDistance(true);
+  // _raySceneQuery->setQueryMask(mask);
+  // return (rayMouse);
+}
