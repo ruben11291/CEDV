@@ -1,0 +1,29 @@
+Credits
+{
+    zorder 500
+
+    container Panel(cred) 
+    {
+	metrics_mode pixels
+        left -320
+        top 250
+        width 670
+        height 460
+        vert_align top
+        horz_align center
+        material Credit
+    }
+	  
+   container Panel(logo) 
+    {
+	metrics_mode pixels
+        left -280
+        top 10
+        width 570
+        height 318
+        vert_align top
+        horz_align center
+        material introLogo
+    }	  
+}
+ 
