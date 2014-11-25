@@ -175,6 +175,17 @@ bool
 PlayState::frameStarted
 (const Ogre::FrameEvent& evt)
 {
+  deltaT = evt.timeSinceLastFrame;
+  int fps = 1.0 / deltaT;
+
+  Ogre::OverlayElement *oe;
+  oe = _overlayManager->getOverlayElement("fpsInfo");
+  oe->setCaption(Ogre::StringConverter::toString(fps));
+  oe = _overlayManager->getOverlayElement("objectInfo");
+  oe->setCaption(Ogre::StringConverter::toString(_camera->getPosition()));
+
+ 
+
   return true;
 }
 
@@ -291,20 +302,70 @@ void
 PlayState::mousePressed
 (const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-  if(e.state.buttonDown(OIS::MB_Left)){
+  std::cout <<  id << std::endl;
+  // Ogre::Real deltaT = e.timeSinceLastFrame;deberia ir en frameupdate y actualizar lo que aqui se modifique
+  //int fps = 1.0 / deltaT;
+  int posx = e.state.X.abs;
+  int posy = e.state.Y.abs;
+  int posz_rel = e.state.Z.abs;
+  float rotx,roty;
+  Ogre::Vector3 vt(0,0,0);     
+  Ogre::Real tSpeed = 10.0;  
+
+ // Si usamos la rueda, desplazamos en Z la camara ------------------
+  vt+= Ogre::Vector3(0,0,-10)*deltaT * posz_rel;   
+  _camera->moveRelative(vt * deltaT * tSpeed);
+
+  switch(id){
+  case OIS::MB_Left:
+    std::cout << "Boton Izquierdo" << std::endl;break;
+  case OIS::MB_Middle:
+    std::cout << "Boton centro" << std::endl;
+    //   float rotx = posx * deltaT * -1;
+    //  float roty = posy * deltaT * -1;
+     rotx = posx * -1;
+     roty = posy *  -1;
+    _camera->yaw(Ogre::Radian(rotx));
+    _camera->pitch(Ogre::Radian(roty));
+    break;
+  case OIS::MB_Right:
+    std::cout << "Boton derecho "<<std::endl;break;
+  default:
+    std::cout << "Default"<<std::endl;break;
+  }
+  
+// if (mbmiddle) { // Con boton medio pulsado, rotamos camara ---------
+//     float rotx = _mouse->getMouseState().X.rel * deltaT * -1;
+//     float roty = _mouse->getMouseState().Y.rel * deltaT * -1;
+//     _camera->yaw(Radian(rotx));
+//     _camera->pitch(Radian(roty));
+//     cout << "Boton Medio" << endl;
+//   }
+ 
+  
+  //if(e.state.buttonDown(OIS::MB_Left)){
 //     Ogre::Vector3 vt(0,0,0);
 //     Ogre::Real tSpeed = 10.0; 
 //     vt+= Ogre::Vector3(0,0,-10)*0.05 * e.state.Z.rel;   
-//     _camera->moveRelative(vt * 0.05 * tSpeed);
-  }
-  
+//     _camera->moveRelative(vt * 0.05 * tSpeed); 
 }
 
 void
 PlayState::mouseReleased
 (const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
+
+ 
+
+  // float rotx = e.X.rel * deltaT * -1;
+  // float roty = e.Y.rel * deltaT * -1;
+  // _camera->yaw(Ogre::Radian(rotx));
+  // _camera->pitch(Ogre::Radian(roty));
+
 }
+
+
+
 
 PlayState*
 PlayState::getSingletonPtr ()

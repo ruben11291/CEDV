@@ -62,6 +62,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::SceneNode* _fnode;
   Ogre::Light* _light,*_light2;
   Ogre::Overlay *_overlay;
+  Ogre::Real deltaT;
   bool _exitGame;
 
 
