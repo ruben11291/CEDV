@@ -1,0 +1,18 @@
+Logo
+{
+    
+	  
+    container Panel(intrologo) 
+    {
+	      metrics_mode pixels
+        left -280
+        top 10
+        width 570
+        height 318
+        vert_align top
+        horz_align center
+        material introLogo
+    }	  
+
+}
+ 

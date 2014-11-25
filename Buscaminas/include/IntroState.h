@@ -54,6 +54,7 @@ class IntroState : public Ogre::Singleton<IntroState>, public GameState
   
   bool start(const CEGUI::EventArgs &e);
   bool quit(const CEGUI::EventArgs &e);
+  bool credit(const CEGUI::EventArgs &e);
   
   //GUI
   void createGUI();
@@ -67,7 +68,9 @@ class IntroState : public Ogre::Singleton<IntroState>, public GameState
   CEGUI::OgreRenderer* renderer; 
   CEGUI::Window* _sheet;
   Ogre::Rectangle2D* _rect;
-
+  Ogre::OverlayManager* _overlayManager;
+  Ogre::Overlay * _overlay;
+  
   bool _exitGame;
 };
 

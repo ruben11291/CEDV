@@ -24,7 +24,7 @@
 #include "IntroState.h"
 #include "PlayState.h"
 #include "PauseState.h"
-
+#include "CreditState.h"
 #include <iostream>
 
 using namespace std;
@@ -35,10 +35,12 @@ int main () {
   IntroState* introState = new IntroState();
   PlayState* playState = new PlayState();
   PauseState* pauseState = new PauseState();
+  CreditState* creditState = new CreditState();
 
   UNUSED_VARIABLE(introState);
   UNUSED_VARIABLE(playState);
   UNUSED_VARIABLE(pauseState);
+  UNUSED_VARIABLE(creditState);
     
   try
     {
