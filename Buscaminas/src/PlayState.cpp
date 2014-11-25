@@ -29,10 +29,13 @@ PlayState::enter ()
   
   _cubes = new std::vector<Ogre::SceneNode*>();//for locating the cubes when a click was performed
   Ogre::Entity* ent1 = _sceneMgr->createEntity("Cube1.mesh");
+  ent1->setQueryFlags(STAGE);
+
   Ogre::Vector3 bbSize = ent1->getMesh()->getBounds().getSize();
   
-  _fnode = _sceneMgr->createSceneNode();
+  _fnode = _sceneMgr->createSceneNode("aux");
   _fnode->setPosition(0.0,4.0,0.0);
+  _fnode->setVisible(false);
   _sceneMgr->getRootSceneNode()->addChild(_fnode);
   
   _sceneMgr->destroyEntity(ent1);
@@ -43,6 +46,7 @@ PlayState::enter ()
     for (int j=0;j<n;j++){
       //base
       Ogre::Entity* ent1 = _sceneMgr->createEntity("Cube1.mesh");
+      ent1->setQueryFlags(CUBE);
       //    std::stringstream ss;//create a stringstream
       //    ss << j;//add number to the stream
       Ogre::SceneNode* _node = _sceneMgr->createSceneNode();
@@ -55,6 +59,7 @@ PlayState::enter ()
 
       //tapa
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
+      ent1->setQueryFlags(CUBE);
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
       _node->setPosition(float(i*bbSize.x),float(n*bbSize.x+0.05),float(j*bbSize.x));
@@ -65,6 +70,7 @@ PlayState::enter ()
 
       //lateral izq
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
+      ent1->setQueryFlags(CUBE);
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
       _node->scale(1,0,1);
@@ -76,6 +82,7 @@ PlayState::enter ()
 
       //lateral derecho
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
+      ent1->setQueryFlags(CUBE);
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
       _node->setPosition(n*bbSize.x+bbSize.x-0.75, float(i*bbSize.x +0.3),float(j*bbSize.x));
@@ -87,6 +94,7 @@ PlayState::enter ()
 
       //tapa trasera
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
+      ent1->setQueryFlags(CUBE);
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
       _node->setPosition(float(i*bbSize.x),float(j*bbSize.x+0.3),-bbSize.x +0.25);
@@ -98,6 +106,7 @@ PlayState::enter ()
 
       //frontal
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
+      ent1->setQueryFlags(CUBE);
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
       _node->setPosition(float(i*bbSize.x),float(j*bbSize.x+0.3),n*bbSize.x+bbSize.x-0.75);
@@ -105,8 +114,10 @@ PlayState::enter ()
       _node->pitch(Ogre::Degree(-90),Ogre::Node::TS_PARENT);
 //       _sceneMgr->getRootSceneNode()->addChild(_node);
        _fnode->addChild(_node);
-      _cubes->push_back(_node);
-  }
+      _cubes->push_back(_node);  
+    }
+    _raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
+    
   }
   
   
@@ -131,6 +142,8 @@ PlayState::enter ()
 
   _ground = _sceneMgr->createSceneNode("ground");
   Ogre::Entity* groundEnt = _sceneMgr->createEntity("planeEnt", "plane1");
+  groundEnt->setQueryFlags(STAGE);
+
   groundEnt->setMaterialName("Ground");
   _ground->attachObject(groundEnt);//comprobar si se libera sola la entidad
   _sceneMgr->getRootSceneNode()->addChild(_ground);
@@ -311,6 +324,10 @@ PlayState::mousePressed
   float rotx,roty;
   Ogre::Vector3 vt(0,0,0);     
   Ogre::Real tSpeed = 10.0;  
+  Ogre::Ray r;
+  Ogre::RaySceneQueryResult result;
+  Ogre::RaySceneQueryResult::iterator it;
+  Ogre::SceneNode * _selectedNode;
 
  // Si usamos la rueda, desplazamos en Z la camara ------------------
   vt+= Ogre::Vector3(0,0,-10)*deltaT * posz_rel;   
@@ -318,7 +335,17 @@ PlayState::mousePressed
 
   switch(id){
   case OIS::MB_Left:
-    std::cout << "Boton Izquierdo" << std::endl;break;
+    std::cout << "Boton Izquierdo" << std::endl;
+
+    r = setRayQuery(posx, posy, CUBE);
+    result = _raySceneQuery->execute();
+   
+    it = result.begin();
+    if (it!=result.end()){
+      _selectedNode = it->movable->getParentSceneNode();
+      _selectedNode->showBoundingBox(true);
+    }
+    break;
   case OIS::MB_Middle:
     std::cout << "Boton centro" << std::endl;
     //   float rotx = posx * deltaT * -1;
@@ -327,6 +354,7 @@ PlayState::mousePressed
      roty = posy *  -1;
     _camera->yaw(Ogre::Radian(rotx));
     _camera->pitch(Ogre::Radian(roty));
+    
     break;
   case OIS::MB_Right:
     std::cout << "Boton derecho "<<std::endl;break;
@@ -348,6 +376,7 @@ PlayState::mousePressed
 //     Ogre::Real tSpeed = 10.0; 
 //     vt+= Ogre::Vector3(0,0,-10)*0.05 * e.state.Z.rel;   
 //     _camera->moveRelative(vt * 0.05 * tSpeed); 
+
 }
 
 void
@@ -382,10 +411,10 @@ PlayState::getSingleton ()
 
 
 Ogre::Ray PlayState::setRayQuery(int posx, int posy, int mask) {
-  // Ogre::Ray rayMouse = _camera->getCameraToViewportRay
-  //   (posx/float(_win->getWidth()), posy/float(_win->getHeight()));
-  // _raySceneQuery->setRay(rayMouse);
-  // _raySceneQuery->setSortByDistance(true);
-  // _raySceneQuery->setQueryMask(mask);
-  // return (rayMouse);
+   Ogre::Ray rayMouse = _camera->getCameraToViewportRay
+    (posx/float(_root->getAutoCreatedWindow()->getWidth()), posy/float(_root->getAutoCreatedWindow()->getHeight()));
+   _raySceneQuery->setRay(rayMouse);
+   _raySceneQuery->setSortByDistance(true);
+   _raySceneQuery->setQueryMask(mask);
+   return (rayMouse);
 }
