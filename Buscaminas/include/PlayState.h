@@ -68,6 +68,9 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::RaySceneQuery *_raySceneQuery;
   Ogre::Real deltaT;
   Ogre::Rectangle2D* _rect;
+  
+    SoundFXManager* _pSoundFXManager;
+  SoundFXPtr _simpleEffect;
   bool _exitGame;
 
  private:

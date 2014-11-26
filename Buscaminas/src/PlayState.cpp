@@ -2,6 +2,8 @@
 #include "PauseState.h"
 #include <sstream>
 #include <iostream>
+#include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
 
 template<> PlayState* Ogre::Singleton<PlayState>::msSingleton = 0;
 
@@ -9,6 +11,8 @@ void
 PlayState::enter ()
 {
   _root = Ogre::Root::getSingletonPtr();
+  
+  
 
   // Se recupera el gestor de escena y la cámara.
   _sceneMgr = _root->getSceneManager("SceneManager");
@@ -18,6 +22,9 @@ PlayState::enter ()
   _camera->setNearClipDistance(5);
   _camera->setFarClipDistance(10000);
   _camera->setFOVy(Ogre::Degree(48));
+  
+  _pSoundFXManager = new SoundFXManager;
+  _simpleEffect = _pSoundFXManager->load("bomb.wav");
   
   _viewport = _root->getAutoCreatedWindow()->addViewport(_camera);
   // Nuevo background colour.
@@ -319,7 +326,11 @@ PlayState::keyPressed
     //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
     //(*it)->yaw(Ogre::Degree(r*0.1));
      _fnode->pitch(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
-
+      _simpleEffect->play();
+  }
+  
+  if(e.key == OIS::KC_SPACE){
+    _simpleEffect->play();
   }
   
   

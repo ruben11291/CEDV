@@ -15,10 +15,10 @@ IntroState::enter ()
   
   
   _pTrackManager = new TrackManager;
-  _pSoundFXManager = new SoundFXManager;
+//   _pSoundFXManager = new SoundFXManager;
   
   _mainTrack = _pTrackManager->load("music.wav");
-//   _simpleEffect = _pSoundFXManager->load("nightmare.wav");
+//  _simpleEffect = _pSoundFXManager->load("bomb.wav");
 
   _sceneMgr = _root->createSceneManager(Ogre::ST_GENERIC, "SceneManager");
   _camera = _sceneMgr->createCamera("IntroCamera");
