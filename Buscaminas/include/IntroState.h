@@ -60,6 +60,8 @@ class IntroState : public Ogre::Singleton<IntroState>, public GameState
   //GUI
   void createGUI();
   void createBackground();
+  
+  bool initSDL();
 
  protected:
   Ogre::Root* _root;
@@ -71,6 +73,13 @@ class IntroState : public Ogre::Singleton<IntroState>, public GameState
   Ogre::Rectangle2D* _rect;
   Ogre::OverlayManager* _overlayManager;
   Ogre::Overlay * _overlay;
+  
+      // Manejadores del sonido
+  
+  TrackManager* _pTrackManager;
+  SoundFXManager* _pSoundFXManager;
+  TrackPtr _mainTrack;
+  SoundFXPtr _simpleEffect;
   
   bool _exitGame;
 };

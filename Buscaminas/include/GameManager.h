@@ -27,6 +27,8 @@
 #include <OIS/OIS.h>
 
 #include "InputManager.h"
+#include "TrackManager.h"
+#include "SoundFXManager.h"
 
 class GameState;
 
@@ -52,6 +54,13 @@ class GameManager : public Ogre::FrameListener, public Ogre::Singleton<GameManag
   Ogre::Root* _root;
   Ogre::SceneManager* _sceneManager;
   Ogre::RenderWindow* _renderWindow;
+  
+    // Manejadores del sonido
+  
+  TrackManager* _pTrackManager;
+  SoundFXManager* _pSoundFXManager;
+  TrackPtr _mainTrack;
+  SoundFXPtr _simpleEffect;
 
   // Funciones de configuración.
   void loadResources ();

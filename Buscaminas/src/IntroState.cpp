@@ -1,15 +1,24 @@
 #include "IntroState.h"
 #include "PlayState.h"
 #include "CreditState.h"
-
+#include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
 template<> IntroState* Ogre::Singleton<IntroState>::msSingleton = 0;
 
 IntroState::IntroState(){
+  initSDL();
 }
 void
 IntroState::enter ()
 {
   _root = Ogre::Root::getSingletonPtr();
+  
+  
+  _pTrackManager = new TrackManager;
+  _pSoundFXManager = new SoundFXManager;
+  
+  _mainTrack = _pTrackManager->load("music.wav");
+//   _simpleEffect = _pSoundFXManager->load("nightmare.wav");
 
   _sceneMgr = _root->createSceneManager(Ogre::ST_GENERIC, "SceneManager");
   _camera = _sceneMgr->createCamera("IntroCamera");
@@ -34,7 +43,27 @@ IntroState::enter ()
   
   createGUI();
   
+  // Reproducción del track principal...
+  this->_mainTrack->play();
   
+  
+}
+
+bool IntroState::initSDL () {
+    // Inicializando SDL...
+    if (SDL_Init(SDL_INIT_AUDIO) < 0)
+        return false;
+    // Llamar a  SDL_Quit al terminar.
+    atexit(SDL_Quit);
+ 
+    // Inicializando SDL mixer...
+    if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,MIX_DEFAULT_CHANNELS, 4096) < 0)
+      return false;
+ 
+    // Llamar a Mix_CloseAudio al terminar.
+    atexit(Mix_CloseAudio);
+ 
+    return true;    
 }
 
 void IntroState::createBackground(){
