@@ -121,32 +121,57 @@ PlayState::enter ()
   }
   
   
-  _sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-  _sceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
+//   _sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+//   _sceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
+//   
+//   
+//   _light = _sceneMgr->createLight("Light1");
+//   _light->setType(Ogre::Light::LT_DIRECTIONAL);
+//   _light->setDirection(Ogre::Vector3(1,-1,0));
+// 
+//   _light2 = _sceneMgr->createLight("Light2");
+//   _light2->setType(Ogre::Light::LT_POINT);
+//   _light2->setPosition(8, 15, -2);
+//   _light2->setSpecularColour(0.9, 0.9, 0.9); 
+//   _light2->setDiffuseColour(0.9, 0.9, 0.9);
+// 
+//   Ogre::Plane plane1(Ogre::Vector3::UNIT_Y, 0);
+//   Ogre::MeshManager::getSingleton().createPlane("plane1",
+// 	Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane1,
+// 	200,200,1,1,true,1,10,10,Ogre::Vector3::UNIT_Z);
+// 
+//   _ground = _sceneMgr->createSceneNode("ground");
+//   Ogre::Entity* groundEnt = _sceneMgr->createEntity("planeEnt", "plane1");
+//   groundEnt->setQueryFlags(STAGE);
+// 
+//   groundEnt->setMaterialName("Ground");
+//   _ground->attachObject(groundEnt);//comprobar si se libera sola la entidad
+//   _sceneMgr->getRootSceneNode()->addChild(_ground);
   
   
-  _light = _sceneMgr->createLight("Light1");
-  _light->setType(Ogre::Light::LT_DIRECTIONAL);
-  _light->setDirection(Ogre::Vector3(1,-1,0));
-
-  _light2 = _sceneMgr->createLight("Light2");
-  _light2->setType(Ogre::Light::LT_POINT);
-  _light2->setPosition(8, 15, -2);
-  _light2->setSpecularColour(0.9, 0.9, 0.9); 
-  _light2->setDiffuseColour(0.9, 0.9, 0.9);
-
-  Ogre::Plane plane1(Ogre::Vector3::UNIT_Y, 0);
-  Ogre::MeshManager::getSingleton().createPlane("plane1",
-	Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane1,
-	200,200,1,1,true,1,10,10,Ogre::Vector3::UNIT_Z);
-
-  _ground = _sceneMgr->createSceneNode("ground");
-  Ogre::Entity* groundEnt = _sceneMgr->createEntity("planeEnt", "plane1");
-  groundEnt->setQueryFlags(STAGE);
-
-  groundEnt->setMaterialName("Ground");
-  _ground->attachObject(groundEnt);//comprobar si se libera sola la entidad
-  _sceneMgr->getRootSceneNode()->addChild(_ground);
+  // Create background material
+    Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create("Backgr", "General");
+    material->getTechnique(0)->getPass(0)->createTextureUnitState("back.jpg");
+    material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
+    material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
+    material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
+    
+    // Create background rectangle covering the whole screen
+    _rect = new Ogre::Rectangle2D(true);
+    _rect->setCorners(-1.0, 1.0, 1.0, -1.0);
+    _rect->setMaterial("Backgr");
+    
+    // Render the background before everything else
+    _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
+    
+    // Use infinite AAB to always stay visible
+    Ogre::AxisAlignedBox aabInf;
+    aabInf.setInfinite();
+    _rect->setBoundingBox(aabInf);
+    
+    // Attach background to the scene
+    Ogre::SceneNode* node = _sceneMgr->getRootSceneNode()->createChildSceneNode("Back");
+    node->attachObject(_rect);
   
 
   _overlayManager = Ogre::OverlayManager::getSingletonPtr();
@@ -193,12 +218,14 @@ PlayState::frameStarted
 
   Ogre::OverlayElement *oe;
   oe = _overlayManager->getOverlayElement("fpsInfo");
-  oe->setCaption(Ogre::StringConverter::toString(fps));
-  oe = _overlayManager->getOverlayElement("objectInfo");
-  oe->setCaption(Ogre::StringConverter::toString(_camera->getPosition()));
-
- 
-
+//   oe->setCaption(Ogre::StringConverter::toString(fps));
+  oe->setCaption("600/600");
+  
+  oe = _overlayManager->getOverlayElement("minesinf");
+  oe->setCaption("30/30");
+  
+  oe = _overlayManager->getOverlayElement("timeinf");
+  oe->setCaption("0.00");
   return true;
 }
 

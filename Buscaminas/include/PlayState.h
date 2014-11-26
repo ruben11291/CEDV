@@ -67,6 +67,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::Overlay *_overlay;
   Ogre::RaySceneQuery *_raySceneQuery;
   Ogre::Real deltaT;
+  Ogre::Rectangle2D* _rect;
   bool _exitGame;
 
  private:

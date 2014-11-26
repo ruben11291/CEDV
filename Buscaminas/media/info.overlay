@@ -2,8 +2,8 @@ template element TextArea(MyTemplates/Text)
 {
     font_name Blue
 		metrics_mode pixels
-		char_height 15
-		colour 1.0 1.0 1.0    
+		char_height 50
+		colour 0.0 0.0 0.0    
 }
 
 template element TextArea(MyTemplates/SmallText)
@@ -21,25 +21,64 @@ Info
     container Panel(panelInfo) 
     {
  		    metrics_mode pixels
-        left 10
-        top -85
-        width 250
-        height 75
+        left -5
+        top -180
+        width 288
+        height 198
         vert_align bottom
         material panelInfoM
 
 		    element TextArea(fpsInfo) : MyTemplates/Text 
 		    {
-				  top 30
-				  left 60 
+				  top -40
+				  left 80
+				  vert_align center
+				  
 		    }
 
-		    element TextArea(objectInfo) : MyTemplates/Text 
-		    {
-				  top 48
-				  left 80
-		    }
 	  }
+	  
+    container Panel(mines) 
+    {
+	metrics_mode pixels
+        left 300
+        top -180
+        width 288
+        height 198
+        vert_align bottom
+        material minesInfo
+
+		    element TextArea(minesinf) : MyTemplates/Text 
+		    {
+				  top -40
+				  left 80
+				  vert_align center
+				  
+		    }
+
+	  }
+	 
+    container Panel(time) 
+    {
+	metrics_mode pixels
+        left 600
+        top -180
+        width 288
+        height 198
+        vert_align bottom
+        material timeInfo
+
+		    element TextArea(timeinf) : MyTemplates/Text 
+		    {
+				  top -40
+				  left 80
+				  vert_align center
+				  
+		    }
+
+	  }
+	  
+	  
 	  
     container Panel(logoUCLM) 
     {
