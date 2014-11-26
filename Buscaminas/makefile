@@ -8,7 +8,7 @@ DIRHEA := include/
 CXX := g++
 
 # Flags de compilación -----------------------------------------------
-CXXFLAGS := -I $(DIRHEA) -Wall `pkg-config --cflags CEGUI` `pkg-config --cflags OGRE` $(CEGUI_CFLAGS) `pkg-config --cflags OIS`
+CXXFLAGS := -I $(DIRHEA) -Wall  `pkg-config --cflags CEGUI` `pkg-config --cflags OGRE` $(CEGUI_CFLAGS) `pkg-config --cflags OIS`
 
 # Flags del linker ---------------------------------------------------
 LDFLAGS := `pkg-config --libs CEGUI` `pkg-config --libs CEGUI-OGRE` `pkg-config --libs OGRE` -lOIS -lGL -lstdc++ $(CEGUI_LDFLAGS) -lboost_system -lSDL -lSDL_mixer

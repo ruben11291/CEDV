@@ -66,8 +66,26 @@ void CreditState::createBackground(){
     
     // Example of background scrolling
     material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setScrollAnimation(-0.02, 0.0);
+
+    //  CEGUI::Window *_sheet = CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet");
+  
+    CEGUI::Window* _return = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/ReturnIntro");
+    _return->setText("Return");
+    _return->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
+    _return->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.42,0)));
+    _return->subscribeEvent(CEGUI::PushButton::EventClicked,
+ 			     CEGUI::Event::Subscriber(&CreditState::quit, 
+						      this));
+   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->addChildWindow(_return);
   
 }
+bool CreditState::quit(const CEGUI::EventArgs &e){
+  changeState(IntroState::getSingletonPtr());
+  // CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Sheet");
+
+  return true;
+}
+
 
 void
 CreditState::exit ()

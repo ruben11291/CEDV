@@ -53,6 +53,9 @@ class CreditState : public Ogre::Singleton<CreditState>, public GameState
   static CreditState& getSingleton ();
   static CreditState* getSingletonPtr ();
   
+
+  bool quit(const CEGUI::EventArgs &e);
+
   //GUI
   void createBackground();
 
@@ -64,6 +67,7 @@ class CreditState : public Ogre::Singleton<CreditState>, public GameState
   Ogre::OverlayManager* _overlayManager;
   Ogre::Overlay *_overlay;
   Ogre::Rectangle2D* _rect;
+  CEGUI::Window * _return;
   bool _exitGame;
 
 
