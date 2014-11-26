@@ -34,13 +34,14 @@ PlayState::enter ()
   Ogre::Vector3 bbSize = ent1->getMesh()->getBounds().getSize();
   
   _fnode = _sceneMgr->createSceneNode("aux");
-  _fnode->setPosition(0.0,4.0,0.0);
-  _fnode->setVisible(false);
+  // _fnode->setPosition(0,4,0.0);
+  //_fnode->setVisible(False);
+  _fnode->attachObject(ent1);
   _sceneMgr->getRootSceneNode()->addChild(_fnode);
-  
-  _sceneMgr->destroyEntity(ent1);
+  std::cout << _fnode->getPosition() << " " << _fnode->_getDerivedPosition() << " " << _fnode->getInitialPosition() << _fnode->getLocalAxes()<< std::endl;
+  // _sceneMgr->destroyEntity(ent1);
 
-  int n = 10;//to be done , only for testing
+  int n = 5;//to be done , only for testing
   //  creation of the cube 
   for (int i=0;i<n;i++){
     for (int j=0;j<n;j++){
@@ -51,10 +52,12 @@ PlayState::enter ()
       //    ss << j;//add number to the stream
       Ogre::SceneNode* _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
-      _node->setPosition(float(i*bbSize.x),0.1,float(j*bbSize.x));
-      _node->scale(1,0.1,1);
-//       _sceneMgr->getRootSceneNode()->addChild(_node);
       _fnode->addChild(_node);
+
+      _node->_setDerivedPosition(Ogre::Vector3(float(i*bbSize.x),0.1,float(j*bbSize.x)));
+      _node->scale(1,0.1,1);
+      std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " << _node->getInitialPosition() << _node->getLocalAxes()<< std::endl;
+//       _sceneMgr->getRootSceneNode()->addChild(_node);
       _cubes->push_back(_node);
 
       //tapa
@@ -62,10 +65,12 @@ PlayState::enter ()
       ent1->setQueryFlags(CUBE);
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
-      _node->setPosition(float(i*bbSize.x),float(n*bbSize.x+0.05),float(j*bbSize.x));
-      _node->scale(1,0,1);
-//       _sceneMgr->getRootSceneNode()->addChild(_node);
       _fnode->addChild(_node);
+
+      _node->_setDerivedPosition(Ogre::Vector3(float(i*bbSize.x),float(n*bbSize.x+0.05),float(j*bbSize.x)));
+      _node->scale(1,0,1);
+std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " << _node->getInitialPosition() << _node->getLocalAxes()<< std::endl;
+//       _sceneMgr->getRootSceneNode()->addChild(_node);
       _cubes->push_back(_node);
 
       //lateral izq
@@ -73,49 +78,52 @@ PlayState::enter ()
       ent1->setQueryFlags(CUBE);
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
+      _fnode->addChild(_node);
       _node->scale(1,0,1);
       _node->roll(Ogre::Degree(90),Ogre::Node::TS_PARENT);
-      _node->setPosition(-bbSize.x + 0.25,float(i*bbSize.x + 0.3),float(j*bbSize.x));
+      _node->_setDerivedPosition(Ogre::Vector3(-bbSize.x + 0.25,float(i*bbSize.x + 0.3),float(j*bbSize.x)));
 //       _sceneMgr->getRootSceneNode()->addChild(_node);
-      _fnode->addChild(_node);
       _cubes->push_back(_node);
-
+std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " << _node->getInitialPosition() << _node->getLocalAxes()<< std::endl;
       //lateral derecho
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
       ent1->setQueryFlags(CUBE);
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
-      _node->setPosition(n*bbSize.x+bbSize.x-0.75, float(i*bbSize.x +0.3),float(j*bbSize.x));
+      _fnode->addChild(_node);
+      _node->_setDerivedPosition(Ogre::Vector3(n*bbSize.x+bbSize.x-0.75, float(i*bbSize.x +0.3),float(j*bbSize.x)));
       _node->scale(1,0,1);
       _node->roll(Ogre::Degree(90),Ogre::Node::TS_PARENT);
 //       _sceneMgr->getRootSceneNode()->addChild(_node);
-      _fnode->addChild(_node);
       _cubes->push_back(_node);
-
+std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " << _node->getInitialPosition() << _node->getLocalAxes()<< std::endl;
       //tapa trasera
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
       ent1->setQueryFlags(CUBE);
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
-      _node->setPosition(float(i*bbSize.x),float(j*bbSize.x+0.3),-bbSize.x +0.25);
+      _fnode->addChild(_node);
+      _node->_setDerivedPosition(Ogre::Vector3(float(i*bbSize.x),float(j*bbSize.x+0.3),-bbSize.x +0.25));
       _node->scale(1,0,1);
       _node->pitch(Ogre::Degree(-90),Ogre::Node::TS_PARENT);
 //       _sceneMgr->getRootSceneNode()->addChild(_node);
-      _fnode->addChild(_node);
       _cubes->push_back(_node);
-
+std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " << _node->getInitialPosition() << _node->getLocalAxes()<< std::endl;
       //frontal
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
       ent1->setQueryFlags(CUBE);
       _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
-      _node->setPosition(float(i*bbSize.x),float(j*bbSize.x+0.3),n*bbSize.x+bbSize.x-0.75);
+      _fnode->addChild(_node);
+      _node->_setDerivedPosition(Ogre::Vector3(float(i*bbSize.x),float(j*bbSize.x+0.3),n*bbSize.x+bbSize.x-0.75));
       _node->scale(1,0,1);
       _node->pitch(Ogre::Degree(-90),Ogre::Node::TS_PARENT);
 //       _sceneMgr->getRootSceneNode()->addChild(_node);
-       _fnode->addChild(_node);
-      _cubes->push_back(_node);  
+      _cubes->push_back(_node);std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " << _node->getInitialPosition() << _node->getLocalAxes()<< std::endl;  
     }
+    //  Ogre::Vector3 mediumPointXZ = (cubes[0]->getPosition()+cubes[n-1]->getPosition()) / 2;
+    //Ogre::Vector3 mediumPointYZ = (cubes[]
+    //Ogre::Vector2 mediumPointXY(_cubes[0]->getPosition()
     _raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
     
   }
@@ -184,17 +192,11 @@ PlayState::enter ()
 void
 PlayState::exit ()
 { 
-  // _root->getAutoCreatedWindow()->removeAllViewports();
   _sceneMgr->clearScene();
   _root->getAutoCreatedWindow()->removeAllViewports();
 
-  //delete _overlay;
-  //delete _ground;
   delete _cubes;
-  // delete _sceneMgr;
-  // delete _overlayManager;
-  // delete _root;
-  
+ 
 }
 
 void
