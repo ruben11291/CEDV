@@ -83,10 +83,10 @@ void IntroState::createBackground(){
     // Render the background before everything else
     _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
     
-    // Use infinite AAB to always stay visible
-    Ogre::AxisAlignedBox aabInf;
-    aabInf.setInfinite();
-    _rect->setBoundingBox(aabInf);
+//     // Use infinite AAB to always stay visible
+//     Ogre::AxisAlignedBox aabInf;
+//     aabInf.setInfinite();
+//     _rect->setBoundingBox(aabInf);
     
     // Attach background to the scene
     Ogre::SceneNode* node = _sceneMgr->getRootSceneNode()->createChildSceneNode("Background");

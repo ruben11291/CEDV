@@ -256,81 +256,90 @@ PlayState::keyPressed
     pushState(PauseState::getSingletonPtr());
   }
   
-  Ogre::Real r =0;
-  if(e.key == OIS::KC_W){
-    r+=180;
-    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
-    //(*it)->yaw(Ogre::Degree(r*0.1));
-    _camera->yaw(Ogre::Degree(r*0.1));
-  }
+  Ogre::Vector3 vt(0,0,0);     Ogre::Real tSpeed = 20.0;
+  Ogre::Real deltaT = 0.03;
   
-  if(e.key == OIS::KC_Q){
-    r-=180;
-    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
-    //(*it)->yaw(Ogre::Degree(r*0.1));
-    _camera->yaw(Ogre::Degree(r*0.1));
-
-  }
+ 
+  if(e.key == OIS::KC_UP){ vt+=Ogre::Vector3(0,0,-1); _camera->moveRelative(vt * deltaT * tSpeed);}
+  if(e.key == OIS::KC_DOWN){  vt+=Ogre::Vector3(0,0,1); _camera->moveRelative(vt * deltaT * tSpeed);}
+  if(e.key == OIS::KC_LEFT){  vt+=Ogre::Vector3(-1,0,0); _camera->moveRelative(vt * deltaT * tSpeed);}
+  if(e.key == OIS::KC_RIGHT){ vt+=Ogre::Vector3(1,0,0); _camera->moveRelative(vt * deltaT * tSpeed);}
   
-  if(e.key == OIS::KC_Z){
-    r+=180;
-    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
-    //(*it)->yaw(Ogre::Degree(r*0.1));
-    _camera->pitch(Ogre::Degree(r*0.1));
-  }
-  
-  if(e.key == OIS::KC_X){
-    r-=180;
-    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
-    //(*it)->yaw(Ogre::Degree(r*0.1));
-    _camera->pitch(Ogre::Degree(r*0.1));
-
-  }
-  
-  if(e.key == OIS::KC_S){
-      Ogre::Vector3 vt(0,0,0);
-    Ogre::Real tSpeed = 10.0; 
-    vt+= Ogre::Vector3(0,0,-10)*0.05 * 7;   
-    _camera->moveRelative(vt * 0.05 * tSpeed);
-  }
-   if(e.key == OIS::KC_A){
-      Ogre::Vector3 vt(0,0,0);
-    Ogre::Real tSpeed = 10.0; 
-    vt-= Ogre::Vector3(0,0,-10)*0.05 * 7;   
-    _camera->moveRelative(vt * 0.05 * tSpeed);
-  }
-  
-  
-  if(e.key == OIS::KC_E){
-    r+=180;
-    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
-    //(*it)->yaw(Ogre::Degree(r*0.1));
-    _fnode->yaw(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
-  }
-  
-  if(e.key == OIS::KC_R){
-    r-=180;
-    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
-    //(*it)->yaw(Ogre::Degree(r*0.1));
-     _fnode->yaw(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
-
-  }
-  
-  if(e.key == OIS::KC_D){
-    r+=180;
-    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
-    //(*it)->yaw(Ogre::Degree(r*0.1));
-    _fnode->pitch(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
-  }
-  
-  if(e.key == OIS::KC_F){
-    r-=180;
-    //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
-    //(*it)->yaw(Ogre::Degree(r*0.1));
-     _fnode->pitch(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
-      _simpleEffect->play();
-  }
-  
+//   Ogre::Real r =0;
+//   if(e.key == OIS::KC_W){
+//     r+=180;
+//     //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+//     //(*it)->yaw(Ogre::Degree(r*0.1));
+//     _camera->yaw(Ogre::Degree(r*0.03));
+//   }
+//   
+//   if(e.key == OIS::KC_Q){
+//     r-=180;
+//     //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+//     //(*it)->yaw(Ogre::Degree(r*0.1));
+//     _camera->yaw(Ogre::Degree(r*0.03));
+// 
+//   }
+//   
+//   if(e.key == OIS::KC_Z){
+//     r+=180;
+//     //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+//     //(*it)->yaw(Ogre::Degree(r*0.1));
+//     _camera->pitch(Ogre::Degree(r*0.03));
+//   }
+//   
+//   if(e.key == OIS::KC_X){
+//     r-=180;
+//     //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+//     //(*it)->yaw(Ogre::Degree(r*0.1));
+//     _camera->pitch(Ogre::Degree(r*0.03));
+// 
+//   }
+//   Ogre::Vector3 vt(0,0,0);
+//    Ogre::Real tSpeed = 10.0; 
+//   if(e.key == OIS::KC_S){
+// 
+//     vt+= Ogre::Vector3(0,0,-10)*0.05 * 7;   
+//     _camera->moveRelative(vt * 0.05 * tSpeed);
+//   }
+//    if(e.key == OIS::KC_A){
+//       Ogre::Vector3 vt(0,0,0);
+//     Ogre::Real tSpeed = 10.0; 
+//     vt-= Ogre::Vector3(0,0,-10)*0.05 * 7;   
+//     _camera->moveRelative(vt * 0.05 * tSpeed);
+//   }
+//   
+//   
+//   if(e.key == OIS::KC_E){
+//     r+=180;
+//     //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+//     //(*it)->yaw(Ogre::Degree(r*0.1));
+//     _fnode->yaw(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
+//   }
+//   
+//   if(e.key == OIS::KC_R){
+//     r-=180;
+//     //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+//     //(*it)->yaw(Ogre::Degree(r*0.1));
+//      _fnode->yaw(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
+// 
+//   }
+//   
+//   if(e.key == OIS::KC_D){
+//     r+=180;
+//     //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+//     //(*it)->yaw(Ogre::Degree(r*0.1));
+//     _fnode->pitch(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
+//   }
+//   
+//   if(e.key == OIS::KC_F){
+//     r-=180;
+//     //for (std::vector<Ogre::SceneNode*>::iterator it=_cubes->begin();it!=_cubes->end();it++)
+//     //(*it)->yaw(Ogre::Degree(r*0.1));
+//      _fnode->pitch(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
+//       _simpleEffect->play();
+//   }
+//   
   if(e.key == OIS::KC_SPACE){
     _simpleEffect->play();
   }
