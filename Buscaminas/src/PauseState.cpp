@@ -15,12 +15,20 @@ PauseState::enter ()
   // Nuevo background colour.
   _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 1.0, 0.0));
 
-  _exitGame = false;
+  /**************************
+QUEDA PONER EL OVERLAY DE PAUSE 
+  ************************/
+  // _overlayManager = Ogre::OverlayManager::getSingletonPtr();
+  // _overlay = _overlayManager->getByName("Pause");
+  // _overlayManager->getOverlayElement("pausemsg")->setCaption("PAUSE");
+  // _overlay->show();
+  // _exitGame = false;
 }
 
 void
 PauseState::exit ()
 {
+  _overlay->hide();
 }
 
 void
@@ -31,6 +39,7 @@ PauseState::pause ()
 void
 PauseState::resume ()
 {
+  _overlay->show();
 }
 
 bool

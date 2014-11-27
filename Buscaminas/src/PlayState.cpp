@@ -209,6 +209,7 @@ PlayState::exit ()
 void
 PlayState::pause()
 {
+  _overlay->hide();
 }
 
 void
@@ -216,6 +217,7 @@ PlayState::resume()
 {
   // Se restaura el background colour.
   _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
+  _overlay->show();
 }
 
 bool
@@ -349,6 +351,8 @@ void
 PlayState::mouseMoved
 (const OIS::MouseEvent &e)
 {
+  //  Ogre::Vector3 destinity(_lastposition-(Ogre::Vector3(e.state.X.abs,e.state.Y.abs,e.state.Z.abs)));
+  //_camera->moveRelative(*_lastposition-Ogre::Vector3(e.state.X.abs,e.state.Y.abs,e.state.Z.abs));
 }
 
 void
@@ -360,7 +364,7 @@ PlayState::mousePressed
   //int fps = 1.0 / deltaT;
   int posx = e.state.X.abs;
   int posy = e.state.Y.abs;
-  int posz_rel = e.state.Z.abs;
+  int posz_rel = e.state.Z.rel;
   float rotx,roty;
   Ogre::Vector3 vt(0,0,0);     
   Ogre::Real tSpeed = 10.0;  
@@ -370,34 +374,45 @@ PlayState::mousePressed
   Ogre::SceneNode * _selectedNode;
 
  // Si usamos la rueda, desplazamos en Z la camara ------------------
-  vt+= Ogre::Vector3(0,0,-10)*deltaT * posz_rel;   
-  _camera->moveRelative(vt * deltaT * tSpeed);
+  //  vt+= Ogre::Vector3(0,0,-10)*deltaT * posz_rel;   
+  //_camera->moveRelative(vt * deltaT * tSpeed);
 
-  switch(id){
-  case OIS::MB_Left:
-    std::cout << "Boton Izquierdo" << std::endl;
-
-    r = setRayQuery(posx, posy, CUBE);
-    result = _raySceneQuery->execute();
+   r = setRayQuery(posx, posy, CUBE);
+   result = _raySceneQuery->execute();
    
     it = result.begin();
     if (it!=result.end()){
       _selectedNode = it->movable->getParentSceneNode();
+    }
+    else _selectedNode=0;
+
+  switch(id){
+  case OIS::MB_Left:
+    std::cout << "Boton Izquierdo" << std::endl;
+    if (_selectedNode){
       _selectedNode->showBoundingBox(true);
+      static_cast<Ogre::Entity *>(_selectedNode->getAttachedObject(0))->setMaterialName("Cube2");
     }
     break;
   case OIS::MB_Middle:
     std::cout << "Boton centro" << std::endl;
-    //   float rotx = posx * deltaT * -1;
-    //  float roty = posy * deltaT * -1;
-     rotx = posx * -1;
-     roty = posy *  -1;
-    _camera->yaw(Ogre::Radian(rotx));
-    _camera->pitch(Ogre::Radian(roty));
+    // float rotx = posx * deltaT * -1;
+    //float roty = posy * deltaT * -1;
+    //if (_lastposition)
+    // delete _lastposition;
+    // this->_lastposition= new Ogre::Vector3(e.state.X.abs,e.state.Y.abs,e.state.Z.abs); 
+      //rotx = posx * deltaT*-1;
+      //roty = posy *  deltaT*-1;
+      //  _camera->yaw(Ogre::Radian(rotx));
+      //_camera->pitch(Ogre::Radian(roty));
     
     break;
   case OIS::MB_Right:
     std::cout << "Boton derecho "<<std::endl;break;
+    if (_selectedNode){
+      _selectedNode->showBoundingBox(true);
+    static_cast<Ogre::Entity *>(_selectedNode->getAttachedObject(0))->setMaterialName("Cube2");
+    }
   default:
     std::cout << "Default"<<std::endl;break;
   }
