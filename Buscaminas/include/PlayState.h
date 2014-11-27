@@ -68,6 +68,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::RaySceneQuery *_raySceneQuery;
   Ogre::Real deltaT;
   Ogre::Rectangle2D* _rect;
+  //bool _key_pressed;
 
   SoundFXManager* _pSoundFXManager;
   SoundFXPtr _simpleEffect;
@@ -75,6 +76,8 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 
  private:
   Ogre::Ray setRayQuery(int posx, int posy, int mask);
+  OIS::MouseState _mouse_position;
+  bool _key_pressed;
 };
 
 #endif
