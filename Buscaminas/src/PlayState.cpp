@@ -172,12 +172,12 @@ std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " 
     material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
     
     // Create background rectangle covering the whole screen
-    _rect = new Ogre::Rectangle2D(true);
-    _rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-    _rect->setMaterial("Backgr");
+     _rect = new Ogre::Rectangle2D(true);
+     _rect->setCorners(-1.0, 1.0, 1.0, -1.0);
+     _rect->setMaterial("Backgr"); 
     
     // Render the background before everything else
-    _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
+     _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
     
     // Use infinite AAB to always stay visible
     Ogre::AxisAlignedBox aabInf;
