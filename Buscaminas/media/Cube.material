@@ -31,7 +31,7 @@ material Cube2
 		}
 	}
 }
-material Cube3
+material Cubem_1
 {
 	receive_shadows on
 	technique
@@ -42,7 +42,75 @@ material Cube3
 			specular 0.000000 0.000000 0.000000 63.25
 			texture_unit
 			{
-				texture texture2_tex.tga
+				texture m_1.png
+			}
+		}
+	}
+}
+
+material Cubem_2
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			diffuse vertexcolour
+			specular 0.000000 0.000000 0.000000 63.25
+			texture_unit
+			{
+				texture m_2.png
+			}
+		}
+	}
+}
+
+material Cubem_3
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			diffuse vertexcolour
+			specular 0.000000 0.000000 0.000000 63.25
+			texture_unit
+			{
+				texture m_3.png
+			}
+		}
+	}
+}
+
+material Cubem_4
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			diffuse vertexcolour
+			specular 0.000000 0.000000 0.000000 63.25
+			texture_unit
+			{
+				texture m_4.png
+			}
+		}
+	}
+}
+
+material Cubem_bomb
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			diffuse vertexcolour
+			specular 0.000000 0.000000 0.000000 63.25
+			texture_unit
+			{
+				texture m_bomb.png
 			}
 		}
 	}

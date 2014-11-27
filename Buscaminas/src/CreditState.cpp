@@ -69,15 +69,15 @@ void CreditState::createBackground(){
 
     //  CEGUI::Window *_sheet = CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet");
   
-    CEGUI::Window* _return = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/ReturnIntro");
-    _return->setText("Return");
-    _return->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
-    _return->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.42,0)));
-    _return->subscribeEvent(CEGUI::PushButton::EventClicked,
- 			     CEGUI::Event::Subscriber(&CreditState::quit, 
-						      this));
-   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->addChildWindow(_return);
-  
+//     CEGUI::Window* _return = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/ReturnIntro");
+//     _return->setText("Return");
+//     _return->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
+//     _return->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.42,0)));
+//     _return->subscribeEvent(CEGUI::PushButton::EventClicked,
+//  			     CEGUI::Event::Subscriber(&CreditState::quit, 
+// 						      this));
+//    CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->addChildWindow(_return);
+//   
 }
 bool CreditState::quit(const CEGUI::EventArgs &e){
   changeState(IntroState::getSingletonPtr());
