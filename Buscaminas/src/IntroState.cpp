@@ -7,17 +7,22 @@ template<> IntroState* Ogre::Singleton<IntroState>::msSingleton = 0;
 
 IntroState::IntroState(){
   initSDL();
+  _pTrackManager = NULL;
 }
+
 void
 IntroState::enter ()
 {
+  
+  if (_pTrackManager ==NULL)
+  //   delete _pTrackManager;
+   _pTrackManager = new TrackManager();
+
   _root = Ogre::Root::getSingletonPtr();
   
-  
-  _pTrackManager = new TrackManager;
 //   _pSoundFXManager = new SoundFXManager;
-  
-  _mainTrack = _pTrackManager->load("music.wav");
+  if (_pTrackManager!=NULL)
+    _mainTrack = _pTrackManager->load("music.wav");
 //  _simpleEffect = _pSoundFXManager->load("bomb.wav");
 
   _sceneMgr = _root->createSceneManager(Ogre::ST_GENERIC, "SceneManager");

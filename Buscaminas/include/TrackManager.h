@@ -43,6 +43,7 @@ class TrackManager: public Ogre::ResourceManager,
 			      bool isManual,
 			      Ogre::ManualResourceLoader* loader,
 			      const Ogre::NameValuePairList* createParams);
+ 
 };
 
 #endif
