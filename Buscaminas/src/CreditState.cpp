@@ -8,6 +8,7 @@ template<> CreditState* Ogre::Singleton<CreditState>::msSingleton = 0;
 void
 CreditState::enter ()
 {
+  std::cout << "ENTER CREDITSTATE" << std::endl;
   _root = Ogre::Root::getSingletonPtr();
   
   // Se recupera el gestor de escena y la cámara.
@@ -19,7 +20,7 @@ CreditState::enter ()
   _camera->setFarClipDistance(10000);
   _camera->setFOVy(Ogre::Degree(48));
   
-  _viewport = _root->getAutoCreatedWindow()->addViewport(_camera);
+  _viewport = _root->getAutoCreatedWindow()->getViewport(0);
   // Nuevo background colour.
   _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
   
@@ -30,7 +31,8 @@ CreditState::enter ()
   _overlayManager = Ogre::OverlayManager::getSingletonPtr();
   _overlay = _overlayManager->getByName("Credits");
   _overlay->show();
-  
+    std::cout << " CREDITSTATE" << std::endl;
+
   createBackground();
 
   _exitGame = true;
@@ -40,64 +42,41 @@ CreditState::enter ()
 
 void CreditState::createBackground(){
   
-    // Create background material
-    Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create("Back", "General");
-    material->getTechnique(0)->getPass(0)->createTextureUnitState("waterwall.jpg");
-    material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
-    material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
-    material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
-    
+    // Create background material   
+  // _material = Ogre::MaterialManager::getSingleton().create("Back", "General");
+
+ //  _material->getTechnique(0)->getPass(0)->createTextureUnitState("waterwall.jpg");
+
+ //  _material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
+ //  _material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
+ //  _material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
+
     // Create background rectangle covering the whole screen
     _rect = new Ogre::Rectangle2D(true);
     _rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-    _rect->setMaterial("Back");
-    
+    _rect->setMaterial("Background");
+        std::cout << "BACKGROUND" << std::endl;
+
     // Render the background before everything else
     _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
     
-    // Use infinite AAB to always stay visible
-    Ogre::AxisAlignedBox aabInf;
-    aabInf.setInfinite();
-    _rect->setBoundingBox(aabInf);
+   
     
     // Attach background to the scene
-    Ogre::SceneNode* node = _sceneMgr->getRootSceneNode()->createChildSceneNode("Back");
-    node->attachObject(_rect);
+    _node = _sceneMgr->getRootSceneNode()->createChildSceneNode("Background");
+    _node->attachObject(_rect);
     
     // Example of background scrolling
-    material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setScrollAnimation(-0.02, 0.0);
-
-    //  CEGUI::Window *_sheet = CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet");
+    // _material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setScrollAnimation(-0.02, 0.0);
   
-//     CEGUI::Window* _return = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/ReturnIntro");
-//     _return->setText("Return");
-//     _return->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
-//     _return->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.42,0)));
-//     _return->subscribeEvent(CEGUI::PushButton::EventClicked,
-//  			     CEGUI::Event::Subscriber(&CreditState::quit, 
-// 						      this));
-//    CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->addChildWindow(_return);
-//   
-}
-bool CreditState::quit(const CEGUI::EventArgs &e){
-  changeState(IntroState::getSingletonPtr());
-  // CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Sheet");
-
-  return true;
 }
 
 
 void
 CreditState::exit ()
 { 
-  _sceneMgr->clearScene();
-  _root->getAutoCreatedWindow()->removeAllViewports();
-  _root->destroySceneManager(_sceneMgr);
-  delete _rect;
-  
-  CEGUI::OgreRenderer::destroySystem();
+  _sceneMgr->destroySceneNode(_node);
   _overlay->hide();
-
   
 }
 
@@ -109,8 +88,6 @@ CreditState::pause()
 void
 CreditState::resume()
 {
-  // Se restaura el background colour.
-  _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
 }
 
 bool
@@ -131,11 +108,8 @@ void
 CreditState::keyPressed
 (const OIS::KeyEvent &e)
 {
-  // Tecla p --> PauseState.
   if (e.key == OIS::KC_P) {
-    
-    changeState(IntroState::getSingletonPtr());
-
+    popState();
   } 
   
 }
@@ -144,9 +118,7 @@ void
 CreditState::keyReleased
 (const OIS::KeyEvent &e)
 {
-  if (e.key == OIS::KC_ESCAPE) {
-    _exitGame = false;
-  }
+  
 }
 
 void
@@ -159,12 +131,6 @@ void
 CreditState::mousePressed
 (const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-  if(e.state.buttonDown(OIS::MB_Left)){
-//     Ogre::Vector3 vt(0,0,0);
-//     Ogre::Real tSpeed = 10.0; 
-//     vt+= Ogre::Vector3(0,0,-10)*0.05 * e.state.Z.rel;   
-//     _camera->moveRelative(vt * 0.05 * tSpeed);
-  }
   
 }
 

@@ -37,14 +37,18 @@ TrackManager::load
 
 TrackManager& TrackManager::getSingleton ()
 {
-    assert(msSingleton);
-    return (*msSingleton);
+  if(!msSingleton)
+    msSingleton = new TrackManager;
+  assert(msSingleton);
+  return (*msSingleton);
 }
  
 TrackManager* TrackManager::getSingletonPtr ()
 {
-    assert(msSingleton);
-    return msSingleton;
+if(!msSingleton)
+  msSingleton = new TrackManager;
+ assert(msSingleton);
+ return msSingleton;
 }
 
 // Creación de un nuevo recurso.

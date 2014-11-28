@@ -48,7 +48,7 @@ InputManager::initialise
     windowHndStr << windowHnd;
     paramList.insert(std::make_pair(std::string( "WINDOW"),
 				    windowHndStr.str()));
-
+    std::cout <<"LLLLLLL " <<  windowHndStr.str()<< std::endl;
     // Create inputsystem
     _inputSystem = OIS::InputManager::
       createInputSystem(paramList);
@@ -61,13 +61,11 @@ InputManager::initialise
       (_inputSystem->createInputObject(OIS::OISMouse, true));
     _mouse->setEventCallback(this);
 
-    // Get window size
-    unsigned int width, height, depth;
-    int left, top;
-    renderWindow->getMetrics(width, height, depth, left, top);
 
-    // Set mouse region
-    this->setWindowExtents( width, height );
+    _mouse->getMouseState().width = renderWindow->getWidth();
+    _mouse->getMouseState().height = renderWindow->getHeight();
+    CEGUI::MouseCursor::setInitialMousePosition(CEGUI::Point(0,0));
+    
   }
 }
 
@@ -190,16 +188,6 @@ InputManager::removeAllMouseListeners ()
   _mouseListeners.clear();
 }
 
-void
-InputManager::setWindowExtents 
-(int width, int height)
-{
-  // Establecer la región del ratón.
-  // Llamar al hacer un resize.
-  const OIS::MouseState &mouseState = _mouse->getMouseState();
-  mouseState.width = width;
-  mouseState.height = height;
-}
 
 OIS::Keyboard*
 InputManager::getKeyboard ()

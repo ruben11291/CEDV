@@ -13,18 +13,9 @@ IntroState::IntroState(){
 void
 IntroState::enter ()
 {
-  
-  if (_pTrackManager ==NULL)
-  //   delete _pTrackManager;
-   _pTrackManager = new TrackManager();
-
   _root = Ogre::Root::getSingletonPtr();
-  
-//   _pSoundFXManager = new SoundFXManager;
-  if (_pTrackManager!=NULL)
-    _mainTrack = _pTrackManager->load("music.wav");
-//  _simpleEffect = _pSoundFXManager->load("bomb.wav");
-
+  _pTrackManager = TrackManager::getSingletonPtr();
+  _mainTrack = _pTrackManager->load("music.wav");   
   _sceneMgr = _root->createSceneManager(Ogre::ST_GENERIC, "SceneManager");
   _camera = _sceneMgr->createCamera("IntroCamera");
   _camera->setPosition(Ogre::Vector3(5,20,20));
@@ -50,7 +41,7 @@ IntroState::enter ()
   
   // Reproducción del track principal...
   this->_mainTrack->play();
-  
+  std::cout << "FIN DE ENTER INTRO STATE" << std::endl;
   
 }
 
@@ -67,18 +58,19 @@ bool IntroState::initSDL () {
  
     // Llamar a Mix_CloseAudio al terminar.
     atexit(Mix_CloseAudio);
- 
+   
     return true;    
 }
 
 void IntroState::createBackground(){
   
     // Create background material
-    Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create("Background", "General");
-    material->getTechnique(0)->getPass(0)->createTextureUnitState("forest.jpg");
-    material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
-    material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
-    material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
+    _material = Ogre::MaterialManager::getSingleton().create("Background", "General");
+Ogre::MaterialManager::getSingleton().create("Back", "General");
+    _material->getTechnique(0)->getPass(0)->createTextureUnitState("forest.jpg");
+    _material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
+    _material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
+    _material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
     
     // Create background rectangle covering the whole screen
     _rect = new Ogre::Rectangle2D(true);
@@ -87,18 +79,14 @@ void IntroState::createBackground(){
     
     // Render the background before everything else
     _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
-    
-//     // Use infinite AAB to always stay visible
-//     Ogre::AxisAlignedBox aabInf;
-//     aabInf.setInfinite();
-//     _rect->setBoundingBox(aabInf);
-    
+
     // Attach background to the scene
-    Ogre::SceneNode* node = _sceneMgr->getRootSceneNode()->createChildSceneNode("Background");
-    node->attachObject(_rect);
+    _node = _sceneMgr->getRootSceneNode()->createChildSceneNode("B");
+    //_sceneMgr->getRootSceneNode()->addChild(_node);
+    _node->attachObject(_rect);
     
     // Example of background scrolling
-    material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setScrollAnimation(-0.05, 0.0);
+    _material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setScrollAnimation(-0.05, 0.0);
   
 }
 
@@ -121,54 +109,51 @@ void IntroState::createGUI()
   //Sheet
   _sheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","Ex1/Sheet");
   
-  CEGUI::Window* newButton = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/NewGameButton");
-  newButton->setText("New Game");
-  std::cout << "ID NEW: " << newButton->getID() << std::endl;
-  newButton->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
-  newButton->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.42,0)));
-  newButton->subscribeEvent(CEGUI::PushButton::EventClicked,
+  _newButton = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/NewGameButton");
+  _newButton->setText("New Game");
+  _newButton->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
+  _newButton->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.42,0)));
+  _newButton->subscribeEvent(CEGUI::PushButton::EventClicked,
  			     CEGUI::Event::Subscriber(&IntroState::start, 
 						      this));
-  _sheet->addChildWindow(newButton);
+  _sheet->addChildWindow(_newButton);
   
-  CEGUI::Window* loadButton = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/CreditsButton");
-  loadButton->setText("Credits");
-  std::cout << "ID LOAD: " << newButton->getID() << std::endl;
-  loadButton->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
-  loadButton->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.52,0)));
-  loadButton->subscribeEvent(CEGUI::PushButton::EventClicked,
+  _loadButton = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/CreditsButton");
+  _loadButton->setText("Credits");
+  _loadButton->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
+  _loadButton->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.52,0)));
+  _loadButton->subscribeEvent(CEGUI::PushButton::EventClicked,
  			     CEGUI::Event::Subscriber(&IntroState::credit, 
 						      this));
   
-  _sheet->addChildWindow(loadButton);
+  _sheet->addChildWindow(_loadButton);
   
   
-  CEGUI::Window* recordsButton = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/RecordsButton");
-  recordsButton->setText("Records");
-  std::cout << "ID RECORD: " << newButton->getID() << std::endl;
-  recordsButton->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
-  recordsButton->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.62,0)));
-  _sheet->addChildWindow(recordsButton);
+  _recordsButton = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/RecordsButton");
+  _recordsButton->setText("Records");
+  _recordsButton->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
+  _recordsButton->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.62,0)));
+  _sheet->addChildWindow(_recordsButton);
   
   CEGUI::System::getSingleton().setGUISheet(_sheet);
   
-  CEGUI::Window* quitButton = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/QuitButton");
-  quitButton->setText("Quit");
-  std::cout << "ID QUIT: " << newButton->getID() << std::endl;
-  quitButton->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
-  quitButton->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.72,0)));
-  quitButton->subscribeEvent(CEGUI::PushButton::EventClicked,
+  _quitButton = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/QuitButton");
+  _quitButton->setText("Quit");
+  _quitButton->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
+  _quitButton->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.72,0)));
+  _quitButton->subscribeEvent(CEGUI::PushButton::EventClicked,
 			     CEGUI::Event::Subscriber(&IntroState::quit, 
 						      this));
-  _sheet->addChildWindow(quitButton);
+  _sheet->addChildWindow(_quitButton);
   
 
 }
 
 bool IntroState::start (const CEGUI::EventArgs &e){
   
-  changeState(PlayState::getSingletonPtr());
-  
+
+  pushState(PlayState::getSingletonPtr());
+  std::cout << "intro state pushing playstate"<<std::endl;
   return true;
 }
 
@@ -180,7 +165,7 @@ bool IntroState::quit (const CEGUI::EventArgs &e){
 
 bool IntroState::credit (const CEGUI::EventArgs &e){
   
-  changeState(CreditState::getSingletonPtr());
+  pushState(CreditState::getSingletonPtr());
   
   return true;
 }
@@ -188,27 +173,56 @@ bool IntroState::credit (const CEGUI::EventArgs &e){
 
 void
 IntroState::exit()
-{
-  _sceneMgr->clearScene();
-  _root->getAutoCreatedWindow()->removeAllViewports();
-  unsigned int newi = 0;
-  _sheet->removeChildWindow(newi);
-  _sheet->removeChildWindow(newi);
-  _sheet->removeChildWindow(newi);
-  _sheet->removeChildWindow(newi);
+{  
+  std::cout << "EXIT INTROSTATE"<<std::endl;
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/QuitButton");
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/RecordsButton");
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/CreditsButton");
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Sheet");
+ 
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/QuitButton");
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/RecordsButton");
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/CreditsButton");
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Sheet");
+std::cout << "exit"<<std::endl;
+  Ogre::MaterialManager::getSingleton().remove("Background");
+std::cout << "exit"<<std::endl;
+  _node->detachAllObjects();
+  _sceneMgr->destroySceneNode(_node);
+  std::cout << "exit"<<std::endl;
   delete _rect;
-  _overlay->hide();
+   _root->getAutoCreatedWindow()->removeAllViewports();
+  _sceneMgr->clearScene();
+  std::cout << "exit"<<std::endl;
   
 }
 
 void
 IntroState::pause ()
 {
+  _overlay->hide();
+  CEGUI::WindowManager::getSingleton().getWindow("Ex1/QuitButton")->hide();
+ CEGUI::WindowManager::getSingleton().getWindow("Ex1/RecordsButton")->hide();
+  CEGUI::WindowManager::getSingleton().getWindow("Ex1/CreditsButton")->hide();
+  CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->hide();
+  _node->setVisible(false,true);
+
 }
+
 
 void
 IntroState::resume ()
 {
+  std::cout << "resume"<<std::endl;
+  _overlay->show();
+  CEGUI::WindowManager::getSingleton().getWindow("Ex1/QuitButton")->show(); 
+
+  CEGUI::WindowManager::getSingleton().getWindow("Ex1/RecordsButton")->show();
+  CEGUI::WindowManager::getSingleton().getWindow("Ex1/CreditsButton")->show();
+  CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->show();
+  std::cout << "NODE "<< _node<<std::endl;
+  _node->setVisible(true,false);
+  std::cout <<"RESUME END"<<std::endl;
 }
 
 bool
@@ -235,7 +249,7 @@ IntroState::keyPressed
   // Transición al siguiente estado.
   // Espacio --> PlayState
   if (e.key == OIS::KC_SPACE) {
-    changeState(PlayState::getSingletonPtr());
+    pushState(PlayState::getSingletonPtr());
   }
 }
 
@@ -244,7 +258,7 @@ IntroState::keyReleased
 (const OIS::KeyEvent &e )
 {
   if (e.key == OIS::KC_ESCAPE) {
-    _exitGame = true;
+      _exitGame = true;
   }
 }
 

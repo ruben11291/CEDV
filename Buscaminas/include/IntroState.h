@@ -69,10 +69,12 @@ class IntroState : public Ogre::Singleton<IntroState>, public GameState
   Ogre::Viewport* _viewport;
   Ogre::Camera* _camera;
   CEGUI::OgreRenderer* renderer; 
-  CEGUI::Window* _sheet;
+  CEGUI::Window* _sheet,* _loadButton,* _recordsButton, *_quitButton,* _newButton;
   Ogre::Rectangle2D* _rect;
   Ogre::OverlayManager* _overlayManager;
   Ogre::Overlay * _overlay;
+  Ogre::SceneNode * _node;
+  Ogre::MaterialPtr _material;
   
       // Manejadores del sonido
   

@@ -44,6 +44,8 @@ SoundFXManager::load
 SoundFXManager&
 SoundFXManager::getSingleton()
 {
+  if(!msSingleton)
+    msSingleton = new SoundFXManager;
   assert(msSingleton);
   return (*msSingleton);
 }
@@ -51,6 +53,8 @@ SoundFXManager::getSingleton()
 SoundFXManager*
 SoundFXManager::getSingletonPtr()
 {
+  if(!msSingleton)
+    msSingleton = new SoundFXManager;
   assert(msSingleton);
   return msSingleton;
 }

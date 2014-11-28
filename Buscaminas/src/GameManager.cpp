@@ -33,7 +33,7 @@ GameManager::start
   if (!configure())
     return;    
   	
-  _inputMgr = new InputManager;
+  _inputMgr = new InputManager();
   _inputMgr->initialise(_renderWindow);
 
   // Registro como key y mouse listener...
@@ -90,7 +90,7 @@ GameManager::popState ()
     _states.top()->exit();
     _states.pop();
   }
-  
+  std::cout << "popstate gamemanager"<<std::endl;
   // Vuelta al estado anterior.
   if (!_states.empty())
     _states.top()->resume();

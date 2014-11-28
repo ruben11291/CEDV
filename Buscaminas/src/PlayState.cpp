@@ -12,9 +12,6 @@ PlayState::enter ()
 {
   _root = Ogre::Root::getSingletonPtr();
   
-  
-
-  // Se recupera el gestor de escena y la cámara.
   _sceneMgr = _root->getSceneManager("SceneManager");
   _camera = _sceneMgr->getCamera("IntroCamera");
   _camera->setPosition(Ogre::Vector3(5,10.5,20));
@@ -23,10 +20,10 @@ PlayState::enter ()
   _camera->setFarClipDistance(10000);
   _camera->setFOVy(Ogre::Degree(48));
   
-  _pSoundFXManager = new SoundFXManager;
+  _pSoundFXManager = SoundFXManager::getSingletonPtr();
   _simpleEffect = _pSoundFXManager->load("bomb.wav");
   
-  _viewport = _root->getAutoCreatedWindow()->addViewport(_camera);
+  _viewport = _root->getAutoCreatedWindow()->getViewport(0);
   // Nuevo background colour.
   _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
   
@@ -42,32 +39,23 @@ PlayState::enter ()
   
   _fnode = _sceneMgr->createSceneNode("aux");
   _fnode->setPosition(0.0,4,0.0);
-  //_fnode->setVisible(False);
-  //_fnode->attachObject(ent1);
   _sceneMgr->getRootSceneNode()->addChild(_fnode);
-  std::cout << _fnode->getPosition() << " " << _fnode->_getDerivedPosition() << " " << _fnode->getInitialPosition() << _fnode->getLocalAxes()<< std::endl;
   _sceneMgr->destroyEntity(ent1);
 
   int n = 20;//to be done , only for testing
   Ogre::Vector3 distance_to_center = bbSize*n/2;//distance to center of cube
   
-  std::cout <<" Distance to center : :" << distance_to_center << std::endl;
   //  creation of the cube 
   for (int i=0;i<n;i++){
     for (int j=0;j<n;j++){
       //base
       Ogre::Entity* ent1 = _sceneMgr->createEntity("Cube1.mesh");
       ent1->setQueryFlags(CUBE);
-      //    std::stringstream ss;//create a stringstream
-      //    ss << j;//add number to the stream
-      Ogre::SceneNode* _node = _sceneMgr->createSceneNode();
+      _node = _sceneMgr->createSceneNode();
       _node->attachObject(ent1);
       _node->translate(Ogre::Vector3(float(i*bbSize.x),0.1,float(j*bbSize.x))-distance_to_center);
       _node->scale(1,0.1,1);
       _fnode->addChild(_node);
-
-      std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " << _node->getInitialPosition() << _node->getLocalAxes()<< std::endl;
-//       _sceneMgr->getRootSceneNode()->addChild(_node);
       _cubes->push_back(_node);
 
       //tapa
@@ -79,9 +67,6 @@ PlayState::enter ()
       _node->translate(Ogre::Vector3(float(i*bbSize.x),float(n*bbSize.x+0.05),float(j*bbSize.x))-distance_to_center);
       _node->scale(1,0,1);
       _fnode->addChild(_node);
-
-std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " << _node->getInitialPosition() << _node->getLocalAxes()<< std::endl;
-//       _sceneMgr->getRootSceneNode()->addChild(_node);
       _cubes->push_back(_node);
 
       //lateral izq
@@ -93,10 +78,7 @@ std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " 
       _node->translate(Ogre::Vector3(-bbSize.x+0.25,float(i*bbSize.x +0.3),float(j*bbSize.x))-distance_to_center);
       _node->roll(Ogre::Degree(90),Ogre::Node::TS_PARENT);
       _fnode->addChild(_node);
-
-//       _sceneMgr->getRootSceneNode()->addChild(_node);
       _cubes->push_back(_node);
-std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " << _node->getInitialPosition() << _node->getLocalAxes()<< std::endl;
 
       //lateral derecho
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
@@ -106,11 +88,8 @@ std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " 
       _node->translate(Ogre::Vector3(n*bbSize.x+bbSize.x-0.75, float(i*bbSize.x +0.3),float(j*bbSize.x))-distance_to_center);
       _node->scale(1,0,1);
       _node->roll(Ogre::Degree(90),Ogre::Node::TS_PARENT);
-//       _sceneMgr->getRootSceneNode()->addChild(_node);
       _fnode->addChild(_node);
-
       _cubes->push_back(_node);
-std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " << _node->getInitialPosition() << _node->getLocalAxes()<< std::endl;
 
 
 
@@ -126,7 +105,6 @@ std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " 
 
 //       _sceneMgr->getRootSceneNode()->addChild(_node);
       _cubes->push_back(_node);
-std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " << _node->getInitialPosition() << _node->getLocalAxes()<< std::endl;
 
       //frontal
       ent1 = _sceneMgr->createEntity("Cube1.mesh");
@@ -137,10 +115,8 @@ std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " 
       _node->scale(1,0,1);
       _node->pitch(Ogre::Degree(-90),Ogre::Node::TS_PARENT);
       _fnode->addChild(_node);
-
-//       _sceneMgr->getRootSceneNode()->addChild(_node);
-      _cubes->push_back(_node);std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " << _node->getInitialPosition() << _node->getLocalAxes()<< std::endl;  
-    }
+      _cubes->push_back(_node);
+}
  
     _raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
     
@@ -150,11 +126,11 @@ std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " 
   
   
   // Create background material
-    Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create("Backgr", "General");
-    material->getTechnique(0)->getPass(0)->createTextureUnitState("back.jpg");
-    material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
-    material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
-    material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
+    _material = Ogre::MaterialManager::getSingleton().create("Backgr", "General");
+    _material->getTechnique(0)->getPass(0)->createTextureUnitState("back.jpg");
+    _material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
+    _material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
+    _material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
     
     // Create background rectangle covering the whole screen
      _rect = new Ogre::Rectangle2D(true);
@@ -167,8 +143,8 @@ std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " 
     
     
     // Attach background to the scene
-    Ogre::SceneNode* node = _sceneMgr->getRootSceneNode()->createChildSceneNode("Back");
-    node->attachObject(_rect);
+    _ground = _sceneMgr->getRootSceneNode()->createChildSceneNode("Back");
+    _ground->attachObject(_rect);
   
 
   _overlayManager = Ogre::OverlayManager::getSingletonPtr();
@@ -181,10 +157,18 @@ std::cout << _node->getPosition() << " " << _node->_getDerivedPosition() << " " 
 void
 PlayState::exit ()
 { 
-  _sceneMgr->clearScene();
-  _root->getAutoCreatedWindow()->removeAllViewports();
-
+  _overlay->hide();
+  for (std::vector<Ogre::SceneNode*>::iterator it = _cubes->begin();it!=_cubes->end();it++)
+    _sceneMgr->destroySceneNode(*it);
+  _sceneMgr->destroySceneNode(_ground);
+  _sceneMgr->destroySceneNode(_fnode);
+  _sceneMgr->destroyQuery(static_cast<Ogre::RaySceneQuery*>(_raySceneQuery));
   delete _cubes;
+  
+  //_sceneMgr->clearScene();
+  //_root->getAutoCreatedWindow()->removeAllViewports();
+
+  // delete _cubes;
  
 }
 
@@ -269,7 +253,7 @@ PlayState::keyReleased
 (const OIS::KeyEvent &e)
 {
   if (e.key == OIS::KC_ESCAPE) {
-    _exitGame = false;
+    popState();
   }
 
 }
@@ -278,7 +262,7 @@ void
 PlayState::mouseMoved
 (const OIS::MouseEvent &e)
 {
-  std::cout<< "LLEGO"<<std::endl;
+  std::cout<< e.state.X.abs << " "<<e.state.Y.abs <<std::endl;
   Ogre::Vector3 vt(0,0,0);     
   Ogre::Real deltaT = 0.02;
 
