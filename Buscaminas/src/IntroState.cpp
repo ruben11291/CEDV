@@ -1,6 +1,7 @@
 #include "IntroState.h"
 #include "PlayState.h"
 #include "CreditState.h"
+#include "RecordState.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 template<> IntroState* Ogre::Singleton<IntroState>::msSingleton = 0;
@@ -113,7 +114,7 @@ void IntroState::createGUI()
   CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
 
 //   CEGUI::SchemeManager::getSingleton().create("WindowsLook.scheme");
-  //CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
+  CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
   CEGUI::SchemeManager::getSingleton().create("OgreTray.scheme");
   CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-10");
   CEGUI::System::getSingleton().setDefaultMouseCursor("OgreTrayImages","MouseArrow");
@@ -148,6 +149,9 @@ void IntroState::createGUI()
   std::cout << "ID RECORD: " << newButton->getID() << std::endl;
   recordsButton->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
   recordsButton->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.62,0)));
+  recordsButton->subscribeEvent(CEGUI::PushButton::EventClicked,
+			     CEGUI::Event::Subscriber(&IntroState::record, 
+						      this));
   _sheet->addChildWindow(recordsButton);
   
   CEGUI::System::getSingleton().setGUISheet(_sheet);
@@ -181,6 +185,13 @@ bool IntroState::quit (const CEGUI::EventArgs &e){
 bool IntroState::credit (const CEGUI::EventArgs &e){
   
   changeState(CreditState::getSingletonPtr());
+  
+  return true;
+}
+
+bool IntroState::record (const CEGUI::EventArgs &e){
+  
+  changeState(RecordState::getSingletonPtr());
   
   return true;
 }
