@@ -1,0 +1,1 @@
+enum Types{FLAG,MINE,FREE,NUMBER}
