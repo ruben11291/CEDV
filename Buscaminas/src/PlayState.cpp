@@ -216,6 +216,9 @@ PlayState::frameStarted
   
   oe = _overlayManager->getOverlayElement("logoGO");
   oe->hide();
+  
+  oe = _overlayManager->getOverlayElement("logoClear");
+  oe->hide();
   return true;
 }
 
