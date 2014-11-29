@@ -90,6 +90,18 @@ Info
         vert_align top
         horz_align right
         material matUCLM
-    }	  
+    }
+    
+   container Panel(logoGO) 
+    {
+	      metrics_mode pixels
+	left -350
+        top 80
+        width 640
+        height 480
+        vert_align top
+        horz_align center
+        material gameOver
+    }
 
 }

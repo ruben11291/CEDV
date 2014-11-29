@@ -160,7 +160,7 @@ PlayState::exit ()
 {   std::cout << "Play state exit" << std::endl;
 
   _overlay->hide();
-  _overlayManager->destroy("Info");
+//   _overlayManager->destroy("Info");
   for (std::vector<Ogre::SceneNode*>::iterator it = _cubes->begin();it!=_cubes->end();it++)
     _sceneMgr->destroySceneNode(*it);
   _sceneMgr->destroySceneNode(_ground);
@@ -213,6 +213,9 @@ PlayState::frameStarted
   
   oe = _overlayManager->getOverlayElement("timeinf");
   oe->setCaption("0.00");
+  
+  oe = _overlayManager->getOverlayElement("logoGO");
+  oe->hide();
   return true;
 }
 
