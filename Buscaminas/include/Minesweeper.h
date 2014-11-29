@@ -7,25 +7,26 @@
 #include "Table.h"
 #include <vector>
 
-class Minesweeper{
+class Minesweeper {
 
 public:
-	Minesweeper(int squares, Ogre::SceneManager * _sceneMgr, Ogre::Viewport * _viewport);
+  Minesweeper(int squares, Ogre::SceneManager * _sceneMgr);
 	~Minesweeper();
 	void setMov(int face,int row, int column);
-	Table * getTable();
-	int getRemainingMines();
+	//	Table * getTable();
 	bool isValid(int face,int row,int column);
 	bool isGameOver();
 	bool isWin();
-	void assignCube(vector<Ogre::SceneNode *> nodes, Ogre::SceneNode *central);
+	void assignCube(std::vector<Ogre::SceneNode *> *nodes);
 	void deleteCube();
-	
+	void show();
+	void hide();
+	void pitch(Ogre::Degree degree);
+	void yaw(Ogre::Degree degree);
 	
 private:
-	Table * table;
-	Ogre::RaySceneQuery *_raySceneQuery;
+	Table * _table;
 	Ogre::SceneManager * _sceneMgr;
-	Ogre::Viewport *_viewport; 
+	Ogre::SceneNode * _node;
 };
 #endif

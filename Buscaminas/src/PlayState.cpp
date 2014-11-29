@@ -32,121 +32,34 @@ PlayState::enter ()
   double height = _viewport->getActualHeight();
   _camera->setAspectRatio(width / height);
   
-  _cubes = new std::vector<Ogre::SceneNode*>();//for locating the cubes when a click was performed
-  Ogre::Entity* ent1 = _sceneMgr->createEntity("Cube1.mesh");
-  //ent1->setQueryFlags(STAGE);
-  
-  Ogre::Vector3 bbSize = ent1->getMesh()->getBounds().getSize();
-  
-  _fnode = _sceneMgr->createSceneNode("aux");
-  _fnode->setPosition(0.0,4,0.0);
-  _sceneMgr->getRootSceneNode()->addChild(_fnode);
-  _sceneMgr->destroyEntity(ent1);
-
-  int n = 5;//to be done , only for testing
-  Ogre::Vector3 distance_to_center = bbSize*n/2;//distance to center of cube
-  
-  //  creation of the cube 
-  for (int i=0;i<n;i++){
-    for (int j=0;j<n;j++){
-      //base
-      Ogre::Entity* ent1 = _sceneMgr->createEntity("Cube1.mesh");
-      ent1->setQueryFlags(CUBE);
-      _node = _sceneMgr->createSceneNode();
-      _node->attachObject(ent1);
-      _node->translate(Ogre::Vector3(float(i*bbSize.x),0.1,float(j*bbSize.x))-distance_to_center);
-      _node->scale(1,0.1,1);
-      _fnode->addChild(_node);
-      _cubes->push_back(_node);
-
-      //tapa
-      ent1 = _sceneMgr->createEntity("Cube1.mesh");
-      ent1->setQueryFlags(CUBE);
-      _node = _sceneMgr->createSceneNode();
-      _node->attachObject(ent1);
-
-      _node->translate(Ogre::Vector3(float(i*bbSize.x),float(n*bbSize.x+0.05),float(j*bbSize.x))-distance_to_center);
-      _node->scale(1,0,1);
-      _fnode->addChild(_node);
-      _cubes->push_back(_node);
-
-      //lateral izq
-      ent1 = _sceneMgr->createEntity("Cube1.mesh");
-      ent1->setQueryFlags(CUBE);
-      _node = _sceneMgr->createSceneNode();
-      _node->attachObject(ent1);
-      _node->scale(1,0,1);
-      _node->translate(Ogre::Vector3(-bbSize.x+0.25,float(i*bbSize.x +0.3),float(j*bbSize.x))-distance_to_center);
-      _node->roll(Ogre::Degree(90),Ogre::Node::TS_PARENT);
-      _fnode->addChild(_node);
-      _cubes->push_back(_node);
-
-      //lateral derecho
-      ent1 = _sceneMgr->createEntity("Cube1.mesh");
-      ent1->setQueryFlags(CUBE);
-      _node = _sceneMgr->createSceneNode();
-      _node->attachObject(ent1);
-      _node->translate(Ogre::Vector3(n*bbSize.x+bbSize.x-0.75, float(i*bbSize.x +0.3),float(j*bbSize.x))-distance_to_center);
-      _node->scale(1,0,1);
-      _node->roll(Ogre::Degree(90),Ogre::Node::TS_PARENT);
-      _fnode->addChild(_node);
-      _cubes->push_back(_node);
-
-
-
-      //tapa trasera
-      ent1 = _sceneMgr->createEntity("Cube1.mesh");
-      ent1->setQueryFlags(CUBE);
-      _node = _sceneMgr->createSceneNode();
-      _node->attachObject(ent1);
-      _node->translate(Ogre::Vector3(float(i*bbSize.x),float(j*bbSize.x+0.3),-bbSize.x+0.25 )-distance_to_center);
-      _node->scale(1,0,1);
-      _node->pitch(Ogre::Degree(-90),Ogre::Node::TS_PARENT);
-      _fnode->addChild(_node);
-
-//       _sceneMgr->getRootSceneNode()->addChild(_node);
-      _cubes->push_back(_node);
-
-      //frontal
-      ent1 = _sceneMgr->createEntity("Cube1.mesh");
-      ent1->setQueryFlags(CUBE);
-      _node = _sceneMgr->createSceneNode();
-      _node->attachObject(ent1);
-      _node->translate(Ogre::Vector3(float(i*bbSize.x),float(j*bbSize.x+0.3),n*bbSize.x+bbSize.x-0.75)-distance_to_center);
-      _node->scale(1,0,1);
-      _node->pitch(Ogre::Degree(-90),Ogre::Node::TS_PARENT);
-      _fnode->addChild(_node);
-      _cubes->push_back(_node);
-}
  
-    _raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
-    
-  }
-  
-  
-  
+  std::cout << "ANTES BUSCAMINDAS " << std::endl;
+  _minesweeper = new Minesweeper(5,_sceneMgr);
+      std::cout << "Depues BUSCAMINDAS " << std::endl;
+
   
   // Create background material
-    _material = Ogre::MaterialManager::getSingleton().create("Backgr", "General");
-    _material->getTechnique(0)->getPass(0)->createTextureUnitState("back.jpg");
-    _material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
-    _material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
-    _material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
-    
-    // Create background rectangle covering the whole screen
-     _rect = new Ogre::Rectangle2D(true);
-     _rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-     _rect->setMaterial("Backgr"); 
-    
+  _material = Ogre::MaterialManager::getSingleton().create("Backgr", "General");
+  _material->getTechnique(0)->getPass(0)->createTextureUnitState("back.jpg");
+  _material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
+  _material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
+  _material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
+  
+  // Create background rectangle covering the whole screen
+  _rect = new Ogre::Rectangle2D(true);
+  _rect->setCorners(-1.0, 1.0, 1.0, -1.0);
+  _rect->setMaterial("Backgr"); 
+  
     // Render the background before everything else
-     _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
-    
+  _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
+  
     
     
     // Attach background to the scene
-    _ground = _sceneMgr->getRootSceneNode()->createChildSceneNode("Back");
-    _ground->attachObject(_rect);
+  _ground = _sceneMgr->getRootSceneNode()->createChildSceneNode("Back");
+  _ground->attachObject(_rect);
   
+  _raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
 
   _overlayManager = Ogre::OverlayManager::getSingletonPtr();
   _overlay = _overlayManager->getByName("Info");
@@ -158,20 +71,11 @@ PlayState::enter ()
 void
 PlayState::exit ()
 {   std::cout << "Play state exit" << std::endl;
+  _sceneMgr->destroyQuery(static_cast<Ogre::RaySceneQuery*>(_raySceneQuery));
 
   _overlay->hide();
-  for (std::vector<Ogre::SceneNode*>::iterator it = _cubes->begin();it!=_cubes->end();it++)
-    _sceneMgr->destroySceneNode(*it);
   _sceneMgr->destroySceneNode(_ground);
-  _sceneMgr->destroySceneNode(_fnode);
-  _sceneMgr->destroyQuery(static_cast<Ogre::RaySceneQuery*>(_raySceneQuery));
-  delete _cubes;
-  
-  //_sceneMgr->clearScene();
-  //_root->getAutoCreatedWindow()->removeAllViewports();
-
-  // delete _cubes;
- 
+  delete _minesweeper;
 }
 
 void
@@ -179,8 +83,8 @@ PlayState::pause()
 {  std::cout << "Play state pause" << std::endl;
 
   //parar tiempo
+  _minesweeper->hide();
   _ground->setVisible(false);
-  _fnode->setVisible(false,true);
   _overlay->hide();
 }
 
@@ -190,7 +94,8 @@ PlayState::resume()
   std::cout << "Play state resume" << std::endl;
   // Se restaura el background colour.
   _ground->setVisible(true);
-  _fnode->setVisible(true,true);
+  // _fnode->setVisible(true,true);
+  _minesweeper->show();
   _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
   _overlay->show();
 }
@@ -246,14 +151,12 @@ PlayState::keyPressed
    
     if(e.key == OIS::KC_R){
        r-=180;
-      
-      _fnode->yaw(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
+      _minesweeper->yaw(Ogre::Degree(r*0.1));
     }
   
   if(e.key == OIS::KC_D){
     r+=180;
-   
-    _fnode->pitch(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
+    _minesweeper->pitch(Ogre::Degree(r*0.1));
   }
   
 }
@@ -291,8 +194,8 @@ PlayState::mouseMoved
  _camera->moveRelative(vt*deltaT);
 
    if (_key_pressed){
-     _fnode->yaw(Ogre::Radian(_mouse_position.X.rel - e.state.X.rel*deltaT));
-     _fnode->pitch(Ogre::Radian(_mouse_position.Y.rel - e.state.Y.rel*deltaT));
+     _minesweeper->yaw(Ogre::Radian(_mouse_position.X.rel - e.state.X.rel*deltaT));
+     _minesweeper->pitch(Ogre::Radian(_mouse_position.Y.rel - e.state.Y.rel*deltaT));
    }
   
 }
@@ -311,16 +214,16 @@ PlayState::mousePressed
   Ogre::RaySceneQueryResult result;
   Ogre::RaySceneQueryResult::iterator it;
   Ogre::SceneNode * _selectedNode;
-
-
+   std::cout << "HASTA AQUI" << std::endl;
    r = setRayQuery(posx, posy, CUBE);
    result = _raySceneQuery->execute();
-   
+   std::cout << "HASTA AQUI" << std::endl;
     it = result.begin();
     if (it!=result.end()){
       _selectedNode = it->movable->getParentSceneNode();
     }
     else _selectedNode=0;
+   std::cout << "HASTA AQUI" << std::endl;
 
   switch(id){
   case OIS::MB_Left:

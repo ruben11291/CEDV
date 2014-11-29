@@ -7,9 +7,8 @@
 
 #include "GameState.h"
 #include <vector>
-
-#define STAGE 1 << 0  // Mascara para el escenario
-#define CUBE 1 << 1  // Mascara para objetos de tipo 1
+#include "Minesweeper.h"
+#include "Types.h"
 
 class PlayState : public Ogre::Singleton<PlayState>, public GameState
 {
@@ -50,6 +49,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::Real deltaT;
   Ogre::Rectangle2D* _rect;
   Ogre::MaterialPtr _material;
+  Minesweeper * _minesweeper;
   //bool _key_pressed;
 
   SoundFXManager* _pSoundFXManager;
