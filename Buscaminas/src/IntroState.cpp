@@ -1,6 +1,7 @@
 #include "IntroState.h"
 #include "PlayState.h"
 #include "CreditState.h"
+#include "RecordState.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 template<> IntroState* Ogre::Singleton<IntroState>::msSingleton = 0;
@@ -66,7 +67,6 @@ void IntroState::createBackground(){
   
     // Create background material
     _material = Ogre::MaterialManager::getSingleton().create("Background", "General");
-Ogre::MaterialManager::getSingleton().create("Back", "General");
     _material->getTechnique(0)->getPass(0)->createTextureUnitState("forest.jpg");
     _material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
     _material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
@@ -101,7 +101,7 @@ void IntroState::createGUI()
   CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
 
 //   CEGUI::SchemeManager::getSingleton().create("WindowsLook.scheme");
-  //CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
+  CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
   CEGUI::SchemeManager::getSingleton().create("OgreTray.scheme");
   CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-10");
   CEGUI::System::getSingleton().setDefaultMouseCursor("OgreTrayImages","MouseArrow");
@@ -129,11 +129,16 @@ void IntroState::createGUI()
   _sheet->addChildWindow(_loadButton);
   
   
+
   _recordsButton = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/RecordsButton");
   _recordsButton->setText("Records");
   _recordsButton->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
   _recordsButton->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.62,0)));
   _sheet->addChildWindow(_recordsButton);
+  _recordsButton->subscribeEvent(CEGUI::PushButton::EventClicked,
+			     CEGUI::Event::Subscriber(&IntroState::record,this));
+  _sheet->addChildWindow(_recordsButton);
+
   
   CEGUI::System::getSingleton().setGUISheet(_sheet);
   
@@ -146,7 +151,6 @@ void IntroState::createGUI()
 						      this));
   _sheet->addChildWindow(_quitButton);
   
-
 }
 
 bool IntroState::start (const CEGUI::EventArgs &e){
@@ -170,6 +174,13 @@ bool IntroState::credit (const CEGUI::EventArgs &e){
   return true;
 }
 
+bool IntroState::record (const CEGUI::EventArgs &e){
+  
+  pushState(RecordState::getSingletonPtr());
+  
+  return true;
+}
+
 
 void
 IntroState::exit()
@@ -180,9 +191,6 @@ IntroState::exit()
   CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/CreditsButton");
   CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Sheet");
  
-  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/QuitButton");
-  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/RecordsButton");
-  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/CreditsButton");
   CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Sheet");
 std::cout << "exit"<<std::endl;
   Ogre::MaterialManager::getSingleton().remove("Background");

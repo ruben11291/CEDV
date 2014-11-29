@@ -9,7 +9,8 @@ template<> PlayState* Ogre::Singleton<PlayState>::msSingleton = 0;
 
 void
 PlayState::enter ()
-{
+{  std::cout << "Play state enter" << std::endl;
+
   _root = Ogre::Root::getSingletonPtr();
   
   _sceneMgr = _root->getSceneManager("SceneManager");
@@ -156,7 +157,8 @@ PlayState::enter ()
 
 void
 PlayState::exit ()
-{ 
+{   std::cout << "Play state exit" << std::endl;
+
   _overlay->hide();
   for (std::vector<Ogre::SceneNode*>::iterator it = _cubes->begin();it!=_cubes->end();it++)
     _sceneMgr->destroySceneNode(*it);
@@ -174,14 +176,21 @@ PlayState::exit ()
 
 void
 PlayState::pause()
-{
+{  std::cout << "Play state pause" << std::endl;
+
+  //parar tiempo
+  _ground->setVisible(false);
+  _fnode->setVisible(false,true);
   _overlay->hide();
 }
 
 void
 PlayState::resume()
 {
+  std::cout << "Play state resume" << std::endl;
   // Se restaura el background colour.
+  _ground->setVisible(true);
+  _fnode->setVisible(true,true);
   _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
   _overlay->show();
 }
@@ -219,6 +228,7 @@ PlayState::keyPressed
 {
   // Tecla p --> PauseState.
   if (e.key == OIS::KC_P) {
+    std::cout << "Play state key pressed"<<std::endl;
     pushState(PauseState::getSingletonPtr());
   }
   
@@ -291,9 +301,6 @@ PlayState::mousePressed
   Ogre::RaySceneQueryResult::iterator it;
   Ogre::SceneNode * _selectedNode;
 
- // Si usamos la rueda, desplazamos en Z la camara ------------------
-  //  vt+= Ogre::Vector3(0,0,-10)*deltaT * posz_rel;   
-  //_camera->moveRelative(vt * deltaT * tSpeed);
 
    r = setRayQuery(posx, posy, CUBE);
    result = _raySceneQuery->execute();
@@ -306,21 +313,16 @@ PlayState::mousePressed
 
   switch(id){
   case OIS::MB_Left:
-    std::cout << "Boton Izquierdo" << std::endl;
     if (_selectedNode){
       _selectedNode->showBoundingBox(true);
       static_cast<Ogre::Entity *>(_selectedNode->getAttachedObject(0))->setMaterialName("Cube2");
     }
     break;
   case OIS::MB_Middle:
-    std::cout << "Boton centro" << std::endl;
     _key_pressed = true;
     _mouse_position = e.state;
-    //this->x= e.state.X.rel;
-    //this->y = e.state.Y.rel;    
     break;
   case OIS::MB_Right:
-    std::cout << "Boton derecho "<<std::endl;break;
     if (_selectedNode){
       _selectedNode->showBoundingBox(true);
     static_cast<Ogre::Entity *>(_selectedNode->getAttachedObject(0))->setMaterialName("Cube2");
@@ -328,15 +330,7 @@ PlayState::mousePressed
   default:
     std::cout << "Default"<<std::endl;break;
   }
-  
-// if (mbmiddle) { // Con boton medio pulsado, rotamos camara ---------
-//     float rotx = _mouse->getMouseState().X.rel * deltaT * -1;
-//     float roty = _mouse->getMouseState().Y.rel * deltaT * -1;
-//     _camera->yaw(Radian(rotx));
-//     _camera->pitch(Radian(roty));
-//     cout << "Boton Medio" << endl;
-//   }
- 
+   
   
 }
 

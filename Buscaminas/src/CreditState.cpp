@@ -75,6 +75,8 @@ void CreditState::createBackground(){
 void
 CreditState::exit ()
 { 
+  std::cout << "Credit state exit" << std::endl;
+
   _sceneMgr->destroySceneNode(_node);
   _overlay->hide();
   

@@ -8,7 +8,7 @@ material P
      scene_blend src_alpha one_minus_src_alpha
      texture_unit 
      {
-       texture ground.jpg
+       texture progressr.png
      }
    }
  }

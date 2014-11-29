@@ -92,8 +92,9 @@ GameManager::popState ()
   }
   std::cout << "popstate gamemanager"<<std::endl;
   // Vuelta al estado anterior.
-  if (!_states.empty())
-    _states.top()->resume();
+  if (!_states.empty()){
+    std::cout << "VUELTA AL ESTADO ANTERIOR" << std::endl;
+    _states.top()->resume();}
 }
 
 void

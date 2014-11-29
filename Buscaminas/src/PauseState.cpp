@@ -5,29 +5,28 @@ template<> PauseState* Ogre::Singleton<PauseState>::msSingleton = 0;
 
 void
 PauseState::enter ()
-{
+{    std::cout << "Pause state enter"<<std::endl;
+
   _root = Ogre::Root::getSingletonPtr();
 
-  // Se recupera el gestor de escena y la cámara.
-  //  // _sceneMgr = _root->getSceneManager("SceneManager");
-  //  _camera = _sceneMgr->getCamera("IntroCamera");
+  _sceneMgr = _root->getSceneManager("SceneManager");
+  _camera = _sceneMgr->getCamera("IntroCamera");
   _viewport = _root->getAutoCreatedWindow()->getViewport(0);
   // Nuevo background colour.
-  _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 1.0, 0.0));
+  //_viewport->setBackgroundColour(Ogre::ColourValue(0.0, 1.0, 0.0));
 
-  /**************************
-QUEDA PONER EL OVERLAY DE PAUSE 
-  ************************/
-  // _overlayManager = Ogre::OverlayManager::getSingletonPtr();
-  // _overlay = _overlayManager->getByName("Pause");
-  // _overlayManager->getOverlayElement("pausemsg")->setCaption("PAUSE");
-  // _overlay->show();
-  // _exitGame = false;
+  
+   _overlay = Ogre::OverlayManager::getSingletonPtr()->getByName("Pause");
+   _overlay->show();
+   std::cout << "Pause state enter end" <<std::endl;
+
 }
 
 void
 PauseState::exit ()
 {
+  std::cout << "Pause state exit" <<std::endl;
+
   _overlay->hide();
 }
 
