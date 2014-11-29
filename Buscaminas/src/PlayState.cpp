@@ -160,6 +160,7 @@ PlayState::exit ()
 {   std::cout << "Play state exit" << std::endl;
 
   _overlay->hide();
+  _overlayManager->destroy("Info");
   for (std::vector<Ogre::SceneNode*>::iterator it = _cubes->begin();it!=_cubes->end();it++)
     _sceneMgr->destroySceneNode(*it);
   _sceneMgr->destroySceneNode(_ground);
