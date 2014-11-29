@@ -33,7 +33,6 @@ RecordState::enter ()
   
   createBackground();
   
-  
 
   _exitGame = true;
 }
@@ -115,9 +114,6 @@ RecordState::keyPressed
   if (e.key == OIS::KC_P) {
     popState();
   }
- if (e.key == OIS::KC_M) {
-   std::cout << _return<< std::endl;
-  } 
   
 }
 
