@@ -23,7 +23,7 @@ PlayState::enter ()
   
   _pSoundFXManager = SoundFXManager::getSingletonPtr();
   _simpleEffect = _pSoundFXManager->load("bomb.wav");
-  
+  // std::cout << "DESPUES MANAGER " << std::endl;
   _viewport = _root->getAutoCreatedWindow()->getViewport(0);
   // Nuevo background colour.
   _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));

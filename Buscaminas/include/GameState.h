@@ -26,7 +26,7 @@
  
 #include "GameManager.h"
 #include "InputManager.h"
-
+#include <string>
 // Clase abstracta de estado básico.
 // Definición base sobre la que extender
 // los estados del juego.
@@ -34,6 +34,7 @@ class GameState {
   
  public:
   Ogre::RenderWindow *window;
+  std::string *_name;
  GameState() : window(0){}
  GameState(Ogre::RenderWindow *w):window(w){}
   // Gestión básica del estado.

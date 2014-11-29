@@ -57,6 +57,8 @@ GameManager::changeState
   // Limpieza del estado actual.
   if (!_states.empty()) {
     // exit() sobre el último estado.
+    std::cout << "GameManager changeState top exit "<< _states.top()->_name<< std::endl;
+
     _states.top()->exit();
     // Elimina el último estado.
     _states.pop();
@@ -64,6 +66,8 @@ GameManager::changeState
 
   // Transición al nuevo estado.
   _states.push(state);
+    std::cout << "GameManager changeState top push "<< _states.top()->_name<< std::endl;
+
   // enter() sobre el nuevo estado.
   _states.top()->enter();
 }
@@ -73,11 +77,14 @@ GameManager::pushState
 (GameState* state)
 {
   // Pausa del estado actual.
-  if (!_states.empty())
+  if (!_states.empty()){
+    std::cout << "GameManager pushState pausando  "<< _states.top()->_name<< std::endl;
     _states.top()->pause();
-  
+  }
   // Transición al nuevo estado.
   _states.push(state);
+    std::cout << "GameManager changeState push  "<< _states.top()->_name<< std::endl;
+
   // enter() sobre el nuevo estado.
   _states.top()->enter();
 }
@@ -88,12 +95,13 @@ GameManager::popState ()
   // Limpieza del estado actual.
   if (!_states.empty()) {
     _states.top()->exit();
+    std::cout << "GameManager popState  "<< _states.top()->_name<< std::endl;
     _states.pop();
   }
-  std::cout << "popstate gamemanager"<<std::endl;
+
   // Vuelta al estado anterior.
   if (!_states.empty()){
-    std::cout << "VUELTA AL ESTADO ANTERIOR" << std::endl;
+    std::cout << "GameManager popState resume a "<< _states.top()->_name  << std::endl;
     _states.top()->resume();}
 }
 

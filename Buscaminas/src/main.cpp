@@ -38,6 +38,12 @@ int main () {
   PauseState* pauseState = new PauseState();
   CreditState* creditState = new CreditState();
   RecordState* recordState = new RecordState();
+  
+  introState->_name = new std::string("Intro");
+  playState->_name = new std::string("Play");
+  pauseState->_name = new std::string("Pause");
+  creditState->_name = new std::string("Credit");
+  recordState->_name = new std::string("Record");
 
   UNUSED_VARIABLE(introState);
   UNUSED_VARIABLE(playState);

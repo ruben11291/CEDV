@@ -16,7 +16,8 @@ IntroState::enter ()
 {
   _root = Ogre::Root::getSingletonPtr();
   _pTrackManager = TrackManager::getSingletonPtr();
-  _mainTrack = _pTrackManager->load("music.wav");   
+  _mainTrack = _pTrackManager->load("music.wav");  
+
   _sceneMgr = _root->createSceneManager(Ogre::ST_GENERIC, "SceneManager");
   _camera = _sceneMgr->createCamera("IntroCamera");
 //   _camera->setPosition(Ogre::Vector3(5,20,20));
@@ -158,7 +159,6 @@ bool IntroState::start (const CEGUI::EventArgs &e){
   
 
   pushState(PlayState::getSingletonPtr());
-  std::cout << "intro state pushing playstate"<<std::endl;
   return true;
 }
 
