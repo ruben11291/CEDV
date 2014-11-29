@@ -48,7 +48,7 @@ PlayState::enter ()
   std::cout << _fnode->getPosition() << " " << _fnode->_getDerivedPosition() << " " << _fnode->getInitialPosition() << _fnode->getLocalAxes()<< std::endl;
   _sceneMgr->destroyEntity(ent1);
 
-  int n = 20;//to be done , only for testing
+  int n = 5;//to be done , only for testing
   Ogre::Vector3 distance_to_center = bbSize*n/2;//distance to center of cube
   
   std::cout <<" Distance to center : :" << distance_to_center << std::endl;
@@ -281,9 +281,20 @@ PlayState::mouseMoved
   std::cout<< "LLEGO"<<std::endl;
   Ogre::Vector3 vt(0,0,0);     
   Ogre::Real deltaT = 0.02;
-
-  vt+=Ogre::Vector3(0,0,-e.state.Z.rel);
-  _camera->moveRelative(vt*deltaT);
+   
+  if (e.state.Z.rel > 0){
+    if(_camera->getPosition().length() > 10.0){
+       vt+=Ogre::Vector3(0,0,-e.state.Z.rel);
+       std::cout<< "negativo"<<std::endl;
+    }
+  }
+  else{
+//     if(_camera->getPosition().length() < 40.0){
+       vt+=Ogre::Vector3(0,0,-e.state.Z.rel);
+      std::cout<< "positivo"<<std::endl;
+//     }
+  }
+ _camera->moveRelative(vt*deltaT);
 
    if (_key_pressed){
      _fnode->yaw(Ogre::Radian(_mouse_position.X.rel - e.state.X.rel*deltaT));

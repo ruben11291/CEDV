@@ -32,6 +32,17 @@ RecordState::enter ()
   _overlay->show();
   
   createBackground();
+  
+   _return = CEGUI::WindowManager::getSingleton().loadWindowLayout("configWin.layout");
+    
+   _return->setPosition(CEGUI::UVector2(CEGUI::UDim(0.28,0),CEGUI::UDim(0.40,0)));
+   
+//      CEGUI::Window* exitButton = CEGUI::WindowManager::getSingleton().getWindow("Cfg/ExitButton");
+//      exitButton->subscribeEvent(CEGUI::PushButton::EventClicked,
+//   			     CEGUI::Event::Subscriber(&RecordState::quit, 
+//   						      _framelistener));
+
+   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->addChildWindow(_return);
 
   _exitGame = true;
 }
@@ -63,16 +74,16 @@ void RecordState::createBackground(){
     material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setScrollAnimation(-0.02, 0.0);
 
 //      CEGUI::Window *_sheet = CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet");
-    CEGUI::Window* _return = CEGUI::WindowManager::getSingleton().loadWindowLayout("configWin.layout");
-    
-   _return->setPosition(CEGUI::UVector2(CEGUI::UDim(0.28,0),CEGUI::UDim(0.40,0)));
-   
-//      CEGUI::Window* exitButton = CEGUI::WindowManager::getSingleton().getWindow("Cfg/ExitButton");
-//      exitButton->subscribeEvent(CEGUI::PushButton::EventClicked,
-//   			     CEGUI::Event::Subscriber(&RecordState::quit, 
-//   						      _framelistener));
-
-   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->addChildWindow(_return);
+//     CEGUI::Window* _return = CEGUI::WindowManager::getSingleton().loadWindowLayout("configWin.layout");
+//     
+//    _return->setPosition(CEGUI::UVector2(CEGUI::UDim(0.28,0),CEGUI::UDim(0.40,0)));
+//    
+// //      CEGUI::Window* exitButton = CEGUI::WindowManager::getSingleton().getWindow("Cfg/ExitButton");
+// //      exitButton->subscribeEvent(CEGUI::PushButton::EventClicked,
+// //   			     CEGUI::Event::Subscriber(&RecordState::quit, 
+// //   						      _framelistener));
+// 
+//    CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->addChildWindow(_return);
   
 }
 bool RecordState::quit(const CEGUI::EventArgs &e){

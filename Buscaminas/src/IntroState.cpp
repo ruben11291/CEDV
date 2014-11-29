@@ -28,7 +28,8 @@ IntroState::enter ()
 
   _sceneMgr = _root->createSceneManager(Ogre::ST_GENERIC, "SceneManager");
   _camera = _sceneMgr->createCamera("IntroCamera");
-  _camera->setPosition(Ogre::Vector3(5,20,20));
+//   _camera->setPosition(Ogre::Vector3(5,20,20));
+  _camera->setPosition(Ogre::Vector3(7,10.5,8));
   _camera->lookAt(Ogre::Vector3(0,0,0));
   _camera->setNearClipDistance(5);
   _camera->setFarClipDistance(10000);
