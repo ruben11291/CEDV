@@ -42,32 +42,27 @@ CreditState::enter ()
 
 void CreditState::createBackground(){
   
-    // Create background material   
-  // _material = Ogre::MaterialManager::getSingleton().create("Back", "General");
-
- //  _material->getTechnique(0)->getPass(0)->createTextureUnitState("waterwall.jpg");
-
- //  _material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
- //  _material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
- //  _material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
-
+   // Create background material
+    Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create("Backr", "General");
+    material->getTechnique(0)->getPass(0)->createTextureUnitState("waterwall.jpg");
+    material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
+    material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
+    material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
+    
     // Create background rectangle covering the whole screen
     _rect = new Ogre::Rectangle2D(true);
     _rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-    _rect->setMaterial("Background");
-        std::cout << "BACKGROUND" << std::endl;
-
-    // Render the background before everything else
-    _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
+     _rect->setMaterial("Backr");
     
-   
+    //   Render the background before everything else
+     _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
     
     // Attach background to the scene
-    _node = _sceneMgr->getRootSceneNode()->createChildSceneNode("Background");
+    _node = _sceneMgr->getRootSceneNode()->createChildSceneNode("Backr");
     _node->attachObject(_rect);
     
     // Example of background scrolling
-    // _material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setScrollAnimation(-0.02, 0.0);
+    material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setScrollAnimation(-0.02, 0.0);
   
 }
 

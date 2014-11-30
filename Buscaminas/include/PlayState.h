@@ -9,6 +9,10 @@
 #include <vector>
 #include "Minesweeper.h"
 #include "Types.h"
+#include <sstream>
+#include <iostream>
+#include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
 
 class PlayState : public Ogre::Singleton<PlayState>, public GameState
 {
@@ -60,6 +64,9 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::Ray setRayQuery(int posx, int posy, int mask);
   OIS::MouseState _mouse_position;
   bool _key_pressed;
+  bool _pick;
+  Ogre::Real _time_count,_last_time;
+
 };
 
 #endif

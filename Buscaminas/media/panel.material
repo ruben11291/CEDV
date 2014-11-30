@@ -57,3 +57,18 @@ material matUCLM
    }
  }
 }
+
+material gameOver
+{
+ technique 
+ {
+   pass 
+   {
+     scene_blend src_alpha one_minus_src_alpha
+     texture_unit 
+     {
+       texture gameover.png
+     }
+   }
+ }
+}

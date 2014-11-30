@@ -1,9 +1,5 @@
 #include "PlayState.h"
 #include "PauseState.h"
-#include <sstream>
-#include <iostream>
-#include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
 
 template<> PlayState* Ogre::Singleton<PlayState>::msSingleton = 0;
 
@@ -33,9 +29,7 @@ PlayState::enter ()
   _camera->setAspectRatio(width / height);
   
  
-  std::cout << "ANTES BUSCAMINDAS " << std::endl;
   _minesweeper = new Minesweeper(5,_sceneMgr);
-      std::cout << "Depues BUSCAMINDAS " << std::endl;
 
   
   // Create background material
@@ -64,7 +58,8 @@ PlayState::enter ()
   _overlayManager = Ogre::OverlayManager::getSingletonPtr();
   _overlay = _overlayManager->getByName("Info");
   _overlay->show();
-  _key_pressed=false;
+  _last_time = _time_count = 0;
+  _key_pressed=_pick = false;
   _exitGame = true;
 }
 
@@ -81,8 +76,7 @@ PlayState::exit ()
 void
 PlayState::pause()
 {  std::cout << "Play state pause" << std::endl;
-
-  //parar tiempo
+  _pick=false;
   _minesweeper->hide();
   _ground->setVisible(false);
   _overlay->hide();
@@ -93,8 +87,8 @@ PlayState::resume()
 {
   std::cout << "Play state resume" << std::endl;
   // Se restaura el background colour.
+  _pick=true;
   _ground->setVisible(true);
-  // _fnode->setVisible(true,true);
   _minesweeper->show();
   _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
   _overlay->show();
@@ -104,6 +98,7 @@ bool
 PlayState::frameStarted
 (const Ogre::FrameEvent& evt)
 {
+  std::stringstream s,mines,remaining;
   deltaT = evt.timeSinceLastFrame;
   // int fps = 1.0 / deltaT;
 
@@ -113,10 +108,19 @@ PlayState::frameStarted
   oe->setCaption("600/600");
   
   oe = _overlayManager->getOverlayElement("minesinf");
-  oe->setCaption("30/30");
+  mines << _minesweeper->getFlags() << "/" << _minesweeper->getTotalMines();
+    oe->setCaption(mines.str());
   
   oe = _overlayManager->getOverlayElement("timeinf");
-  oe->setCaption("0.00");
+  if (_pick){
+    _last_time += deltaT;
+      s << std::setprecision(1)<<std::fixed << _last_time;
+      oe->setCaption(s.str());
+  }
+  else oe->setCaption("0.0");
+  
+  oe = _overlayManager->getOverlayElement("logoGO");
+  oe->hide();
   return true;
 }
 
@@ -175,20 +179,20 @@ void
 PlayState::mouseMoved
 (const OIS::MouseEvent &e)
 {
-  std::cout<< e.state.X.abs << " "<<e.state.Y.abs <<std::endl;
+  // std::cout<< e.state.X.abs << " "<<e.state.Y.abs <<std::endl;
   Ogre::Vector3 vt(0,0,0);     
   Ogre::Real deltaT = 0.02;
    
   if (e.state.Z.rel > 0){
     if(_camera->getPosition().length() > 10.0){
        vt+=Ogre::Vector3(0,0,-e.state.Z.rel);
-       std::cout<< "negativo"<<std::endl;
+       //     std::cout<< "negativo"<<std::endl;
     }
   }
   else{
 //     if(_camera->getPosition().length() < 40.0){
        vt+=Ogre::Vector3(0,0,-e.state.Z.rel);
-      std::cout<< "positivo"<<std::endl;
+       //   std::cout<< "positivo"<<std::endl;
 //     }
   }
  _camera->moveRelative(vt*deltaT);
@@ -205,7 +209,6 @@ PlayState::mousePressed
 (const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
   std::cout <<  id << std::endl;
-  // Ogre::Real deltaT = e.timeSinceLastFrame;deberia ir en frameupdate y actualizar lo que aqui se modifique
   //int fps = 1.0 / deltaT;
   int posx = e.state.X.abs;
   int posy = e.state.Y.abs;
@@ -214,22 +217,20 @@ PlayState::mousePressed
   Ogre::RaySceneQueryResult result;
   Ogre::RaySceneQueryResult::iterator it;
   Ogre::SceneNode * _selectedNode;
-   std::cout << "HASTA AQUI" << std::endl;
-   r = setRayQuery(posx, posy, CUBE);
-   result = _raySceneQuery->execute();
-   std::cout << "HASTA AQUI" << std::endl;
-    it = result.begin();
-    if (it!=result.end()){
-      _selectedNode = it->movable->getParentSceneNode();
-    }
-    else _selectedNode=0;
-   std::cout << "HASTA AQUI" << std::endl;
 
+  r = setRayQuery(posx, posy, CUBE);
+  result = _raySceneQuery->execute();
+  it = result.begin();
+  if (it!=result.end()){
+    _selectedNode = it->movable->getParentSceneNode();
+  }
+  else _selectedNode=0;
+  
   switch(id){
   case OIS::MB_Left:
     if (_selectedNode){
-      _selectedNode->showBoundingBox(true);
-      static_cast<Ogre::Entity *>(_selectedNode->getAttachedObject(0))->setMaterialName("Cube2");
+      _pick = true;
+      _minesweeper->sendMove(_selectedNode);
     }
     break;
   case OIS::MB_Middle:
@@ -238,8 +239,7 @@ PlayState::mousePressed
     break;
   case OIS::MB_Right:
     if (_selectedNode){
-      _selectedNode->showBoundingBox(true);
-    static_cast<Ogre::Entity *>(_selectedNode->getAttachedObject(0))->setMaterialName("Cube2");
+      _minesweeper->setFlag(_selectedNode);
     }
   default:
     std::cout << "Default"<<std::endl;break;

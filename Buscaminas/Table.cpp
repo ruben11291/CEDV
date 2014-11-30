@@ -10,9 +10,8 @@ Minesweeper::~Minesweeper(){
 }
 
 void 
-Minesweeper::setMov(int face,int row,int column,int mov){
-  if (isValid(face,row,column,mov))
-    _table.setMov(face,row,column);
+Minesweeper::setMov(int face,int pos, Ogre::SceneNode * node)){
+  
 }
 
 bool 

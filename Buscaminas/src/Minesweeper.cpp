@@ -36,10 +36,7 @@ Minesweeper::yaw(Ogre::Degree degree){
   _node->yaw(degree,Ogre::Node::TS_WORLD);
 }
 
-bool 
-Minesweeper::isValid(int face, int row, int column){
-  return _table->isValid(face,row,column);
-}
+
 
 bool 
 Minesweeper::isGameOver(){
@@ -50,15 +47,32 @@ Minesweeper::isWin(){
   return true;
 }
 
+void Minesweeper::setFlag(Ogre::SceneNode * node){
+  int face = _table->findFace(node);
+  int pos = _table->findPos(face,node);
+  if (_table->isValid(face,pos)){
+    _table->setFlag(face,pos);
+  }
+  else if(_table->isFlag(face,pos)){
+    _table->quitFlag(face,pos);
+  }
+}
+    
 void 
-Minesweeper::assignCube(std::vector<Ogre::SceneNode *> *nodes){
-  for (std::vector<Ogre::SceneNode*>::iterator it = nodes->begin();it!=nodes->end();it++)
-    _node->addChild(*it);
+Minesweeper::sendMove(Ogre::SceneNode * node){
+  std::cout << "MOVIMIENTO ENVIADO" << std::endl;
+  int face = _table->findFace(node);
+  std::cout << "Face "<<face << std::endl;
+  int pos = _table->findPos(face,node);
+   std::cout << "Pos "<<pos << std::endl;
+ if (_table->isValid(face,pos))
+    _table->setMov(face,pos,node);
 }
 
+int Minesweeper::getFlags(){
+  return _table->getFlags();
+}
 
-
-void 
-Minesweeper::setMov(int face, int row, int column){
-  _table->setMov(face,row,column);
+int Minesweeper::getTotalMines(){
+  return _table->getMines();
 }

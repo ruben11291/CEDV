@@ -1,7 +1,5 @@
 #include "RecordState.h"
-#include "IntroState.h"
-#include <sstream>
-#include <iostream>
+
 
 template<> RecordState* Ogre::Singleton<RecordState>::msSingleton = 0;
 
@@ -26,10 +24,6 @@ RecordState::enter ()
   double width = _viewport->getActualWidth();
   double height = _viewport->getActualHeight();
   _camera->setAspectRatio(width / height);
- 
-  _overlayManager = Ogre::OverlayManager::getSingletonPtr();
-  _overlay = _overlayManager->getByName("Logo");
-  _overlay->show();
   
   createBackground();
   
@@ -51,10 +45,10 @@ void RecordState::createBackground(){
     // Create background rectangle covering the whole screen
     _rect = new Ogre::Rectangle2D(true);
     _rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-    // _rect->setMaterial("Backr");
+     _rect->setMaterial("Backr");
     
     //   Render the background before everything else
-    // _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
+     _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
     
     // Attach background to the scene
     _node = _sceneMgr->getRootSceneNode()->createChildSceneNode("Backr");
@@ -63,9 +57,17 @@ void RecordState::createBackground(){
     // Example of background scrolling
     material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setScrollAnimation(-0.02, 0.0);
 
-    
-    _overlay = Ogre::OverlayManager::getSingletonPtr()->getByName("Pause");
+    _overlayManager = Ogre::OverlayManager::getSingletonPtr();
+  _overlay = _overlayManager->getByName("Record");
     _overlay->show();
+    
+    
+//       std::cout <<"crear oe" << std::endl;
+//   Ogre::OverlayElement *oe;
+//   oe = _overlayManager->getOverlayElement("record1");
+//   std::cout <<"oe creado" << std::endl;
+//   oe->setCaption("Ruben");
+//   std::cout <<"texto puesto" <<std::endl;
 
   }
 
@@ -96,7 +98,27 @@ bool
 RecordState::frameStarted
 (const Ogre::FrameEvent& evt)
 {
+  Ogre::OverlayElement *oe;
+  oe = _overlayManager->getOverlayElement("record1");
+  oe->setCaption(convert("Ruben",0.03));
+  oe = _overlayManager->getOverlayElement("record2");
+  oe->setCaption("Angel");
+  oe = _overlayManager->getOverlayElement("record3");
+  oe->setCaption("30/30");
+  oe = _overlayManager->getOverlayElement("record4");
+  oe->setCaption("30/30");
+  oe = _overlayManager->getOverlayElement("record5");
+  oe->setCaption("30/30");
+  
+//   oe = _overlayManager->getOverlayElement("timeinf");
+//   oe->setCaption("0.00");
   return true;
+}
+
+std::string RecordState::convert(std::string name, double time){
+  std::stringstream c;
+  c << name << "  " << time <<"s";
+  return c.str();
 }
 
 bool

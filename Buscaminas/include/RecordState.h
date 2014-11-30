@@ -5,7 +5,8 @@
 
 #include <Ogre.h>
 #include <OIS/OIS.h>
-
+#include <string>
+#include <sstream>
 #include "GameState.h"
 #include <CEGUI.h>
 #include <RendererModules/Ogre/CEGUIOgreRenderer.h>
@@ -33,6 +34,8 @@ class RecordState : public Ogre::Singleton<RecordState>, public GameState
   // Heredados de Ogre::Singleton.
   static RecordState& getSingleton ();
   static RecordState* getSingletonPtr ();
+  
+  std::string convert(std::string name, double time);
   
 
   bool quit(const CEGUI::EventArgs &e);

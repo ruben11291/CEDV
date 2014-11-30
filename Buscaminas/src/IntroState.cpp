@@ -102,8 +102,6 @@ void IntroState::createGUI()
   CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
   CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
 
-//   CEGUI::SchemeManager::getSingleton().create("WindowsLook.scheme");
-  CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
   CEGUI::SchemeManager::getSingleton().create("OgreTray.scheme");
   CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-10");
   CEGUI::System::getSingleton().setDefaultMouseCursor("OgreTrayImages","MouseArrow");
@@ -196,6 +194,7 @@ IntroState::exit()
 std::cout << "exit"<<std::endl;
   Ogre::MaterialManager::getSingleton().remove("Background");
 std::cout << "exit"<<std::endl;
+//   _overlayManager->destroyAll();
   _node->detachAllObjects();
   _sceneMgr->destroySceneNode(_node);
   std::cout << "exit"<<std::endl;
@@ -203,6 +202,7 @@ std::cout << "exit"<<std::endl;
    _root->getAutoCreatedWindow()->removeAllViewports();
   _sceneMgr->clearScene();
   std::cout << "exit"<<std::endl;
+
   
 }
 
