@@ -7,7 +7,6 @@ Minesweeper::Minesweeper(int squares,Ogre::SceneManager * sceneMgr):_sceneMgr(sc
   Ogre::Entity* ent1 = _sceneMgr->createEntity("Cube1.mesh");
   Ogre::Vector3 bbSize = ent1->getMesh()->getBounds().getSize();
   _sceneMgr->destroyEntity(ent1);
-  std::cout << "antes creacion tablero"<< std::endl;
   _table = new Table(squares,float(bbSize.x) ,_sceneMgr, _node);
 
   

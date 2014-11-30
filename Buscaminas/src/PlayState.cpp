@@ -116,18 +116,18 @@ PlayState::frameStarted
   
   oe = _overlayManager->getOverlayElement("minesinf");
   mines << _minesweeper->getFlags() << "/" << _minesweeper->getTotalMines();
-    oe->setCaption(mines.str());
+  oe->setCaption(mines.str());
   
   oe = _overlayManager->getOverlayElement("timeinf");
   if (_pick){
     _last_time += deltaT;
-      _s.clear();
-      _s << std::setprecision(1)<<std::fixed << _last_time;
-      oe->setCaption(_s.str());
+    _s.clear();
+    _s << std::setprecision(1)<<std::fixed << _last_time;
+    oe->setCaption(_s.str());
   }
-  else{ oe->setCaption(_s.str());}
+  else oe->setCaption(_s.str());
   
- 
+  
   return true;
 }
 
@@ -170,11 +170,6 @@ PlayState::keyPressed
     _minesweeper->pitch(Ogre::Degree(r*0.1));
   }
   
-  if(e.key == OIS::KC_B){
-//     std::ofstream file("records.txt", std::ofstream::app);
-//     file << "Player" << " " << "0.05" << std::endl;
-//     file.close();
-  }
   if(_end_game){
     if(e.key == OIS::KC_SPACE){
       popState();
@@ -196,21 +191,16 @@ void
 PlayState::mouseMoved
 (const OIS::MouseEvent &e)
 {
-  // std::cout<< e.state.X.abs << " "<<e.state.Y.abs <<std::endl;
   Ogre::Vector3 vt(0,0,0);     
   Ogre::Real deltaT = 0.02;
    
   if (e.state.Z.rel > 0){
     if(_camera->getPosition().length() > 10.0){
        vt+=Ogre::Vector3(0,0,-e.state.Z.rel);
-       //     std::cout<< "negativo"<<std::endl;
     }
   }
   else{
-//     if(_camera->getPosition().length() < 40.0){
        vt+=Ogre::Vector3(0,0,-e.state.Z.rel);
-       //   std::cout<< "positivo"<<std::endl;
-//     }
   }
  _camera->moveRelative(vt*deltaT);
 
@@ -250,7 +240,6 @@ PlayState::mousePressed
 	_pick = true;
 	_minesweeper->sendMove(_selectedNode);
 	
-	//EVALUATE MOVEMENT
 	if(_minesweeper->isGameOver())
 	  gameOver();
 	else if(_minesweeper->isWin())
@@ -266,7 +255,7 @@ PlayState::mousePressed
 	_minesweeper->setFlag(_selectedNode);
       }
     default:
-      std::cout << "Default"<<std::endl;break;
+      /////////////////////////////
     }
   }
 }
@@ -286,7 +275,7 @@ void PlayState::gameWin(){
   oe = _overlayManager->getOverlayElement("logoClear");
   oe->show();
   std::ofstream file("records.txt", std::ofstream::app);
-  file << "Player" << " " << _s.str() << std::endl;
+  file << "Player " << _s.str() << std::endl;
   file.close();
   _end_game = true;
 }
