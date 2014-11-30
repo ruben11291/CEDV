@@ -7,6 +7,7 @@
 #include <vector>
 #include "Types.h"
 #include <sstream>
+#include <utility>
 
 class Table{
 
@@ -18,23 +19,25 @@ public:
   int getRemainingMines();
   int getFlags();
   bool isValid(int face,int pos);
-  bool isWin();
-  bool isLose();
   int findFace(Ogre::SceneNode*);
   int findPos(int, Ogre::SceneNode *);
   void setFlag(int,int);
   bool isFlag(int, int);
   void quitFlag(int,int);
   int getMines();
-
+  bool isEnd();
+  
  private:
   
   void addMines();
   void addNumbers();
-  void searchNext(int,int);
+  int countNear(int,int);
+  void expand(int,int);
+  std::vector < std::pair <int, int> > searchNeighbours(int,int);
 
   Ogre::SceneNode * _rootNode;
   std::vector<std::vector<int> >  _table;
+  std::vector<std::vector<char> >  _flags_pos;
   std::vector<std::vector<char> >  _mask;
   std::vector<std::vector<Ogre::SceneNode*> >  _nodes;
   int _flags; //contains the number of flags performed
@@ -43,5 +46,6 @@ public:
   int _discovered;
   float _distance;
   int _squares;
+  bool _end;
 };
 #endif

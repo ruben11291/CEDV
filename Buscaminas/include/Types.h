@@ -18,3 +18,5 @@
 #define C8 16
 #define VOID 17
 #define FLAG 18
+#define PICKED 19
+

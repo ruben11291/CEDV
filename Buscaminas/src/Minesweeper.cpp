@@ -60,11 +60,8 @@ void Minesweeper::setFlag(Ogre::SceneNode * node){
     
 void 
 Minesweeper::sendMove(Ogre::SceneNode * node){
-  std::cout << "MOVIMIENTO ENVIADO" << std::endl;
   int face = _table->findFace(node);
-  std::cout << "Face "<<face << std::endl;
   int pos = _table->findPos(face,node);
-   std::cout << "Pos "<<pos << std::endl;
  if (_table->isValid(face,pos))
     _table->setMov(face,pos,node);
 }
