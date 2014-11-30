@@ -20,7 +20,7 @@
 # Computer Engineer student at Universidad de Castilla La Mancha
 
 
-This repository contains the milestones projects for the expert videogames 
+This repository contains the milestones projects of the expert videogames 
 programming course of UCLM.
 
 To be completed
