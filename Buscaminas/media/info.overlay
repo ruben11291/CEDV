@@ -95,10 +95,10 @@ Info
    container Panel(logoGO) 
     {
 	      metrics_mode pixels
-	left -350
-        top 80
-        width 640
-        height 480
+	left 80
+        top 250
+        width 427
+        height 320
         vert_align top
         horz_align center
         material gameOver

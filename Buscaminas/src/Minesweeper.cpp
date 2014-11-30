@@ -40,11 +40,11 @@ Minesweeper::yaw(Ogre::Degree degree){
 
 bool 
 Minesweeper::isGameOver(){
-  return true;
+  return _table->isEnd();
 }
 bool 
 Minesweeper::isWin(){
-  return true;
+  return ((_table->getDiscovered() + _table->getMines()) == (_squares * _squares));
 }
 
 void Minesweeper::setFlag(Ogre::SceneNode * node){
