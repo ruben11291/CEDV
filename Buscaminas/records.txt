@@ -1,11 +1,4 @@
-Angel 0.04
-Ruben 0.08
-Angel 0.1
-Ruben 0.01
-Ruben 0.4
-Angel 0.12
-Angel 0.6
-Ruben 1.9
 Player 0.05
-Player 0.05
-Player 0.05
+Player 0.0
+Player 32.3
+Player 0.0

@@ -65,8 +65,12 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::Ray setRayQuery(int posx, int posy, int mask);
   OIS::MouseState _mouse_position;
   bool _key_pressed;
+  bool _end_game;
   bool _pick;
+  std::stringstream _s;
   Ogre::Real _time_count,_last_time;
+  void gameOver();
+  void gameWin();
 
 };
 

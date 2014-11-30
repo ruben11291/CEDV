@@ -129,11 +129,12 @@ RecordState::frameStarted
       }
     }
     
+    if(c > 5){c = 5;}
     //Se almacenan los 5 primeros y se muestran en el overlay
-  for(int i=0; i<5; i++){
-    std::stringstream c;
-    c << names[i] << " " << times[i] <<std::endl;
-    matriz[i] = c.str();
+  for(int i=0; i<c; i++){
+    std::stringstream top;
+    top << names[i] << " " << times[i] <<std::endl;
+    matriz[i] = top.str();
   }
   
   Ogre::OverlayElement *oe;

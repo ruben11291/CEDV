@@ -62,13 +62,14 @@ PlayState::enter ()
   Ogre::OverlayElement * oe = _overlayManager->getOverlayElement("logoGO");
   oe->hide();
   oe = _overlayManager->getOverlayElement("timeClear");
-  oe->hide();
+//   oe->hide();
   oe = _overlayManager->getOverlayElement("logoClear");
   oe->hide();
 
   _last_time = _time_count = 0;
-  _key_pressed=_pick = false;
+  _key_pressed=_pick = _end_game = false;
   _exitGame = true;
+  _s << "0.0";
 }
 
 void
@@ -104,7 +105,7 @@ bool
 PlayState::frameStarted
 (const Ogre::FrameEvent& evt)
 {
-  std::stringstream s,mines,remaining;
+  std::stringstream mines,remaining;
   deltaT = evt.timeSinceLastFrame;
   // int fps = 1.0 / deltaT;
 
@@ -120,10 +121,11 @@ PlayState::frameStarted
   oe = _overlayManager->getOverlayElement("timeinf");
   if (_pick){
     _last_time += deltaT;
-      s << std::setprecision(1)<<std::fixed << _last_time;
-      oe->setCaption(s.str());
+      _s.clear();
+      _s << std::setprecision(1)<<std::fixed << _last_time;
+      oe->setCaption(_s.str());
   }
-  else oe->setCaption("0.0");
+  else{ oe->setCaption(_s.str());}
   
  
   return true;
@@ -169,9 +171,14 @@ PlayState::keyPressed
   }
   
   if(e.key == OIS::KC_B){
-    std::ofstream file("records.txt", std::ofstream::app);
-    file << "Player" << " " << "0.05" << std::endl;
-    file.close();
+//     std::ofstream file("records.txt", std::ofstream::app);
+//     file << "Player" << " " << "0.05" << std::endl;
+//     file.close();
+  }
+  if(_end_game){
+    if(e.key == OIS::KC_SPACE){
+      popState();
+    }
   }
 }
 
@@ -235,30 +242,53 @@ PlayState::mousePressed
     _selectedNode = it->movable->getParentSceneNode();
   }
   else _selectedNode=0;
-  
-  switch(id){
-  case OIS::MB_Left:
-    if (_selectedNode){
-      _pick = true;
-      _minesweeper->sendMove(_selectedNode);
-      //EVALUATE MOVEMENT
-      // if(_minesweeper->isGameOver())
-      // 	gameOver();
-      // else if(_minesweeper->isWin())
-      // 	gameWin();
+ 
+  if(!_end_game){
+    switch(id){
+    case OIS::MB_Left:
+      if (_selectedNode){
+	_pick = true;
+	_minesweeper->sendMove(_selectedNode);
+	
+	//EVALUATE MOVEMENT
+	if(_minesweeper->isGameOver())
+	  gameOver();
+	else if(_minesweeper->isWin())
+	  gameWin();
+      }
+      break;
+    case OIS::MB_Middle:
+      _key_pressed = true;
+      _mouse_position = e.state;
+      break;
+    case OIS::MB_Right:
+      if (_selectedNode){
+	_minesweeper->setFlag(_selectedNode);
+      }
+    default:
+      std::cout << "Default"<<std::endl;break;
     }
-    break;
-  case OIS::MB_Middle:
-    _key_pressed = true;
-    _mouse_position = e.state;
-    break;
-  case OIS::MB_Right:
-    if (_selectedNode){
-      _minesweeper->setFlag(_selectedNode);
-    }
-  default:
-    std::cout << "Default"<<std::endl;break;
   }
+}
+
+void PlayState::gameOver(){
+  _pick = false;
+  Ogre::OverlayElement * oe = _overlayManager->getOverlayElement("logoGO");
+  oe->show();
+  _simpleEffect->play();
+  _end_game = true;
+}
+
+void PlayState::gameWin(){
+  _pick = false;
+  Ogre::OverlayElement* oe = _overlayManager->getOverlayElement("timeClear");
+  oe->setCaption(_s.str());
+  oe = _overlayManager->getOverlayElement("logoClear");
+  oe->show();
+  std::ofstream file("records.txt", std::ofstream::app);
+  file << "Player" << " " << _s.str() << std::endl;
+  file.close();
+  _end_game = true;
 }
 
 void
