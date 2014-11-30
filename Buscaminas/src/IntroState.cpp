@@ -27,7 +27,6 @@ IntroState::enter ()
   _camera->setFarClipDistance(10000);
   
   _viewport = _root->getAutoCreatedWindow()->addViewport(_camera);
-  _viewport->setBackgroundColour(Ogre::ColourValue(1.0, 1.0, 1.0));
   double width = _viewport->getActualWidth();
   double height = _viewport->getActualHeight();
   _camera->setAspectRatio(width / height);
@@ -229,7 +228,6 @@ IntroState::resume ()
   CEGUI::WindowManager::getSingleton().getWindow("Ex1/RecordsButton")->show();
   CEGUI::WindowManager::getSingleton().getWindow("Ex1/CreditsButton")->show();
   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->show();
-  std::cout << "NODE "<< _node<<std::endl;
   _node->setVisible(true,false);
   std::cout <<"RESUME END"<<std::endl;
 }

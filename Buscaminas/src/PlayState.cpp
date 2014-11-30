@@ -22,7 +22,7 @@ PlayState::enter ()
   // std::cout << "DESPUES MANAGER " << std::endl;
   _viewport = _root->getAutoCreatedWindow()->getViewport(0);
   // Nuevo background colour.
-  _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
+  //_viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
   
   double width = _viewport->getActualWidth();
   double height = _viewport->getActualHeight();
@@ -58,6 +58,14 @@ PlayState::enter ()
   _overlayManager = Ogre::OverlayManager::getSingletonPtr();
   _overlay = _overlayManager->getByName("Info");
   _overlay->show();
+
+  Ogre::OverlayElement * oe = _overlayManager->getOverlayElement("logoGO");
+  oe->hide();
+  oe = _overlayManager->getOverlayElement("timeClear");
+  oe->hide();
+  oe = _overlayManager->getOverlayElement("logoClear");
+  oe->hide();
+
   _last_time = _time_count = 0;
   _key_pressed=_pick = false;
   _exitGame = true;
@@ -86,11 +94,9 @@ void
 PlayState::resume()
 {
   std::cout << "Play state resume" << std::endl;
-  // Se restaura el background colour.
   _pick=true;
   _ground->setVisible(true);
   _minesweeper->show();
-  _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
   _overlay->show();
 }
 
@@ -119,8 +125,7 @@ PlayState::frameStarted
   }
   else oe->setCaption("0.0");
   
-  oe = _overlayManager->getOverlayElement("logoGO");
-  oe->hide();
+ 
   return true;
 }
 
@@ -163,6 +168,11 @@ PlayState::keyPressed
     _minesweeper->pitch(Ogre::Degree(r*0.1));
   }
   
+  if(e.key == OIS::KC_B){
+    std::ofstream file("records.txt", std::ofstream::app);
+    file << "Player" << " " << "0.05" << std::endl;
+    file.close();
+  }
 }
 
 void
@@ -231,6 +241,11 @@ PlayState::mousePressed
     if (_selectedNode){
       _pick = true;
       _minesweeper->sendMove(_selectedNode);
+      //EVALUATE MOVEMENT
+      // if(_minesweeper->isGameOver())
+      // 	gameOver();
+      // else if(_minesweeper->isWin())
+      // 	gameWin();
     }
     break;
   case OIS::MB_Middle:
@@ -244,8 +259,6 @@ PlayState::mousePressed
   default:
     std::cout << "Default"<<std::endl;break;
   }
-   
-  
 }
 
 void

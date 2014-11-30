@@ -29,7 +29,7 @@ Record
 	element TextArea(record2) : MyTemplates/Texto 
 		    {
 				  top -130
-				  left 480
+				  left 410
 				  vert_align center
 				  
 		    }
@@ -37,7 +37,7 @@ Record
 	element TextArea(record3) : MyTemplates/Texto 
 		    {
 				  top -20
-				  left 480
+				  left 410
 				  vert_align center
 				  
 		    }
@@ -45,7 +45,7 @@ Record
 	element TextArea(record4) : MyTemplates/Texto 
 		    {
 				  top 90
-				  left 480
+				  left 410
 				  vert_align center
 				  
 		    }
@@ -53,7 +53,7 @@ Record
 	element TextArea(record5) : MyTemplates/Texto 
 		    {
 				  top 190
-				  left 480
+				  left 410
 				  vert_align center
 				  
 		    }

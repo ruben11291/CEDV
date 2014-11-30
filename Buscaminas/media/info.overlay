@@ -10,7 +10,7 @@ template element TextArea(MyTemplates/SmallText)
 {
     font_name Blue
 		metrics_mode pixels
-		char_height 12
+		char_height 50
 		colour 1.0 1.0 1.0    
 }
 
@@ -102,6 +102,25 @@ Info
         vert_align top
         horz_align center
         material gameOver
+    }
+    
+      container Panel(logoClear) 
+    {
+	      metrics_mode pixels
+	left -450
+        top 0
+        width 900
+        height 900
+        vert_align top
+        horz_align center
+        material clear
+        element TextArea(timeClear) : MyTemplates/SmallText 
+		    {
+				  top -40
+				  left 80
+				  vert_align center
+				  
+		    }
     }
 
 }

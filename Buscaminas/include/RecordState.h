@@ -7,6 +7,7 @@
 #include <OIS/OIS.h>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include "GameState.h"
 #include <CEGUI.h>
 #include <RendererModules/Ogre/CEGUIOgreRenderer.h>
