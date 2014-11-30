@@ -26,6 +26,7 @@ public:
   void quitFlag(int,int);
   int getMines();
   bool isEnd();
+  int getSquares();
   
  private:
   
@@ -34,11 +35,13 @@ public:
   int countNear(int,int);
   void expand(int,int);
   std::vector < std::pair <int, int> > searchNeighbours(int,int);
-
+  bool isVert(int);
+  bool isFrame(int);
+  
   Ogre::SceneNode * _rootNode;
   std::vector<std::vector<int> >  _table;
-  std::vector<std::vector<char> >  _flags_pos;
-  std::vector<std::vector<char> >  _mask;
+  std::vector<std::vector<int> >  _flags_pos;
+  std::vector<std::vector<int> >  _mask;
   std::vector<std::vector<Ogre::SceneNode*> >  _nodes;
   int _flags; //contains the number of flags performed
   int _mines; //total mines

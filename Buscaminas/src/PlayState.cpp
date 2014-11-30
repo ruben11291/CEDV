@@ -76,7 +76,7 @@ void
 PlayState::exit ()
 {   std::cout << "Play state exit" << std::endl;
   _sceneMgr->destroyQuery(static_cast<Ogre::RaySceneQuery*>(_raySceneQuery));
-
+  _s.str(" ");
   _overlay->hide();
   _sceneMgr->destroySceneNode(_ground);
   delete _minesweeper;
@@ -121,7 +121,7 @@ PlayState::frameStarted
   oe = _overlayManager->getOverlayElement("timeinf");
   if (_pick){
     _last_time += deltaT;
-    _s.clear();
+    _s.str("");
     _s << std::setprecision(1)<<std::fixed << _last_time;
     oe->setCaption(_s.str());
   }
@@ -255,7 +255,7 @@ PlayState::mousePressed
 	_minesweeper->setFlag(_selectedNode);
       }
     default:
-      /////////////////////////////
+      std::cout << "mierda default " <<std::endl;
     }
   }
 }

@@ -43,7 +43,8 @@ Minesweeper::isGameOver(){
 }
 bool 
 Minesweeper::isWin(){
-  return ((_table->getDiscovered() + _table->getMines()) == (_squares * _squares));
+  std::cout << "NUMBERS : "<<_table->getDiscovered() << " " << _table->getMines() << " " << _table->getSquares() << std::endl;
+  return ((_table->getDiscovered() + _table->getMines()) == (_table->getSquares() * _table->getSquares()*6));
 }
 
 void Minesweeper::setFlag(Ogre::SceneNode * node){

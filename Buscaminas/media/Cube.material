@@ -98,7 +98,70 @@ material Cubem_4
 		}
 	}
 }
-
+material Cubem_5
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			diffuse vertexcolour
+			specular 0.000000 0.000000 0.000000 63.25
+			texture_unit
+			{
+				texture m_5.png
+			}
+		}
+	}
+}
+material Cubem_6
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			diffuse vertexcolour
+			specular 0.000000 0.000000 0.000000 63.25
+			texture_unit
+			{
+				texture m_6.png
+			}
+		}
+	}
+}
+material Cubem_7
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			diffuse vertexcolour
+			specular 0.000000 0.000000 0.000000 63.25
+			texture_unit
+			{
+				texture m_7.png
+			}
+		}
+	}
+}
+material Cubem_8
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			diffuse vertexcolour
+			specular 0.000000 0.000000 0.000000 63.25
+			texture_unit
+			{
+				texture m_8.png
+			}
+		}
+	}
+}
 material Cubem_bomb
 {
 	receive_shadows on

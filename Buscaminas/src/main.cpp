@@ -50,7 +50,8 @@ int main () {
   UNUSED_VARIABLE(pauseState);
   UNUSED_VARIABLE(creditState);
   UNUSED_VARIABLE(recordState);
-    
+   
+  
   try
     {
       // Inicializa el juego y transición al primer estado.
