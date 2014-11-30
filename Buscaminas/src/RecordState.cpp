@@ -98,17 +98,55 @@ bool
 RecordState::frameStarted
 (const Ogre::FrameEvent& evt)
 {
+  std::string matriz[5], names[100];
+  std::string line, tempname, name;
+  std::ifstream file;
+  int c = 0;
+  float time, temp;
+  float times[100];
+  
+  file.open("records.txt");
+  //Se leen los records del fichero
+   while(getline(file,line)){
+      std::stringstream convertor(line);
+      convertor >> name  >> time;
+      names[c] = name;
+      times[c] = time;
+      c++;
+    }
+    file.close();
+    //Se ordenan los records 
+     for(int i=0;i<c;i++){
+      for(int j=0;j<c-1;j++){
+	if(times[j]>times[j+1]){// cambia "<" a ">" para cambiar la manera de ordenar
+	  temp=times[j];
+ 	  tempname=names[j];
+	  times[j]=times[j+1];
+ 	  names[j]=names[j+1];
+	  times[j+1]=temp;
+ 	  names[j+1]=tempname;
+	}
+      }
+    }
+    
+    //Se almacenan los 5 primeros y se muestran en el overlay
+  for(int i=0; i<5; i++){
+    std::stringstream c;
+    c << names[i] << " " << times[i] <<std::endl;
+    matriz[i] = c.str();
+  }
+  
   Ogre::OverlayElement *oe;
   oe = _overlayManager->getOverlayElement("record1");
-  oe->setCaption(convert("Ruben",0.03));
+  oe->setCaption(matriz[0]);
   oe = _overlayManager->getOverlayElement("record2");
-  oe->setCaption("Angel");
+  oe->setCaption(matriz[1]);
   oe = _overlayManager->getOverlayElement("record3");
-  oe->setCaption("30/30");
+  oe->setCaption(matriz[2]);
   oe = _overlayManager->getOverlayElement("record4");
-  oe->setCaption("30/30");
+  oe->setCaption(matriz[3]);
   oe = _overlayManager->getOverlayElement("record5");
-  oe->setCaption("30/30");
+  oe->setCaption(matriz[4]);
   
 //   oe = _overlayManager->getOverlayElement("timeinf");
 //   oe->setCaption("0.00");

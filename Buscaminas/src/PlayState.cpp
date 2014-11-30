@@ -4,6 +4,9 @@
 #include <iostream>
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <fstream>
 
 template<> PlayState* Ogre::Singleton<PlayState>::msSingleton = 0;
 
@@ -217,6 +220,8 @@ PlayState::frameStarted
   oe = _overlayManager->getOverlayElement("logoGO");
   oe->hide();
   
+  oe = _overlayManager->getOverlayElement("timeClear");
+  oe->setCaption("0.00");
   oe = _overlayManager->getOverlayElement("logoClear");
   oe->hide();
   return true;
@@ -263,6 +268,11 @@ PlayState::keyPressed
     _fnode->pitch(Ogre::Degree(r*0.1),Ogre::Node::TS_WORLD);
   }
   
+  if(e.key == OIS::KC_B){
+    std::ofstream file("records.txt", std::ofstream::app);
+    file << "Player" << " " << "0.05" << std::endl;
+    file.close();
+  }
 }
 
 void
@@ -343,7 +353,7 @@ PlayState::mousePressed
   case OIS::MB_Right:
     if (_selectedNode){
       _selectedNode->showBoundingBox(true);
-    static_cast<Ogre::Entity *>(_selectedNode->getAttachedObject(0))->setMaterialName("Cube2");
+    static_cast<Ogre::Entity *>(_selectedNode->getAttachedObject(0))->setMaterialName("Cube_flag");
     }
   default:
     std::cout << "Default"<<std::endl;break;
