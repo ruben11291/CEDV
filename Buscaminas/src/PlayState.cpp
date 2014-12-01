@@ -112,7 +112,8 @@ PlayState::frameStarted
   Ogre::OverlayElement *oe;
   oe = _overlayManager->getOverlayElement("fpsInfo");
 //   oe->setCaption(Ogre::StringConverter::toString(fps));
-  oe->setCaption("600/600");
+  remaining << _minesweeper->getDiscovered() << "/" << (_minesweeper->getSquares()*_minesweeper->getSquares()*6)-_minesweeper->getTotalMines();
+  oe->setCaption(remaining.str());
   
   oe = _overlayManager->getOverlayElement("minesinf");
   mines << _minesweeper->getFlags() << "/" << _minesweeper->getTotalMines();
@@ -254,6 +255,7 @@ PlayState::mousePressed
       if (_selectedNode){
 	_minesweeper->setFlag(_selectedNode);
       }
+      break;
     default:
       std::cout << "mierda default " <<std::endl;
     }

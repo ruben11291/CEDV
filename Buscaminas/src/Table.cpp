@@ -110,10 +110,12 @@ Table::setMov(int face, int pos, Ogre::SceneNode * node){
     case C1:    case C2:   case C3:   case C4:    
     case C5:    case C6:   case C7:   case C8:
       s << n-MINE;
+      std::cout<< "NUMBER : "<< s.str()<<std::endl;
       static_cast<Ogre::Entity*>(_nodes[face][pos]->getAttachedObject(0))->setMaterialName(s.str());
       _discovered++;
       break;
     case VOID:
+      std::cout << "VOID "<<std::endl;
       expand(face,pos);
       break;
     }
@@ -171,7 +173,6 @@ void Table::addMines(){
       if( _table[i][n1] !=MINE){
 	_table[i][n1] = MINE;
 	static_cast<Ogre::Entity*>(_nodes[i][n1]->getAttachedObject(0))->setMaterialName("Cubem_bomb");
-
 	mines--;
       }
     }
@@ -184,8 +185,9 @@ void Table::addNumbers(){
     for(int pos = 0;pos<_squares*_squares;pos++){
       int bombs =0;
       if(_table[face][pos] == VOID){
+	std::cout << "FACE " << face << " POS " << pos << std::endl;
 	bombs = countNear(face,pos);
-	std::cout<< "BOMBS "<< bombs<<std::endl;
+	std::cout<< "FACE " <<face << " POS "<< pos << "BOMBS "<< bombs<<std::endl;
 	if(bombs != 0)
 	  _table[face][pos] = MINE+bombs;//regarding defines
       }
@@ -196,9 +198,11 @@ void Table::addNumbers(){
 int Table::countNear(int face,int pos){
   int bombs=0;
   std::vector < std::pair<int,int> > neighbours = searchNeighbours(face,pos);
-  for (std::vector <std::pair<int,int> >::iterator it = neighbours.begin();it!=neighbours.end();it++)
+  for (std::vector <std::pair<int,int> >::iterator it = neighbours.begin();it!=neighbours.end();it++){
+    std::cout << "VECINO " << (*it).first << " " <<(*it).second << " VALUE: "<< _table[(*it).first][(*it).second] << std::endl;
     if(_table[(*it).first][(*it).second] == MINE)
       bombs++;
+  }
   return bombs;
 }
 
@@ -263,45 +267,46 @@ std::vector < std::pair <int, int> > Table::searchNeighbours(int face, int pos){
       }///bien
       break;
     case TAPA:
-
-      break; if(pos == 0){
- 	ret.push_back(std::pair<int,int>(face,1));
- 	ret.push_back(std::pair<int,int>(face,_squares));
- 	ret.push_back(std::pair<int,int>(face,_squares+1));
- 	ret.push_back(std::pair<int,int>(IZQ,(_squares*_squares) - _squares));
- 	ret.push_back(std::pair<int,int>(IZQ,((_squares*_squares) - _squares)+1));
+      
+      if(pos == 0){
+	ret.push_back(std::pair<int,int>(face,1));
+	ret.push_back(std::pair<int,int>(face,_squares));
+	ret.push_back(std::pair<int,int>(face,_squares+1));
+	ret.push_back(std::pair<int,int>(IZQ,(_squares*_squares) - _squares));
+	ret.push_back(std::pair<int,int>(IZQ,((_squares*_squares) - _squares)+1));
 	ret.push_back(std::pair<int,int>(TRAS,_squares-1));//NO TOCAR
- 	ret.push_back(std::pair<int,int>(TRAS,(2*_squares)-1));
+	ret.push_back(std::pair<int,int>(TRAS,(2*_squares)-1));
       }
       else if (pos == _squares-1){
- 	ret.push_back(std::pair<int,int>(face,pos+_squares));
- 	ret.push_back(std::pair<int,int>(face,pos-1));
- 	ret.push_back(std::pair<int,int>(face,pos+_squares-1));
- 	ret.push_back(std::pair<int,int>(IZQ,(_squares*_squares)-1));
- 	ret.push_back(std::pair<int,int>(IZQ,(_squares*_squares)-2));
- 	ret.push_back(std::pair<int,int>(FRONT,pos));//NO TOCAR
- 	ret.push_back(std::pair<int,int>(FRONT,pos+_squares));
+	ret.push_back(std::pair<int,int>(face,pos+_squares));
+	ret.push_back(std::pair<int,int>(face,pos-1));
+	ret.push_back(std::pair<int,int>(face,pos+_squares-1));
+	ret.push_back(std::pair<int,int>(IZQ,(_squares*_squares)-1));
+	ret.push_back(std::pair<int,int>(IZQ,(_squares*_squares)-2));
+	ret.push_back(std::pair<int,int>(FRONT,pos));//NO TOCAR
+	ret.push_back(std::pair<int,int>(FRONT,pos+_squares));
       }
       else if(pos == (_squares*_squares) -1){
- 	ret.push_back(std::pair<int,int>(face,pos-1));
- 	ret.push_back(std::pair<int,int>(face,pos-_squares));
- 	ret.push_back(std::pair<int,int>(face,pos-_squares-1));
- 	ret.push_back(std::pair<int,int>(DER,pos));//NO TOCAR
- 	ret.push_back(std::pair<int,int>(DER,pos-1));
- 	ret.push_back(std::pair<int,int>(FRONT,pos));
- 	ret.push_back(std::pair<int,int>(FRONT,pos-_squares));
+	ret.push_back(std::pair<int,int>(face,pos-1));
+	ret.push_back(std::pair<int,int>(face,pos-_squares));
+	ret.push_back(std::pair<int,int>(face,pos-_squares-1));
+	ret.push_back(std::pair<int,int>(DER,pos));//NO TOCAR
+	ret.push_back(std::pair<int,int>(DER,pos-1));
+	ret.push_back(std::pair<int,int>(FRONT,pos));
+	ret.push_back(std::pair<int,int>(FRONT,pos-_squares));
       }
       else{
- 	ret.push_back(std::pair<int,int>(face,pos+1));
- 	ret.push_back(std::pair<int,int>(face,pos-_squares));
- 	ret.push_back(std::pair<int,int>(face,pos-_squares+1));
- 	ret.push_back(std::pair<int,int>(DER,pos));//NO TOCAR
- 	ret.push_back(std::pair<int,int>(DER,pos+1));
- 	ret.push_back(std::pair<int,int>(TRAS,(_squares*_squares)-1));
- 	ret.push_back(std::pair<int,int>(TRAS,pos-1));
+	ret.push_back(std::pair<int,int>(face,pos+1));
+	ret.push_back(std::pair<int,int>(face,pos-_squares));
+	ret.push_back(std::pair<int,int>(face,pos-_squares+1));
+	ret.push_back(std::pair<int,int>(DER,pos));//NO TOCAR
+	ret.push_back(std::pair<int,int>(DER,pos+1));
+	ret.push_back(std::pair<int,int>(TRAS,(_squares*_squares)-1));
+	ret.push_back(std::pair<int,int>(TRAS,pos-1));
       }
+      break;
     case IZQ:
- if(pos == 0){
+      if(pos == 0){
  	ret.push_back(std::pair<int,int>(face,1));
  	ret.push_back(std::pair<int,int>(face,_squares));
  	ret.push_back(std::pair<int,int>(face,_squares+1));
@@ -337,7 +342,7 @@ std::vector < std::pair <int, int> > Table::searchNeighbours(int face, int pos){
  	ret.push_back(std::pair<int,int>(TRAS,_squares-1));
  	ret.push_back(std::pair<int,int>(TRAS,_squares-2));
       }
- break;
+      break;
     case DER:
       if(pos == 0){
  	ret.push_back(std::pair<int,int>(face,1));
@@ -347,12 +352,12 @@ std::vector < std::pair <int, int> > Table::searchNeighbours(int face, int pos){
  	ret.push_back(std::pair<int,int>(BASE,((_squares*_squares)-_squares)+1));
  	ret.push_back(std::pair<int,int>(TRAS,(_squares*_squares)-_squares));//NO TOCAR
 	ret.push_back(std::pair<int,int>(TRAS,((_squares*_squares)-_squares)+1));
-    }
-    else if (pos == _squares-1){
-      ret.push_back(std::pair<int,int>(face,pos+_squares));
-      ret.push_back(std::pair<int,int>(face,pos-1));
-      ret.push_back(std::pair<int,int>(face,pos+_squares-1));
-      ret.push_back(std::pair<int,int>(BASE,_squares*_squares-1));//NO TOCAR
+      }
+      else if (pos == _squares-1){
+	ret.push_back(std::pair<int,int>(face,pos+_squares));
+	ret.push_back(std::pair<int,int>(face,pos-1));
+	ret.push_back(std::pair<int,int>(face,pos+_squares-1));
+	ret.push_back(std::pair<int,int>(BASE,_squares*_squares-1));//NO TOCAR
  	ret.push_back(std::pair<int,int>(BASE,_squares*_squares-2));
  	ret.push_back(std::pair<int,int>(FRONT,_squares*_squares-_squares));
  	ret.push_back(std::pair<int,int>(FRONT,((_squares*_squares)-_squares)+1));
@@ -377,7 +382,7 @@ std::vector < std::pair <int, int> > Table::searchNeighbours(int face, int pos){
       }
       break;
     case TRAS:
- if(pos == 0){
+      if(pos == 0){
  	ret.push_back(std::pair<int,int>(face,1));
  	ret.push_back(std::pair<int,int>(face,_squares));
  	ret.push_back(std::pair<int,int>(face,_squares+1));
@@ -395,7 +400,7 @@ std::vector < std::pair <int, int> > Table::searchNeighbours(int face, int pos){
  	ret.push_back(std::pair<int,int>(TAPA,0));//NO TOCAR
  	ret.push_back(std::pair<int,int>(TAPA,_squares));
       }
-
+      
       else if(pos == (_squares*_squares) -1){
  	ret.push_back(std::pair<int,int>(face,pos-1));
  	ret.push_back(std::pair<int,int>(face,pos-_squares-1));
@@ -416,7 +421,7 @@ std::vector < std::pair <int, int> > Table::searchNeighbours(int face, int pos){
       }
       break;
     case FRONT:
- if(pos == 0){
+      if(pos == 0){
  	ret.push_back(std::pair<int,int>(face,1));
  	ret.push_back(std::pair<int,int>(face,_squares));
  	ret.push_back(std::pair<int,int>(face,_squares+1));
@@ -466,7 +471,7 @@ std::vector < std::pair <int, int> > Table::searchNeighbours(int face, int pos){
 	ret.push_back(std::pair<int,int>(face,pos+_squares+1));
 	ret.push_back(std::pair<int,int>(face,pos+_squares-1));
 	ret.push_back(std::pair<int,int>(face,pos+_squares));
-
+	
  	ret.push_back(std::pair<int,int>(IZQ,pos));//NO TOCAR
  	ret.push_back(std::pair<int,int>(IZQ,pos+1));
  	ret.push_back(std::pair<int,int>(IZQ,pos-1));

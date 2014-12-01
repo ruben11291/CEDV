@@ -14,8 +14,6 @@ public:
 	~Minesweeper();
 	bool isGameOver();
 	bool isWin();
-//	void assignCube(std::vector<Ogre::SceneNode *> *nodes);
-	void deleteCube();
 	void show();
 	void hide();
 	void pitch(Ogre::Degree degree);
@@ -24,6 +22,8 @@ public:
 	void setFlag(Ogre::SceneNode *);
 	int getFlags();
 	int getTotalMines();
+	int getSquares();
+	int getDiscovered();
 
 private:
 	Table * _table;

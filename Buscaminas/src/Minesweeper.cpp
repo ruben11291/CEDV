@@ -62,8 +62,10 @@ void
 Minesweeper::sendMove(Ogre::SceneNode * node){
   int face = _table->findFace(node);
   int pos = _table->findPos(face,node);
- if (_table->isValid(face,pos))
+  if (_table->isValid(face,pos)){
+    std::cout<< "MINESWEEPER movimiento valido"<<std::endl;
     _table->setMov(face,pos,node);
+  }
 }
 
 int Minesweeper::getFlags(){
@@ -72,4 +74,12 @@ int Minesweeper::getFlags(){
 
 int Minesweeper::getTotalMines(){
   return _table->getMines();
+}
+
+int Minesweeper::getDiscovered(){
+  return _table->getDiscovered();
+}
+
+int Minesweeper::getSquares(){
+  return _table->getSquares();
 }
