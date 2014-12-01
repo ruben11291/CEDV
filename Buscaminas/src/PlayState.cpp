@@ -59,7 +59,6 @@ PlayState::enter ()
 
   Ogre::OverlayElement * oe = _overlayManager->getOverlayElement("logoGO");
   oe->hide();
-  oe = _overlayManager->getOverlayElement("timeClear");
   //   oe->hide();
   oe = _overlayManager->getOverlayElement("logoClear");
   oe->hide();
@@ -267,9 +266,7 @@ void PlayState::gameOver(){
 
 void PlayState::gameWin(){
   _pick = false;
-  Ogre::OverlayElement* oe = _overlayManager->getOverlayElement("timeClear");
-  oe->setCaption(_s.str());
-  oe = _overlayManager->getOverlayElement("logoClear");
+  Ogre::OverlayElement* oe = _overlayManager->getOverlayElement("logoClear");
   oe->show();
   std::ofstream file("records.txt", std::ofstream::app | std::ofstream::out);
   file << "Player " << _s.str() << std::endl;
