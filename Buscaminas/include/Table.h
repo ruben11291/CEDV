@@ -27,7 +27,8 @@ public:
   int getMines();
   bool isEnd();
   int getSquares();
-  
+  void showMines();
+
  private:
   
   void addMines();

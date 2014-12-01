@@ -36,47 +36,38 @@ RecordState::enter ()
 void RecordState::createBackground(){
   
     // Create background material
-    Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create("Backr", "General");
-    material->getTechnique(0)->getPass(0)->createTextureUnitState("waterwall.jpg");
-    material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
-    material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
-    material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
-    
-    // Create background rectangle covering the whole screen
-    _rect = new Ogre::Rectangle2D(true);
-    _rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-     _rect->setMaterial("Backr");
-    
-    //   Render the background before everything else
-     _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
-    
-    // Attach background to the scene
-    _node = _sceneMgr->getRootSceneNode()->createChildSceneNode("Backr");
-    _node->attachObject(_rect);
-    
-    // Example of background scrolling
-    material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setScrollAnimation(-0.02, 0.0);
-
-    _overlayManager = Ogre::OverlayManager::getSingletonPtr();
+  Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create("Backr", "General");
+  material->getTechnique(0)->getPass(0)->createTextureUnitState("waterwall.jpg");
+  material->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
+  material->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
+  material->getTechnique(0)->getPass(0)->setLightingEnabled(false);
+  
+  // Create background rectangle covering the whole screen
+  _rect = new Ogre::Rectangle2D(true);
+  _rect->setCorners(-1.0, 1.0, 1.0, -1.0);
+  _rect->setMaterial("Backr");
+  
+  //   Render the background before everything else
+  _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
+  
+  // Attach background to the scene
+  _node = _sceneMgr->getRootSceneNode()->createChildSceneNode("Backr");
+  _node->attachObject(_rect);
+  
+  // Example of background scrolling
+  material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setScrollAnimation(-0.02, 0.0);
+  
+  _overlayManager = Ogre::OverlayManager::getSingletonPtr();
   _overlay = _overlayManager->getByName("Record");
-    _overlay->show();
-    
-    
-//       std::cout <<"crear oe" << std::endl;
-//   Ogre::OverlayElement *oe;
-//   oe = _overlayManager->getOverlayElement("record1");
-//   std::cout <<"oe creado" << std::endl;
-//   oe->setCaption("Ruben");
-//   std::cout <<"texto puesto" <<std::endl;
-
-  }
+  _overlay->show();
+}
 
 
 void
 RecordState::exit ()
 { 
   std::cout << "Record state exit" << std::endl;
-
+  delete _rect;
   _sceneMgr->destroySceneNode(_node);
   _overlay->hide();
 }
@@ -89,9 +80,6 @@ RecordState::pause()
 void
 RecordState::resume()
 {
-  std::cout << "Record state resume" << std::endl;
-  // Se restaura el background colour.
-  _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
 }
 
 bool
@@ -107,30 +95,30 @@ RecordState::frameStarted
   
   file.open("records.txt");
   //Se leen los records del fichero
-   while(getline(file,line)){
-      std::stringstream convertor(line);
-      convertor >> name  >> time;
-      names[c] = name;
-      times[c] = time;
-      c++;
-    }
-    file.close();
-    //Se ordenan los records 
-     for(int i=0;i<c;i++){
-      for(int j=0;j<c-1;j++){
-	if(times[j]>times[j+1]){// cambia "<" a ">" para cambiar la manera de ordenar
-	  temp=times[j];
- 	  tempname=names[j];
-	  times[j]=times[j+1];
- 	  names[j]=names[j+1];
-	  times[j+1]=temp;
- 	  names[j+1]=tempname;
-	}
+  while(getline(file,line)){
+    std::stringstream convertor(line);
+    convertor >> name  >> time;
+    names[c] = name;
+    times[c] = time;
+    c++;
+  }
+  file.close();
+  //Se ordenan los records 
+  for(int i=0;i<c;i++){
+    for(int j=0;j<c-1;j++){
+      if(times[j]>times[j+1]){// cambia "<" a ">" para cambiar la manera de ordenar
+	temp=times[j];
+	tempname=names[j];
+	times[j]=times[j+1];
+	names[j]=names[j+1];
+	times[j+1]=temp;
+	names[j+1]=tempname;
       }
     }
-    
-    if(c > 5){c = 5;}
-    //Se almacenan los 5 primeros y se muestran en el overlay
+  }
+  
+  if(c > 5){c = 5;}
+  //Se almacenan los 5 primeros y se muestran en el overlay
   for(int i=0; i<c; i++){
     std::stringstream top;
     top << names[i] << " " << times[i] <<std::endl;
@@ -149,8 +137,6 @@ RecordState::frameStarted
   oe = _overlayManager->getOverlayElement("record5");
   oe->setCaption(matriz[4]);
   
-//   oe = _overlayManager->getOverlayElement("timeinf");
-//   oe->setCaption("0.00");
   return true;
 }
 
@@ -171,7 +157,6 @@ void
 RecordState::keyPressed
 (const OIS::KeyEvent &e)
 {
-  // Tecla p --> PauseState.
   if (e.key == OIS::KC_P) {
     popState();
   }

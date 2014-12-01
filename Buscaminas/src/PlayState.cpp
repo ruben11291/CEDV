@@ -19,18 +19,16 @@ PlayState::enter ()
   
   _pSoundFXManager = SoundFXManager::getSingletonPtr();
   _simpleEffect = _pSoundFXManager->load("bomb.wav");
-  // std::cout << "DESPUES MANAGER " << std::endl;
+  
   _viewport = _root->getAutoCreatedWindow()->getViewport(0);
-  // Nuevo background colour.
-  //_viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
   
   double width = _viewport->getActualWidth();
   double height = _viewport->getActualHeight();
   _camera->setAspectRatio(width / height);
   
- 
-  _minesweeper = new Minesweeper(5,_sceneMgr);
-
+  /*Creation of the minesweeper*/
+  _minesweeper = new Minesweeper(10,_sceneMgr);
+  
   
   // Create background material
   _material = Ogre::MaterialManager::getSingleton().create("Backgr", "General");
@@ -48,13 +46,13 @@ PlayState::enter ()
   _rect->setRenderQueueGroup(Ogre::RENDER_QUEUE_BACKGROUND);
   
     
-    
-    // Attach background to the scene
+  
+  // Attach background to the scene
   _ground = _sceneMgr->getRootSceneNode()->createChildSceneNode("Back");
   _ground->attachObject(_rect);
   
   _raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
-
+  
   _overlayManager = Ogre::OverlayManager::getSingletonPtr();
   _overlay = _overlayManager->getByName("Info");
   _overlay->show();
@@ -62,7 +60,7 @@ PlayState::enter ()
   Ogre::OverlayElement * oe = _overlayManager->getOverlayElement("logoGO");
   oe->hide();
   oe = _overlayManager->getOverlayElement("timeClear");
-//   oe->hide();
+  //   oe->hide();
   oe = _overlayManager->getOverlayElement("logoClear");
   oe->hide();
 
@@ -74,7 +72,8 @@ PlayState::enter ()
 
 void
 PlayState::exit ()
-{   std::cout << "Play state exit" << std::endl;
+{ 
+  delete _rect;
   _sceneMgr->destroyQuery(static_cast<Ogre::RaySceneQuery*>(_raySceneQuery));
   _s.str(" ");
   _overlay->hide();
@@ -84,7 +83,7 @@ PlayState::exit ()
 
 void
 PlayState::pause()
-{  std::cout << "Play state pause" << std::endl;
+{  
   _pick=false;
   _minesweeper->hide();
   _ground->setVisible(false);
@@ -94,7 +93,6 @@ PlayState::pause()
 void
 PlayState::resume()
 {
-  std::cout << "Play state resume" << std::endl;
   _pick=true;
   _ground->setVisible(true);
   _minesweeper->show();
@@ -111,7 +109,6 @@ PlayState::frameStarted
 
   Ogre::OverlayElement *oe;
   oe = _overlayManager->getOverlayElement("fpsInfo");
-//   oe->setCaption(Ogre::StringConverter::toString(fps));
   remaining << _minesweeper->getDiscovered() << "/" << (_minesweeper->getSquares()*_minesweeper->getSquares()*6)-_minesweeper->getTotalMines();
   oe->setCaption(remaining.str());
   
@@ -144,36 +141,36 @@ PlayState::keyPressed
 (const OIS::KeyEvent &e)
 {
   // Tecla p --> PauseState.
-  if (e.key == OIS::KC_P) {
-    std::cout << "Play state key pressed"<<std::endl;
+  if (e.key == OIS::KC_P && !_end_game) {
     pushState(PauseState::getSingletonPtr());
   }
-  
-  Ogre::Vector3 vt(0,0,0);     Ogre::Real tSpeed = 20.0;
-  Ogre::Real deltaT = 0.03;
-  
- 
-  if(e.key == OIS::KC_UP){ vt+=Ogre::Vector3(0,0,-1); _camera->moveRelative(vt * deltaT * tSpeed);}
-  if(e.key == OIS::KC_DOWN){  vt+=Ogre::Vector3(0,0,1); _camera->moveRelative(vt * deltaT * tSpeed);}
-  if(e.key == OIS::KC_LEFT){  vt+=Ogre::Vector3(-1,0,0); _camera->moveRelative(vt * deltaT * tSpeed);}
-  if(e.key == OIS::KC_RIGHT){ vt+=Ogre::Vector3(1,0,0); _camera->moveRelative(vt * deltaT * tSpeed);
-  }
-  
-  Ogre::Real r =0;
-   
+  else{
+    Ogre::Vector3 vt(0,0,0);     Ogre::Real tSpeed = 20.0;
+    Ogre::Real deltaT = 0.03;
+    
+    
+    if(e.key == OIS::KC_UP){ vt+=Ogre::Vector3(0,0,-1); _camera->moveRelative(vt * deltaT * tSpeed);}
+    if(e.key == OIS::KC_DOWN){  vt+=Ogre::Vector3(0,0,1); _camera->moveRelative(vt * deltaT * tSpeed);}
+    if(e.key == OIS::KC_LEFT){  vt+=Ogre::Vector3(-1,0,0); _camera->moveRelative(vt * deltaT * tSpeed);}
+    if(e.key == OIS::KC_RIGHT){ vt+=Ogre::Vector3(1,0,0); _camera->moveRelative(vt * deltaT * tSpeed);
+    }
+    
+    Ogre::Real r =0;
+    
     if(e.key == OIS::KC_R){
-       r-=180;
+      r-=180;
       _minesweeper->yaw(Ogre::Degree(r*0.1));
     }
-  
-  if(e.key == OIS::KC_D){
-    r+=180;
-    _minesweeper->pitch(Ogre::Degree(r*0.1));
-  }
-  
-  if(_end_game){
-    if(e.key == OIS::KC_SPACE){
-      popState();
+    
+    if(e.key == OIS::KC_D){
+      r+=180;
+      _minesweeper->pitch(Ogre::Degree(r*0.1));
+    }
+    
+    if(_end_game){
+      if(e.key == OIS::KC_SPACE){
+	popState();
+      }
     }
   }
 }
@@ -216,8 +213,6 @@ void
 PlayState::mousePressed
 (const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-  std::cout <<  id << std::endl;
-  //int fps = 1.0 / deltaT;
   int posx = e.state.X.abs;
   int posy = e.state.Y.abs;
   Ogre::Vector3 vt(0,0,0);     
@@ -234,31 +229,29 @@ PlayState::mousePressed
   }
   else _selectedNode=0;
  
-  if(!_end_game){
-    switch(id){
-    case OIS::MB_Left:
-      if (_selectedNode){
-	_pick = true;
-	_minesweeper->sendMove(_selectedNode);
-	
-	if(_minesweeper->isGameOver())
-	  gameOver();
-	else if(_minesweeper->isWin())
-	  gameWin();
-      }
-      break;
-    case OIS::MB_Middle:
-      _key_pressed = true;
-      _mouse_position = e.state;
-      break;
-    case OIS::MB_Right:
-      if (_selectedNode){
-	_minesweeper->setFlag(_selectedNode);
-      }
-      break;
-    default:
-      std::cout << "mierda default " <<std::endl;
+  switch(id){
+  case OIS::MB_Left:
+    if (_selectedNode && !_end_game){
+      _pick = true;
+      _minesweeper->sendMove(_selectedNode);
+      
+      if(_minesweeper->isGameOver())
+	gameOver();
+      else if(_minesweeper->isWin())
+	gameWin();
     }
+    break;
+  case OIS::MB_Middle:
+    _key_pressed = true;
+    _mouse_position = e.state;
+    break;
+  case OIS::MB_Right:
+    if (_selectedNode && !_end_game){
+      _minesweeper->setFlag(_selectedNode);
+    }
+    break;
+  default:
+    ;
   }
 }
 
@@ -267,8 +260,10 @@ void PlayState::gameOver(){
   Ogre::OverlayElement * oe = _overlayManager->getOverlayElement("logoGO");
   oe->show();
   _simpleEffect->play();
+  _minesweeper->showMines();
   _end_game = true;
 }
+
 
 void PlayState::gameWin(){
   _pick = false;
@@ -276,7 +271,7 @@ void PlayState::gameWin(){
   oe->setCaption(_s.str());
   oe = _overlayManager->getOverlayElement("logoClear");
   oe->show();
-  std::ofstream file("records.txt", std::ofstream::app);
+  std::ofstream file("records.txt", std::ofstream::app | std::ofstream::out);
   file << "Player " << _s.str() << std::endl;
   file.close();
   _end_game = true;

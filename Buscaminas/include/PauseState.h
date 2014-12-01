@@ -57,8 +57,10 @@ class PauseState : public Ogre::Singleton<PauseState>, public GameState
   Ogre::Camera* _camera;
   Ogre::OverlayManager* _overlayManager;
   Ogre::Overlay * _overlay;
-
   bool _exitGame;
+
+ private:
+  void createBackground();
 };
 
 #endif

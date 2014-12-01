@@ -97,7 +97,6 @@ void
 Table::setMov(int face, int pos, Ogre::SceneNode * node){
   if(_mask[face][pos] == 1 && _flags_pos[face][pos] == 0){
     int n = _table[face][pos];
-    std::cout << "TIPO :"<<n<<std::endl;
     std::stringstream s;
     s << "Cubem_";
     switch(n){
@@ -145,7 +144,6 @@ int Table::findPos(int face, Ogre::SceneNode * node){
       if((*it) == node) break;
       else pos++;
     }
-    
   }
   return pos;
 }
@@ -200,7 +198,6 @@ int Table::countNear(int face,int pos){
 }
 
 void Table::expand(int face,int pos){
-  std::cout << "ENTRANDO EXPANDIR" << std::endl;
   if(_mask[face][pos]==1){
     std::vector < std::pair<int,int> > neigbours = searchNeighbours(face,pos);
     _discovered++;
@@ -225,7 +222,6 @@ std::vector < std::pair <int, int> > Table::searchNeighbours(int face, int pos){
   std::vector < std::pair < int, int > > ret;
 
   if(isVert(pos)){
-    std::cout << "ES VERTICE" << std::endl;
     switch(face){
     case BASE:
       if(pos == 0){
@@ -807,7 +803,6 @@ bool Table::isFlag(int face, int pos){
 }
 
 void Table::setFlag(int face,int pos){
-  std::cout << "CASILLA "<<_table[face][pos]<< std::endl;
   _flags_pos [face][pos] = _table[face][pos];
   _table[face][pos]=FLAG;
   _mask[face][pos]=0;
@@ -833,4 +828,11 @@ int Table::getSquares(){
 
 bool Table::isEnd(){
   return _end;
+}
+
+void Table::showMines(){
+  for (int i = 0;i<6;i++)
+    for(int j= 0;j<_squares*_squares;j++)
+      if(_table[i][j] == MINE || _flags_pos[i][j] == MINE)
+	static_cast<Ogre::Entity*>(_nodes[i][j]->getAttachedObject(0))->setMaterialName("Cubem_bomb");
 }

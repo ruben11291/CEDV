@@ -43,7 +43,6 @@ Minesweeper::isGameOver(){
 }
 bool 
 Minesweeper::isWin(){
-  std::cout << "NUMBERS : "<<_table->getDiscovered() << " " << _table->getMines() << " " << _table->getSquares() << std::endl;
   return ((_table->getDiscovered() + _table->getMines()) == (_table->getSquares() * _table->getSquares()*6));
 }
 
@@ -58,14 +57,16 @@ void Minesweeper::setFlag(Ogre::SceneNode * node){
   }
 }
     
+void Minesweeper::showMines(){
+  _table->showMines();
+}
+
 void 
 Minesweeper::sendMove(Ogre::SceneNode * node){
   int face = _table->findFace(node);
   int pos = _table->findPos(face,node);
-  if (_table->isValid(face,pos)){
-    std::cout<< "MINESWEEPER movimiento valido"<<std::endl;
+  if (_table->isValid(face,pos))
     _table->setMov(face,pos,node);
-  }
 }
 
 int Minesweeper::getFlags(){

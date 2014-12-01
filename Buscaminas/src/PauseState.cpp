@@ -11,22 +11,16 @@ PauseState::enter ()
 
   _sceneMgr = _root->getSceneManager("SceneManager");
   _camera = _sceneMgr->getCamera("IntroCamera");
-  _viewport = _root->getAutoCreatedWindow()->getViewport(0);
-  // Nuevo background colour.
-  //_viewport->setBackgroundColour(Ogre::ColourValue(0.0, 1.0, 0.0));
-
-  
-   _overlay = Ogre::OverlayManager::getSingletonPtr()->getByName("Pause");
-   _overlay->show();
-   std::cout << "Pause state enter end" <<std::endl;
-
+  _viewport = _root->getAutoCreatedWindow()->getViewport(0);  
+  _overlay = Ogre::OverlayManager::getSingletonPtr()->getByName("Pause");
+  _overlay->show();
 }
+
+
 
 void
 PauseState::exit ()
 {
-  std::cout << "Pause state exit" <<std::endl;
-
   _overlay->hide();
 }
 
@@ -38,7 +32,6 @@ PauseState::pause ()
 void
 PauseState::resume ()
 {
-  //_overlay->show();
 }
 
 bool

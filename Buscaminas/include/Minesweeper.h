@@ -24,6 +24,7 @@ public:
 	int getTotalMines();
 	int getSquares();
 	int getDiscovered();
+	void showMines();
 
 private:
 	Table * _table;
