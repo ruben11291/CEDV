@@ -82,7 +82,7 @@ material clear
      scene_blend src_alpha one_minus_src_alpha
      texture_unit 
      {
-       texture clear.png
+       texture stage_clear.png
      }
    }
  }

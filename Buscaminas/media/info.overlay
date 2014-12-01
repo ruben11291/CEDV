@@ -10,8 +10,8 @@ template element TextArea(MyTemplates/SmallText)
 {
     font_name Blue
 		metrics_mode pixels
-		char_height 50
-		colour 1.0 1.0 1.0    
+		char_height 40
+		colour 0.0 0.0 0.0    
 }
 
 Info
@@ -107,17 +107,17 @@ Info
       container Panel(logoClear) 
     {
 	      metrics_mode pixels
-	left -450
-        top 0
-        width 900
-        height 900
+	left 50
+        top 300
+        width 407
+        height 300
         vert_align top
         horz_align center
         material clear
         element TextArea(timeClear) : MyTemplates/SmallText 
 		    {
 				  top -40
-				  left 80
+				  left 40
 				  vert_align center
 				  
 		    }
