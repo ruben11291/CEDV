@@ -96,7 +96,7 @@ Info
     {
 	      metrics_mode pixels
 	left 80
-        top 250
+        top 300
         width 427
         height 320
         vert_align top
@@ -108,19 +108,12 @@ Info
     {
 	      metrics_mode pixels
 	left 51
-        top 300
+        top 250
         width 407
         height 300
         vert_align top
         horz_align center
         material clear
-        element TextArea(timeClear) : MyTemplates/SmallText 
-		    {
-				  top -40
-				  left 40
-				  vert_align center
-				  
-		    }
     }
 
 }
