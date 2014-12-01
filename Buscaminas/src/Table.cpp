@@ -96,29 +96,26 @@ Table::~Table(){
 void 
 Table::setMov(int face, int pos, Ogre::SceneNode * node){
   if(_mask[face][pos] == 1 && _flags_pos[face][pos] == 0){
-    _mask[face][pos] = 0;
     int n = _table[face][pos];
     std::cout << "TIPO :"<<n<<std::endl;
     std::stringstream s;
     s << "Cubem_";
     switch(n){
     case MINE:
-      std::cout << "MINA"<<std::endl;
       static_cast<Ogre::Entity*>(_nodes[face][pos]->getAttachedObject(0))->setMaterialName("Cubem_bomb");
       _end = true;
       break;
     case C1:    case C2:   case C3:   case C4:    
     case C5:    case C6:   case C7:   case C8:
       s << n-MINE;
-      std::cout<< "NUMBER : "<< s.str()<<std::endl;
       static_cast<Ogre::Entity*>(_nodes[face][pos]->getAttachedObject(0))->setMaterialName(s.str());
       _discovered++;
       break;
     case VOID:
-      std::cout << "VOID "<<std::endl;
       expand(face,pos);
       break;
     }
+    _mask[face][pos] = 0;
   }
 }
 int
@@ -172,7 +169,6 @@ void Table::addMines(){
       int n1=rand()%(_squares*_squares);
       if( _table[i][n1] !=MINE){
 	_table[i][n1] = MINE;
-	static_cast<Ogre::Entity*>(_nodes[i][n1]->getAttachedObject(0))->setMaterialName("Cubem_bomb");
 	mines--;
       }
     }
@@ -185,9 +181,7 @@ void Table::addNumbers(){
     for(int pos = 0;pos<_squares*_squares;pos++){
       int bombs =0;
       if(_table[face][pos] == VOID){
-	std::cout << "FACE " << face << " POS " << pos << std::endl;
 	bombs = countNear(face,pos);
-	std::cout<< "FACE " <<face << " POS "<< pos << "BOMBS "<< bombs<<std::endl;
 	if(bombs != 0)
 	  _table[face][pos] = MINE+bombs;//regarding defines
       }
@@ -199,7 +193,6 @@ int Table::countNear(int face,int pos){
   int bombs=0;
   std::vector < std::pair<int,int> > neighbours = searchNeighbours(face,pos);
   for (std::vector <std::pair<int,int> >::iterator it = neighbours.begin();it!=neighbours.end();it++){
-    std::cout << "VECINO " << (*it).first << " " <<(*it).second << " VALUE: "<< _table[(*it).first][(*it).second] << std::endl;
     if(_table[(*it).first][(*it).second] == MINE)
       bombs++;
   }
@@ -207,17 +200,23 @@ int Table::countNear(int face,int pos){
 }
 
 void Table::expand(int face,int pos){
-  if(_table[face][pos] != MINE && _mask[face][pos]==1){
+  std::cout << "ENTRANDO EXPANDIR" << std::endl;
+  if(_mask[face][pos]==1){
     std::vector < std::pair<int,int> > neigbours = searchNeighbours(face,pos);
-    std::cout << "P :" << face << " " << pos << std::endl;
     _discovered++;
-    _mask[face][pos] = 1;
+    _mask[face][pos] = 0;
     static_cast<Ogre::Entity *>(_nodes[face][pos]->getAttachedObject(0))->setMaterialName("Cube2");   
-    for (std::vector <std::pair<int,int> >::iterator it = neigbours.begin();it!=neigbours.end();it++){
-      std::cout << "H :" <<(*it).first << " " << (*it).second << std::endl; 
-      std::cout << "Table contenido : "<<_table[(*it).first][(*it).second]<< " " << "Mask : "<<_mask[(*it).first][(*it).second]<< std::endl;
-      if(_table[(*it).first][(*it).second] == VOID)
-	expand((*it).first,(*it).second);
+    if(_table[face][pos] ==VOID){
+      static_cast<Ogre::Entity *>(_nodes[face][pos]->getAttachedObject(0))->setMaterialName("Cube2");   
+      for (std::vector <std::pair<int,int> >::iterator it = neigbours.begin();it!=neigbours.end();it++){
+	if(_table[(*it).first][(*it).second] != MINE && _flags_pos[(*it).first][(*it).second] == 0 && _mask[(*it).first][(*it).second]==1 )
+	  expand((*it).first,(*it).second);
+      }
+    }
+    else{
+      std::stringstream s;
+      s << "Cubem_" <<  _table[face][pos]-MINE;
+      static_cast<Ogre::Entity*>(_nodes[face][pos]->getAttachedObject(0))->setMaterialName(s.str());
     }
   }
 }
