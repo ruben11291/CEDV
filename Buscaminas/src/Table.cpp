@@ -6,7 +6,8 @@ Table::Table(int squares, float distance, Ogre::SceneManager * sceneMgr, Ogre::S
   _squares = squares;
   _distance = distance;
   _flags = 0;
-  _mines = (squares-1)*6;
+   _mines = (squares-1)*6;
+   // _mines = 6;
   _discovered=0;
   _end=false;
 
