@@ -107,7 +107,7 @@ Info
       container Panel(logoClear) 
     {
 	      metrics_mode pixels
-	left 50
+	left 51
         top 300
         width 407
         height 300
