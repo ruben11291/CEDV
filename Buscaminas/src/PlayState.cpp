@@ -27,7 +27,7 @@ PlayState::enter ()
   _camera->setAspectRatio(width / height);
   
   /*Creation of the minesweeper*/
-  _minesweeper = new Minesweeper(10,_sceneMgr);
+  _minesweeper = new Minesweeper(3,_sceneMgr);
   
   
   // Create background material

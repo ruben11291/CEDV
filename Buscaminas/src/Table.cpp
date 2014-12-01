@@ -167,6 +167,8 @@ void Table::addMines(){
       int n1=rand()%(_squares*_squares);
       if( _table[i][n1] !=MINE){
 	_table[i][n1] = MINE;
+	//  static_cast<Ogre::Entity*>(_nodes[i][n1]->getAttachedObject(0))->setMaterialName("Cubem_bomb");
+
 	mines--;
       }
     }
