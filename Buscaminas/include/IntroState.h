@@ -1,11 +1,7 @@
 /*********************************************************************
  * Módulo 1. Curso de Experto en Desarrollo de Videojuegos
- * Autor: David Vallejo Fernández    David.Vallejo@uclm.es
- *
- * Código modificado a partir de Managing Game States with OGRE
- * http://www.ogre3d.org/tikiwiki/Managing+Game+States+with+OGRE
- * Inspirado en Managing Game States in C++
- * http://gamedevgeek.com/tutorials/managing-game-states-in-c/
+ * Autor: Ruben Perez Pascual ruben.perez@alu.uclm.es
+ * Autor: Angel Peralta Lopez angel.peralta@alu.uclm.es
  *
  * You can redistribute and/or modify this file under the terms of the
  * GNU General Public License ad published by the Free Software

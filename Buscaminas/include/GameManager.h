@@ -1,6 +1,7 @@
 /*********************************************************************
  * Módulo 1. Curso de Experto en Desarrollo de Videojuegos
- * Autor: David Vallejo Fernández    David.Vallejo@uclm.es
+ * Autor: Ruben Perez Pascual ruben.perez@alu.uclm.es
+ * Autor: Angel Peralta Lopez angel.peralta@alu.uclm.es
  *
  * Código modificado a partir de Managing Game States with OGRE
  * http://www.ogre3d.org/tikiwiki/Managing+Game+States+with+OGRE
