@@ -1,0 +1,19 @@
+material Ground
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			lighting on
+			 ambient  0.8 0.8 0.8 1.0
+			 diffuse  0.8 0.8 0.8 1.0
+			 specular 0.7 0.7 0.7 1.0 100.0
+		
+			texture_unit
+			{
+				texture terrain.jpg
+			}
+		}
+	}
+}

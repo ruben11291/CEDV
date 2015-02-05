@@ -1,0 +1,52 @@
+<scene exported_by="kalelf" previous_export_time="0" formatVersion="1.0.1" export_time="1422987786.7359965" >
+  <nodes >
+    <node name="Camera" >
+      <position x="0.146658" z="5.961351" y="3.790459" />
+      <rotation qy="0.010369" qw="0.873599" qz="-0.005775" qx="0.486501" />
+      <scale x="1.000000" z="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <camera projectionType="perspective" name="Camera" fov="0.6605947096585073" >
+        <clipping nearPlaneDist="0.10000000149011612" far="100.0" farPlaneDist="100.0" near="0.10000000149011612" />
+      </camera>
+    </node>
+    <node name="Cube.002" >
+      <position x="2.220504" z="0.020587" y="0.266336" />
+      <rotation qy="0.000000" qw="1.000000" qz="-0.000000" qx="0.000000" />
+      <scale x="0.120681" z="2.900219" y="0.134542" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity velocity_min="0.0" physics_type="STATIC" friction_z="1.0" lock_rot_z="False" inertia_tensor="0.4000000059604645" lock_trans_x="False" velocity_max="0.0" lock_rot_y="False" anisotropic_friction="False" ghost="False" damping_rot="0.1589999943971634" lock_trans_y="False" friction_y="1.0" meshFile="Cube.002.mesh" name="Cube.002" mass="1.0" mass_radius="1.0" friction_x="1.0" lock_trans_z="False" damping_trans="0.02539999969303608" actor="False" lock_rot_x="False" />
+    </node>
+    <node name="Lamp" >
+      <position x="4.076245" z="-1.005454" y="5.903862" />
+      <rotation qy="0.755880" qw="0.570947" qz="-0.272171" qx="0.169076" />
+      <scale x="1.000000" z="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light type="point" powerScale="1.0" shadow="true" name="Lamp" >
+        <position x="4.076245" z="-1.005454" y="5.903862" />
+        <lightAttenuation range="5000" linear="0.03333335240683057" constant="1.0" quadratic="0.0" />
+        <colourDiffuse g="1.0" r="1.0" b="1.0" />
+        <colourSpecular g="1.0" r="1.0" b="1.0" />
+        <colourShadow g="1.0" r="1.0" b="1.0" />
+      </light>
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="/home/kalelf/Documentos/Arkanoid/blend/Material.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourDiffuse g="0.05087608844041824" r="0.05087608844041824" b="0.05087608844041824" />
+    <colourAmbient g="0.0" r="0.0" b="0.0" />
+    <colourBackground g="0.05087608844041824" r="0.05087608844041824" b="0.05087608844041824" />
+  </environment>
+</scene>

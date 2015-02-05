@@ -1,0 +1,35 @@
+material introLogo 
+{
+ technique 
+ {
+   pass 
+   {
+     scene_blend src_alpha one_minus_src_alpha
+     texture_unit 
+     {
+       texture arkanoid.png
+     }
+   }
+ }
+}
+
+
+material Credit 
+{
+ technique 
+ {
+   pass 
+   {
+     scene_blend src_alpha one_minus_src_alpha
+     texture_unit 
+     {
+       texture creditos.png
+     }
+   }
+ }
+}
+ 
+
+ 
+
+ 

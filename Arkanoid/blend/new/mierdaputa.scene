@@ -1,0 +1,55 @@
+<scene exported_by="kalelf" previous_export_time="1423038799.2263181" formatVersion="1.0.1" export_time="1423038827.8770185" >
+  <nodes >
+    <node name="laterales" >
+      <position z="5.811059" y="0.241193" x="0.151195" />
+      <rotation qy="0.000000" qz="-0.000000" qx="0.000000" qw="1.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity ghost="False" mass_radius="1.0" physics_type="STATIC" damping_trans="0.03999999910593033" mass="1.0" lock_rot_x="False" actor="False" lock_rot_y="False" lock_trans_z="False" meshFile="Cube.003.mesh" lock_rot_z="False" friction_y="1.0" lock_trans_x="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" damping_rot="0.10000000149011612" lock_trans_y="False" velocity_max="0.0" name="Cube.003" anisotropic_friction="False" friction_x="1.0" />
+    </node>
+    <node name="Lamp" >
+      <position z="-0.206411" y="5.075561" x="0.075145" />
+      <rotation qy="0.755880" qz="-0.272171" qx="0.169076" qw="0.570947" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light name="Lamp" shadow="true" type="point" powerScale="1.0" >
+        <position z="-0.206411" y="5.075561" x="0.075145" />
+        <lightAttenuation quadratic="0.0" range="5000" constant="1.0" linear="0.03333335240683057" />
+        <colourDiffuse g="1.0" b="1.0" r="1.0" />
+        <colourSpecular g="1.0" b="1.0" r="1.0" />
+        <colourShadow g="1.0" b="1.0" r="1.0" />
+      </light>
+    </node>
+    <node name="Camera.001" >
+      <position z="8.943378" y="5.495663" x="0.776941" />
+      <rotation qy="0.022860" qz="-0.011756" qx="0.457179" qw="0.889003" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <camera name="Camera.001" fov="0.4535976961077718" projectionType="perspective" >
+        <clipping farPlaneDist="100.0" far="100.0" near="0.10000000149011612" nearPlaneDist="0.10000000149011612" />
+      </camera>
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="/home/kalelf/Documentos/Arkanoid/blend/new/Material.001.material" />
+    </item>
+    <item type="material" >
+      <file name="/home/kalelf/Documentos/Arkanoid/blend/new/Material.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourDiffuse g="0.05087608844041824" b="0.05087608844041824" r="0.05087608844041824" />
+    <colourAmbient g="0.0" b="0.0" r="0.0" />
+    <colourBackground g="0.05087608844041824" b="0.05087608844041824" r="0.05087608844041824" />
+  </environment>
+</scene>

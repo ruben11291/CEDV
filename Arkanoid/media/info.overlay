@@ -1,0 +1,119 @@
+template element TextArea(MyTemplates/Text)
+{
+    font_name Blue
+		metrics_mode pixels
+		char_height 50
+		colour 0.0 0.0 0.0    
+}
+
+template element TextArea(MyTemplates/SmallText)
+{
+    font_name Blue
+		metrics_mode pixels
+		char_height 40
+		colour 0.0 0.0 0.0    
+}
+
+Info
+{
+    zorder 500
+
+    container Panel(panelInfo) 
+    {
+ 		    metrics_mode pixels
+        left -5
+        top -180
+        width 288
+        height 198
+        vert_align bottom
+        material panelInfoM
+
+		    element TextArea(fpsInfo) : MyTemplates/Text 
+		    {
+				  top -40
+				  left 80
+				  vert_align center
+				  
+		    }
+
+	  }
+	  
+    container Panel(mines) 
+    {
+	metrics_mode pixels
+        left 300
+        top -180
+        width 288
+        height 198
+        vert_align bottom
+        material minesInfo
+
+		    element TextArea(minesinf) : MyTemplates/Text 
+		    {
+				  top -40
+				  left 80
+				  vert_align center
+				  
+		    }
+
+	  }
+	 
+    container Panel(time) 
+    {
+	metrics_mode pixels
+        left 600
+        top -180
+        width 288
+        height 198
+        vert_align bottom
+        material timeInfo
+
+		    element TextArea(timeinf) : MyTemplates/Text 
+		    {
+				  top -40
+				  left 80
+				  vert_align center
+				  
+		    }
+
+	  }
+	  
+	  
+	  
+    container Panel(logoUCLM) 
+    {
+	      metrics_mode pixels
+        left -180
+        top 0
+        width 150
+        height 120
+        vert_align top
+        horz_align right
+        material matUCLM
+    }
+    
+   container Panel(logoGO) 
+    {
+	      metrics_mode pixels
+	left 80
+        top 300
+        width 427
+        height 320
+        vert_align top
+        horz_align center
+        material gameOver
+    }
+    
+      container Panel(logoClear) 
+    {
+	      metrics_mode pixels
+	left 51
+        top 250
+        width 407
+        height 300
+        vert_align top
+        horz_align center
+        material clear
+    }
+
+}

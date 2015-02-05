@@ -1,0 +1,63 @@
+template element TextArea(MyTemplates/Texto)
+{
+    font_name Blue
+		metrics_mode pixels
+		char_height 50
+		colour 0.0 0.0 0.0    
+}
+
+Record
+{
+      zorder 500
+   container Panel(record) 
+    {
+	metrics_mode pixels
+        left -350
+        top 80
+        width 740
+        height 580
+        vert_align top
+        horz_align center
+        material Record
+        element TextArea(record1) : MyTemplates/Texto 
+		    {
+				  top -230
+				  left 410
+				  vert_align center
+				  
+		    }
+	element TextArea(record2) : MyTemplates/Texto 
+		    {
+				  top -130
+				  left 410
+				  vert_align center
+				  
+		    }
+		    
+	element TextArea(record3) : MyTemplates/Texto 
+		    {
+				  top -20
+				  left 410
+				  vert_align center
+				  
+		    }
+		    
+	element TextArea(record4) : MyTemplates/Texto 
+		    {
+				  top 90
+				  left 410
+				  vert_align center
+				  
+		    }
+		    
+	element TextArea(record5) : MyTemplates/Texto 
+		    {
+				  top 190
+				  left 410
+				  vert_align center
+				  
+		    }
+
+    }
+
+}

@@ -1,0 +1,89 @@
+material panelInfoM 
+{
+ technique 
+ {
+   pass 
+   {
+     scene_blend src_alpha one_minus_src_alpha
+     texture_unit 
+     {
+       texture progresss.png
+     }
+   }
+ }
+}
+
+material minesInfo 
+{
+ technique 
+ {
+   pass 
+   {
+     scene_blend src_alpha one_minus_src_alpha
+     texture_unit 
+     {
+       texture lives.png
+     }
+   }
+ }
+}
+
+
+material timeInfo
+{
+ technique 
+ {
+   pass 
+   {
+     scene_blend src_alpha one_minus_src_alpha
+     texture_unit 
+     {
+       texture score.png
+     }
+   }
+ }
+}
+
+material matUCLM 
+{
+ technique 
+ {
+   pass 
+   {
+     texture_unit 
+     {
+       texture logouclm.jpg
+     }
+   }
+ }
+}
+
+material gameOver
+{
+ technique 
+ {
+   pass 
+   {
+     scene_blend src_alpha one_minus_src_alpha
+     texture_unit 
+     {
+       texture gameover.png
+     }
+   }
+ }
+}
+
+material clear
+{
+ technique 
+ {
+   pass 
+   {
+     scene_blend src_alpha one_minus_src_alpha
+     texture_unit 
+     {
+       texture stage_cleared.png
+     }
+   }
+ }
+}
