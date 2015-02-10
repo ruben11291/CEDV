@@ -60,18 +60,18 @@ void LevelState::createGUI()
   _sheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","Ex1/Sheete");
   
   _level1 = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/Level1Button");
-  _level1->setText("Level 1");
+  _level1->setText("Facil");
   _level1->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
-  _level1->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.12,0)));
+  _level1->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.22,0)));
   _level1->subscribeEvent(CEGUI::PushButton::EventClicked,
  			     CEGUI::Event::Subscriber(&LevelState::start, 
 						      this));
   _sheet->addChildWindow(_level1);
   
   _level2 = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/Level2Button");
-  _level2->setText("Level 2");
+  _level2->setText("Normal");
   _level2->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
-  _level2->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.32,0)));
+  _level2->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.42,0)));
 //   _level2->subscribeEvent(CEGUI::PushButton::EventClicked,
 //  			     CEGUI::Event::Subscriber(&IntroState::credit, 
 // 						      this));
@@ -81,9 +81,9 @@ void LevelState::createGUI()
   
 
   _level3 = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/Level3Button");
-  _level3->setText("Level 3");
+  _level3->setText("Dificil");
   _level3->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
-  _level3->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.52,0)));
+  _level3->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.62,0)));
   _sheet->addChildWindow(_level3);
 //   _level3->subscribeEvent(CEGUI::PushButton::EventClicked,
 // 			     CEGUI::Event::Subscriber(&IntroState::record,this));
@@ -91,15 +91,6 @@ void LevelState::createGUI()
 
   
   CEGUI::System::getSingleton().setGUISheet(_sheet);
-  
-  _level4 = CEGUI::WindowManager::getSingleton().createWindow("OgreTray/Button","Ex1/Level4Button");
-  _level4->setText("Level 4");
-  _level4->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
-  _level4->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.72,0)));
-//   _level4->subscribeEvent(CEGUI::PushButton::EventClicked,
-// 			     CEGUI::Event::Subscriber(&IntroState::quit, 
-// 						      this));
-  _sheet->addChildWindow(_level4);
   
 }
 bool LevelState::start (const CEGUI::EventArgs &e){
@@ -114,7 +105,7 @@ void
 LevelState::exit ()
 { 
   std::cout << "EXIT LEVELSTATE"<<std::endl;
-  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Level4Button");
+//   CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Level4Button");
   CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Level3Button");
   CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Level2Button");
   CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Sheete");
@@ -137,7 +128,7 @@ void
 LevelState::pause()
 {
 //   _overlay->hide();
-  CEGUI::WindowManager::getSingleton().getWindow("Ex1/Level4Button")->hide();
+//   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Level4Button")->hide();
  CEGUI::WindowManager::getSingleton().getWindow("Ex1/Level3Button")->hide();
   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Level2Button")->hide();
   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheete")->hide();
@@ -149,7 +140,7 @@ LevelState::resume()
 {
  std::cout << "resume"<<std::endl;
 //   _overlay->show();
-  CEGUI::WindowManager::getSingleton().getWindow("Ex1/Level4Button")->show(); 
+//   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Level4Button")->show(); 
 
   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Level3Button")->show();
   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Level2Button")->show();
