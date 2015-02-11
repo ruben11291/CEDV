@@ -205,6 +205,7 @@ std::cout << "exit"<<std::endl;
   std::cout << "exit"<<std::endl;
   delete _rect;
    _root->getAutoCreatedWindow()->removeAllViewports();
+   delete _pTrackManager; 
   _sceneMgr->clearScene();
   std::cout << "exit"<<std::endl;
 

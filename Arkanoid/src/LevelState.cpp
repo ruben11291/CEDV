@@ -114,12 +114,10 @@ LevelState::exit ()
 std::cout << "exit"<<std::endl;
   Ogre::MaterialManager::getSingleton().remove("Backgro");
 std::cout << "exit"<<std::endl;
-//   _overlayManager->destroyAll();
   _node->detachAllObjects();
   _sceneMgr->destroySceneNode(_node);
   std::cout << "exit"<<std::endl;
   delete _rect;
-  //  _root->getAutoCreatedWindow()->removeAllViewports();
    // _sceneMgr->clearScene();
   std::cout << "exit"<<std::endl;
 }
@@ -167,7 +165,7 @@ void
 LevelState::keyPressed
 (const OIS::KeyEvent &e)
 {
-  if (e.key == OIS::KC_P) {
+  if (e.key == OIS::KC_ESCAPE) {
     popState();
   }
   
@@ -177,9 +175,6 @@ void
 LevelState::keyReleased
 (const OIS::KeyEvent &e)
 {
-  if (e.key == OIS::KC_ESCAPE) {
-    _exitGame = false;
-  }
 }
 
 void

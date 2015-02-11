@@ -21,8 +21,6 @@
 
 #include "GameState.h"
 #include <vector>
-#include "Minesweeper.h"
-#include "Types.h"
 #include <sstream>
 #include <iostream>
 #include <SDL/SDL.h>
@@ -59,7 +57,6 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::Viewport* _viewport;
   Ogre::Camera* _camera;
   Ogre::OverlayManager* _overlayManager;
-  std::vector<Ogre::SceneNode*> *_cubes;
   Ogre::SceneNode* _ground;
   Ogre::SceneNode* _nave;
   Ogre::SceneNode* _node;
@@ -69,9 +66,6 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::Real deltaT;
   Ogre::Rectangle2D* _rect;
   Ogre::MaterialPtr _material;
-  Minesweeper * _minesweeper;
-  //bool _key_pressed;
-
   SoundFXManager* _pSoundFXManager;
   SoundFXPtr _simpleEffect;
   bool _exitGame;

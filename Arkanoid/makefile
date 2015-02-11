@@ -1,5 +1,5 @@
 
-EXEC := buscaminas
+EXEC := arkanoid
 
 DIRSRC := src/
 DIROBJ := obj/

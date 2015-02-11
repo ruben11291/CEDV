@@ -43,10 +43,11 @@ PlayState::enter ()
   _camera->setNearClipDistance(5);
   _camera->setFarClipDistance(10000);
   _camera->setFOVy(Ogre::Degree(53.13));
-  
+      std::cout << "Play state end" << std::endl;
+
   _pSoundFXManager = SoundFXManager::getSingletonPtr();
-  _simpleEffect = _pSoundFXManager->load("bomb.wav");
-  _simpleEffect = _pSoundFXManager->load("impact.wav");
+  // _simpleEffect = _pSoundFXManager->load("bomb.wav");
+  // _simpleEffect = _pSoundFXManager->load("impact.wav");
   
   _viewport = _root->getAutoCreatedWindow()->getViewport(0);
   
@@ -68,7 +69,7 @@ PlayState::enter ()
   _node->attachObject(ent1);
   _node->attachObject(ent3);
   _sceneMgr->getRootSceneNode()->addChild(_node);
-  
+
   Ogre::SceneNode* bola = _sceneMgr->createSceneNode("bola");
   Ogre::Entity* ball = _sceneMgr->createEntity("Planet.mesh");
   ball->setCastShadows(true);
@@ -105,7 +106,6 @@ PlayState::enter ()
   _overlayManager = Ogre::OverlayManager::getSingletonPtr();
   _overlay = _overlayManager->getByName("Info");
   _overlay->show();
-
   Ogre::OverlayElement * oe = _overlayManager->getOverlayElement("logoGO");
   oe->hide();
   //   oe->hide();
@@ -280,7 +280,7 @@ PlayState::mousePressed
   Ogre::RaySceneQueryResult::iterator it;
   Ogre::SceneNode * _selectedNode;
 
-  r = setRayQuery(posx, posy, CUBE);
+  r = setRayQuery(posx, posy, 0);//MODIFICAR.-------------------------------------------
   result = _raySceneQuery->execute();
   it = result.begin();
   if (it!=result.end()){
