@@ -128,8 +128,8 @@ std::cout << "exit"<<std::endl;
   _sceneMgr->destroySceneNode(_node);
   std::cout << "exit"<<std::endl;
   delete _rect;
-   _root->getAutoCreatedWindow()->removeAllViewports();
-  _sceneMgr->clearScene();
+  //  _root->getAutoCreatedWindow()->removeAllViewports();
+   // _sceneMgr->clearScene();
   std::cout << "exit"<<std::endl;
 }
 
