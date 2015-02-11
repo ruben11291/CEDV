@@ -10,6 +10,32 @@ PlayState::enter ()
   _root = Ogre::Root::getSingletonPtr();
   
   _sceneMgr = _root->getSceneManager("SceneManager");
+    _sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+   _sceneMgr->setShadowColour(Ogre::ColourValue(0.5,0.5,0.5));
+   _sceneMgr->setAmbientLight(Ogre::ColourValue(0.9,0.9,0.9));
+   _sceneMgr->setShadowTextureCount(3);
+    _sceneMgr->setShadowTextureSize(512);
+     
+  _light = _sceneMgr->createLight("Light1");
+   _light->setPosition(-5,12,2);
+  _light->setType(Ogre::Light::LT_SPOTLIGHT);
+  _light->setDirection(Ogre::Vector3(1,-1,0));
+   _light->setSpotlightInnerAngle(Ogre::Degree(25.0f));
+  _light->setSpotlightOuterAngle(Ogre::Degree(60.0f));
+  _light->setSpotlightFalloff(0.0f);
+//   _light->setCastShadows(true);
+  
+	
+   _light2 = _sceneMgr->createLight("Light2");
+  _light2->setType(Ogre::Light::LT_SPOTLIGHT);
+  _light2->setDiffuseColour(0.2,0.2,0.2);
+  _light2->setPosition(3,12,3);
+  _light2->setDirection(Ogre::Vector3(-0.3, -1, 0));
+  _light2->setSpotlightInnerAngle(Ogre::Degree(25.0f));
+  _light2->setSpotlightOuterAngle(Ogre::Degree(65.0f));
+  _light2->setSpotlightFalloff(5.0f);
+//   _light2->setCastShadows(true);
+  
   _camera = _sceneMgr->getCamera("IntroCamera");
   _camera->setPosition(Ogre::Vector3(0.07694,7.3,6.5));
   _camera->lookAt(Ogre::Vector3(0.67329,-0.12087,1.1));
@@ -28,13 +54,29 @@ PlayState::enter ()
   double height = _viewport->getActualHeight();
   _camera->setAspectRatio(width / height);
   
+ 
+  
+  
   /*Creation of the minesweeper*/
   _node = _sceneMgr->createSceneNode("plano");
-   Ogre::Entity* ent1 = _sceneMgr->createEntity("Base.mesh");
-    ent1->setCastShadows(true);
+   Ogre::Entity* ent1 = _sceneMgr->createEntity("Suelo.mesh");
+//    ent1->setMaterialName("suelo");
+   ent1->setCastShadows(true);
+   Ogre::Entity *ent3 = _sceneMgr->createEntity("laterales.mesh");
+   ent3->setCastShadows(true);
    _node->scale(1.30,1.30,1.30);
   _node->attachObject(ent1);
+  _node->attachObject(ent3);
   _sceneMgr->getRootSceneNode()->addChild(_node);
+  
+  Ogre::SceneNode* bola = _sceneMgr->createSceneNode("bola");
+  Ogre::Entity* ball = _sceneMgr->createEntity("Planet.mesh");
+  ball->setCastShadows(true);
+  bola->scale(0.14,0.14,0.14);
+  bola->attachObject(ball);
+  bola->translate(0,0.4,-0.65);
+  _sceneMgr->getRootSceneNode()->addChild(bola);
+  
   
   _nave= _sceneMgr->createSceneNode("nave");
   Ogre::Entity* ent2 = _sceneMgr->createEntity("Cube.mesh");
@@ -42,7 +84,7 @@ PlayState::enter ()
   _nave->scale(0.2,0.2,0.2);
   _nave->yaw(Ogre::Degree(-180));
   _nave->attachObject(ent2);
-  _nave->translate(0,0.2,0);
+  _nave->translate(0,0.5,0);
   _sceneMgr->getRootSceneNode()->addChild(_nave);
   
   Ogre::Plane plane1(Ogre::Vector3::UNIT_Y, 0);
@@ -54,30 +96,9 @@ PlayState::enter ()
   Ogre::Entity* groundEnt = _sceneMgr->createEntity("planeEnt", "plane1");
   groundEnt->setMaterialName("Ground");
   groundEnt->setCastShadows(false);
-//   _ground->translate(0,-1,0);
   _ground->attachObject(groundEnt);
   _sceneMgr->getRootSceneNode()->addChild(_ground);
 
-//   _sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);	
-   _light = _sceneMgr->createLight("Light1");
-   _light->setPosition(-5,12,2);
-  _light->setType(Ogre::Light::LT_SPOTLIGHT);
-  _light->setDirection(Ogre::Vector3(1,-1,0));
-   _light->setSpotlightInnerAngle(Ogre::Degree(25.0f));
-  _light->setSpotlightOuterAngle(Ogre::Degree(60.0f));
-  _light->setSpotlightFalloff(0.0f);
-  _light->setCastShadows(true);
-  
-	
-  _light2 = _sceneMgr->createLight("Light2");
-  _light2->setType(Ogre::Light::LT_SPOTLIGHT);
-  _light2->setDiffuseColour(0.2,0.2,0.2);
-  _light2->setPosition(3,12,3);
-  _light2->setDirection(Ogre::Vector3(-0.3, -1, 0));
-  _light2->setSpotlightInnerAngle(Ogre::Degree(25.0f));
-  _light2->setSpotlightOuterAngle(Ogre::Degree(65.0f));
-  _light2->setSpotlightFalloff(5.0f);
-  _light->setCastShadows(true);
   
   _raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
   
@@ -188,7 +209,8 @@ PlayState::keyPressed
 
   if(e.key == OIS::KC_A)  _nave->translate(Ogre::Vector3(-0.6,0,0));
   if(e.key == OIS::KC_D) _nave->translate(Ogre::Vector3(0.6,0,0));
-    
+  if(e.key == OIS::KC_W)  _nave->translate(Ogre::Vector3(0,0,-0.1));
+  if(e.key == OIS::KC_S) _nave->translate(Ogre::Vector3(0,0,0.1));
     Ogre::Real r =0;
     
     if(e.key == OIS::KC_R){
@@ -198,10 +220,11 @@ PlayState::keyPressed
 //       _minesweeper->yaw(Ogre::Degree(r*0.1));
     }
     
-    if(e.key == OIS::KC_D){
-      r+=180;
-//       _minesweeper->pitch(Ogre::Degree(r*0.1));
-    }
+    if(e.key == OIS::KC_I){ vt+=Ogre::Vector3(0,-1,0); _camera->moveRelative(vt * deltaT * tSpeed);}
+    if(e.key == OIS::KC_K){  vt+=Ogre::Vector3(0,1,0); _camera->moveRelative(vt * deltaT * tSpeed);}
+    if(e.key == OIS::KC_J){  vt+=Ogre::Vector3(0,-1,0); _camera->moveRelative(vt * deltaT * tSpeed);}
+    if(e.key == OIS::KC_L){ vt+=Ogre::Vector3(0,1,0); _camera->moveRelative(vt * deltaT * tSpeed);}
+ 
     
     if(_end_game){
       if(e.key == OIS::KC_SPACE){

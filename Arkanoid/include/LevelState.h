@@ -68,7 +68,7 @@ class LevelState : public Ogre::Singleton<LevelState>, public GameState
   Ogre::Overlay *_overlay;
   Ogre::Rectangle2D* _rect;
   CEGUI::OgreRenderer* renderer; 
-  CEGUI::Window* _sheet,* _level1,* _level2, *_level3,* _level4;
+  CEGUI::Window* _sheet,* _level1,* _level2, *_level3;
   Ogre::SceneNode * _node;
   bool _exitGame;
 
