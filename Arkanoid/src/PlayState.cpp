@@ -26,14 +26,14 @@ PlayState::enter ()
 //   _light->setCastShadows(true);
   
 	
-   _light2 = _sceneMgr->createLight("Light2");
-  _light2->setType(Ogre::Light::LT_SPOTLIGHT);
-  _light2->setDiffuseColour(0.2,0.2,0.2);
-  _light2->setPosition(3,12,3);
-  _light2->setDirection(Ogre::Vector3(-0.3, -1, 0));
-  _light2->setSpotlightInnerAngle(Ogre::Degree(25.0f));
-  _light2->setSpotlightOuterAngle(Ogre::Degree(65.0f));
-  _light2->setSpotlightFalloff(5.0f);
+//    _light2 = _sceneMgr->createLight("Light2");
+//   _light2->setType(Ogre::Light::LT_SPOTLIGHT);
+//   _light2->setDiffuseColour(0.2,0.2,0.2);
+//   _light2->setPosition(3,12,3);
+//   _light2->setDirection(Ogre::Vector3(-0.3, -1, 0));
+//   _light2->setSpotlightInnerAngle(Ogre::Degree(25.0f));
+//   _light2->setSpotlightOuterAngle(Ogre::Degree(65.0f));
+//   _light2->setSpotlightFalloff(5.0f);
 //   _light2->setCastShadows(true);
   
   _camera = _sceneMgr->getCamera("IntroCamera");
@@ -46,8 +46,8 @@ PlayState::enter ()
       std::cout << "Play state end" << std::endl;
 
   _pSoundFXManager = SoundFXManager::getSingletonPtr();
-  // _simpleEffect = _pSoundFXManager->load("bomb.wav");
-  // _simpleEffect = _pSoundFXManager->load("impact.wav");
+  _simpleEffect = _pSoundFXManager->load("bomb.wav");
+  _simpleEffect = _pSoundFXManager->load("impact.wav");
   
   _viewport = _root->getAutoCreatedWindow()->getViewport(0);
   
@@ -61,22 +61,69 @@ PlayState::enter ()
   /*Creation of the minesweeper*/
   _node = _sceneMgr->createSceneNode("plano");
    Ogre::Entity* ent1 = _sceneMgr->createEntity("Suelo.mesh");
-//    ent1->setMaterialName("suelo");
+   ent1->setMaterialName("suelo");
    ent1->setCastShadows(true);
-   Ogre::Entity *ent3 = _sceneMgr->createEntity("laterales.mesh");
-   ent3->setCastShadows(true);
+    Ogre::Entity *ent3 = _sceneMgr->createEntity("laterales.mesh");
+    ent3->setCastShadows(true);
    _node->scale(1.30,1.30,1.30);
   _node->attachObject(ent1);
-  _node->attachObject(ent3);
+   _node->attachObject(ent3);
   _sceneMgr->getRootSceneNode()->addChild(_node);
 
   Ogre::SceneNode* bola = _sceneMgr->createSceneNode("bola");
-  Ogre::Entity* ball = _sceneMgr->createEntity("Planet.mesh");
+  Ogre::Entity* ball = _sceneMgr->createEntity("ball.mesh");
+  ball->setMaterialName("ball");
   ball->setCastShadows(true);
-  bola->scale(0.14,0.14,0.14);
+  bola->scale(0.3,0.3,0.3);
   bola->attachObject(ball);
   bola->translate(0,0.4,-0.65);
   _sceneMgr->getRootSceneNode()->addChild(bola);
+  
+  
+  Ogre::SceneNode* cubo_n = _sceneMgr->createSceneNode("normal");
+  Ogre::Entity* normal = _sceneMgr->createEntity("Cube2.mesh");
+  normal->setMaterialName("Cube1");
+  normal->setCastShadows(true);
+   cubo_n->scale(2.5,1.3,1.3);
+  cubo_n->attachObject(normal);
+  cubo_n->translate(0,0,-8.5);
+  _sceneMgr->getRootSceneNode()->addChild(cubo_n);
+  
+   Ogre::SceneNode* cubo_g = _sceneMgr->createSceneNode("verde");
+  Ogre::Entity* verde = _sceneMgr->createEntity("Cube2.mesh");
+  verde->setMaterialName("Cube2");
+   verde->setCastShadows(true);
+  cubo_g->scale(2.5,1.3,1.3);
+  cubo_g->attachObject(verde);
+  cubo_g->translate(-1.4,0,-8.5);
+  _sceneMgr->getRootSceneNode()->addChild(cubo_g);
+  
+  Ogre::SceneNode* cubo_r = _sceneMgr->createSceneNode("rojo");
+  Ogre::Entity* rojo = _sceneMgr->createEntity("Cube2.mesh");
+  rojo->setMaterialName("Cube4");
+  rojo->setCastShadows(true);
+  cubo_r->scale(2.5,1.3,1.3);
+  cubo_r->attachObject(rojo);
+  cubo_r->translate(-1.2,0,-4.5);
+  _sceneMgr->getRootSceneNode()->addChild(cubo_r);
+  
+  Ogre::SceneNode* cubo_b = _sceneMgr->createSceneNode("azul");
+  Ogre::Entity* azul = _sceneMgr->createEntity("Cube2.mesh");
+  azul->setMaterialName("Cube3");
+  azul->setCastShadows(true);
+  cubo_b->scale(2.5,1.3,1.3);
+  cubo_b->attachObject(azul);
+  cubo_b->translate(1.2,0,-4.5);
+  _sceneMgr->getRootSceneNode()->addChild(cubo_b);
+  
+   Ogre::SceneNode* cubo_y = _sceneMgr->createSceneNode("amarillo");
+  Ogre::Entity* amarillo = _sceneMgr->createEntity("Cube2.mesh");
+  amarillo->setMaterialName("Cube5");
+  amarillo->setCastShadows(true);
+  cubo_y->scale(2.5,1.3,1.3);
+  cubo_y->attachObject(amarillo);
+  cubo_y->translate(1.2,0,-6.5);
+  _sceneMgr->getRootSceneNode()->addChild(cubo_y);
   
   
   _nave= _sceneMgr->createSceneNode("nave");
@@ -98,6 +145,7 @@ PlayState::enter ()
   groundEnt->setMaterialName("Ground");
   groundEnt->setCastShadows(false);
   _ground->attachObject(groundEnt);
+  _ground->translate(0,-0.2,0);
   _sceneMgr->getRootSceneNode()->addChild(_ground);
 
   
