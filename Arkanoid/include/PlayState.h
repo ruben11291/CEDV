@@ -26,7 +26,16 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 #include <fstream>
+#include <OgreBulletDynamicsRigidBody.h>
+#include <Shapes/OgreBulletCollisionsBoxShape.h>
+#include "Utils/OgreBulletCollisionsMeshToShapeConverter.h"
+#include "Shapes/OgreBulletCollisionsSphereShape.h"	
+#include "Shapes/OgreBulletCollisionsTrimeshShape.h"	
 
+
+using namespace Ogre;
+using namespace OgreBulletCollisions;
+using namespace OgreBulletDynamics;
 class PlayState : public Ogre::Singleton<PlayState>, public GameState
 {
  public:
@@ -54,20 +63,18 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
  protected:
   Ogre::Root* _root;
   Ogre::SceneManager* _sceneMgr;
-  Ogre::Viewport* _viewport;
   Ogre::Camera* _camera;
   Ogre::OverlayManager* _overlayManager;
-  Ogre::SceneNode* _ground;
-  Ogre::SceneNode* _nave;
-  Ogre::SceneNode* _node;
-  Ogre::Light* _light,*_light2;
-  Ogre::Overlay *_overlay;
+  Ogre::SceneNode* _scenario,*_ball, *_ground,* _nave;
+  Ogre::Light* _light;
   Ogre::RaySceneQuery *_raySceneQuery;
   Ogre::Real deltaT;
   Ogre::Rectangle2D* _rect;
   Ogre::MaterialPtr _material;
-  SoundFXManager* _pSoundFXManager;
-  SoundFXPtr _simpleEffect;
+  OgreBulletDynamics::DynamicsWorld * _world;
+  std::deque <OgreBulletDynamics::RigidBody *>         _bodies;
+  std::deque <OgreBulletCollisions::CollisionShape *>  _shapes;
+
   bool _exitGame;
 
  private:
@@ -76,7 +83,6 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   bool _key_pressed;
   bool _end_game;
   bool _pick;
-  std::stringstream _s;
   Ogre::Real _time_count,_last_time;
   void gameOver();
   void gameWin();

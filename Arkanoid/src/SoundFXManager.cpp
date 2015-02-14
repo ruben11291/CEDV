@@ -40,6 +40,11 @@ SoundFXManager::load
 
   return soundFXPtr;
 }
+SoundFXPtr
+SoundFXManager::getMusic(const Ogre::String& name){
+  
+  return  getByName(name);
+}
 
 SoundFXManager&
 SoundFXManager::getSingleton()

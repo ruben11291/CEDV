@@ -8,10 +8,12 @@ DIRHEA := include/
 CXX := g++
 
 # Flags de compilación -----------------------------------------------
-CXXFLAGS := -I $(DIRHEA) -Wall  `pkg-config --cflags CEGUI` `pkg-config --cflags OGRE` $(CEGUI_CFLAGS) `pkg-config --cflags OIS`
+CXXFLAGS := -I $(DIRHEA) -Wall  `pkg-config --cflags CEGUI` `pkg-config --cflags OGRE` `pkg-config   \
+--cflags OgreBullet` `pkg-config --cflags bullet` $(CEGUI_CFLAGS) `pkg-config --cflags OIS`
 
 # Flags del linker ---------------------------------------------------
-LDFLAGS := `pkg-config --libs CEGUI` `pkg-config --libs CEGUI-OGRE` `pkg-config --libs OGRE` -lOIS -lGL -lstdc++ $(CEGUI_LDFLAGS) -lboost_system -lSDL -lSDL_mixer
+LDFLAGS := `pkg-config --libs CEGUI` `pkg-config --libs CEGUI-OGRE` \
+`pkg-config --libs-only-l OgreBullet` `pkg-config --libs-only-l bullet` -lOIS -lGL -lstdc++ $(CEGUI_LDFLAGS) -lboost_system -lSDL -lSDL_mixer
 
 # Modo de compilación (-mode=release -mode=debug) --------------------
 ifeq ($(mode), release) 

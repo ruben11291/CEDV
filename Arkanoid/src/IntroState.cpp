@@ -227,7 +227,8 @@ IntroState::pause ()
 
 void
 IntroState::resume ()
-{
+{  _node->setVisible(true,false);
+
   std::cout << "resume"<<std::endl;
   _overlay->show();
   CEGUI::WindowManager::getSingleton().getWindow("Ex1/QuitButton")->show(); 
@@ -235,7 +236,6 @@ IntroState::resume ()
   CEGUI::WindowManager::getSingleton().getWindow("Ex1/RecordsButton")->show();
   CEGUI::WindowManager::getSingleton().getWindow("Ex1/CreditsButton")->show();
   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->show();
-  _node->setVisible(true,false);
   std::cout <<"RESUME END"<<std::endl;
 }
 

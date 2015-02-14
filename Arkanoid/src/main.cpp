@@ -65,6 +65,10 @@ int main () {
     {
       std::cerr << "Excepción detectada: " << e.getFullDescription();
     }
+  catch(...)
+    {
+      std::cout << "Exception desconocida"<<std::endl;
+    }
   
   delete game;
   

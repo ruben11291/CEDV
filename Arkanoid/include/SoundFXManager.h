@@ -37,6 +37,8 @@ class SoundFXManager: public Ogre::ResourceManager,
   virtual SoundFXPtr load(const Ogre::String& name,
 			  const Ogre::String& group = Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
+  virtual SoundFXPtr getMusic(const Ogre::String& name);
+
   static SoundFXManager& getSingleton();
   static SoundFXManager* getSingletonPtr();
 

@@ -105,8 +105,7 @@ void
 LevelState::exit ()
 { 
   std::cout << "EXIT LEVELSTATE"<<std::endl;
-//   CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Level4Button");
-  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Level3Button");
+   CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Level3Button");
   CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Level2Button");
   CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Sheete");
  
@@ -114,10 +113,10 @@ LevelState::exit ()
 std::cout << "exit"<<std::endl;
   Ogre::MaterialManager::getSingleton().remove("Backgro");
 std::cout << "exit"<<std::endl;
-  _node->detachAllObjects();
+//  _node->detachAllObjects();
   _sceneMgr->destroySceneNode(_node);
   std::cout << "exit"<<std::endl;
-  delete _rect;
+  //delete _rect;
    // _sceneMgr->clearScene();
   std::cout << "exit"<<std::endl;
 }
@@ -165,7 +164,7 @@ void
 LevelState::keyPressed
 (const OIS::KeyEvent &e)
 {
-  if (e.key == OIS::KC_ESCAPE) {
+  if (e.key == OIS::KC_P) {
     popState();
   }
   

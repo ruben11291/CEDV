@@ -23,19 +23,7 @@ PlayState::enter ()
    _light->setSpotlightInnerAngle(Ogre::Degree(25.0f));
   _light->setSpotlightOuterAngle(Ogre::Degree(60.0f));
   _light->setSpotlightFalloff(0.0f);
-//   _light->setCastShadows(true);
-  
-	
-//    _light2 = _sceneMgr->createLight("Light2");
-//   _light2->setType(Ogre::Light::LT_SPOTLIGHT);
-//   _light2->setDiffuseColour(0.2,0.2,0.2);
-//   _light2->setPosition(3,12,3);
-//   _light2->setDirection(Ogre::Vector3(-0.3, -1, 0));
-//   _light2->setSpotlightInnerAngle(Ogre::Degree(25.0f));
-//   _light2->setSpotlightOuterAngle(Ogre::Degree(65.0f));
-//   _light2->setSpotlightFalloff(5.0f);
-//   _light2->setCastShadows(true);
-  
+
   _camera = _sceneMgr->getCamera("IntroCamera");
   _camera->setPosition(Ogre::Vector3(0.07694,7.3,6.5));
   _camera->lookAt(Ogre::Vector3(0.67329,-0.12087,1.1));
@@ -45,87 +33,112 @@ PlayState::enter ()
   _camera->setFOVy(Ogre::Degree(53.13));
       std::cout << "Play state end" << std::endl;
 
-  _pSoundFXManager = SoundFXManager::getSingletonPtr();
-  _simpleEffect = _pSoundFXManager->load("bomb.wav");
-  _simpleEffect = _pSoundFXManager->load("impact.wav");
+  SoundFXManager::getSingletonPtr()->load("bomb.wav");
+  SoundFXManager::getSingletonPtr()->load("impact.wav");
   
-  _viewport = _root->getAutoCreatedWindow()->getViewport(0);
-  
-  double width = _viewport->getActualWidth();
-  double height = _viewport->getActualHeight();
-  _camera->setAspectRatio(width / height);
-  
- 
-  
-  
-  /*Creation of the minesweeper*/
-  _node = _sceneMgr->createSceneNode("plano");
-   Ogre::Entity* ent1 = _sceneMgr->createEntity("Suelo.mesh");
-   ent1->setMaterialName("suelo");
-   ent1->setCastShadows(true);
-    Ogre::Entity *ent3 = _sceneMgr->createEntity("laterales.mesh");
-    ent3->setCastShadows(true);
-   _node->scale(1.30,1.30,1.30);
-  _node->attachObject(ent1);
-   _node->attachObject(ent3);
-  _sceneMgr->getRootSceneNode()->addChild(_node);
+  //World's creation
+ // Creacion del modulo de debug visual de Bullet ------------------
+   OgreBulletCollisions::DebugDrawer * _debugDrawer = new OgreBulletCollisions::DebugDrawer();
+  _debugDrawer->setDrawWireframe(true);	 
+  SceneNode *_debug = _sceneMgr->getRootSceneNode()->
+    createChildSceneNode("debugNode", Vector3::ZERO);
+  _debug->attachObject(static_cast <SimpleRenderable *>(_debugDrawer));
 
-  Ogre::SceneNode* bola = _sceneMgr->createSceneNode("bola");
+
+ // Creacion del mundo (definicion de los limites y la gravedad) ---
+  AxisAlignedBox worldBounds = AxisAlignedBox (
+    Vector3 (-10000, -10000, -10000), 
+    Vector3 (10000,  10000,  10000));
+  Vector3 gravity = Vector3(0, 0, 0);
+
+  _world = new OgreBulletDynamics::DynamicsWorld(_sceneMgr,
+						 worldBounds,gravity);
+  _world->setDebugDrawer (_debugDrawer);
+
+  //Floor
+  _scenario = _sceneMgr->createSceneNode("plano");
+  Ogre::Entity* ent1 = _sceneMgr->createEntity("Suelo.mesh");
+  ent1->setMaterialName("suelo");
+  ent1->setCastShadows(true);
+  _scenario->attachObject(ent1);
+
+
+  //Lateral meshes
+  Ogre::Entity *ent3 = _sceneMgr->createEntity("laterales.mesh");
+  ent3->setCastShadows(true);
+  //_scenario->scale(1.30,1.30,1.30);
+  _scenario->attachObject(ent3);
+  _sceneMgr->getRootSceneNode()->addChild(_scenario);
+  
+  //Creation of static mesh
+  OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = new 
+    OgreBulletCollisions::StaticMeshToShapeConverter(ent3);
+
+  OgreBulletCollisions::TriangleMeshCollisionShape *latTrimesh = 
+    trimeshConverter->createTrimesh();
+
+  OgreBulletDynamics::RigidBody *laterals = new 
+    OgreBulletDynamics::RigidBody("laterals", _world);
+  laterals->setShape(_scenario, latTrimesh, 0.8, 0.95, 0, Ogre::Vector3(0,-0.3,0), 
+		       Quaternion::IDENTITY);
+
+  delete trimeshConverter;
+
+
+  _world->setShowDebugShapes (true); 
+
+  /////////Ball creation
+  _ball = _sceneMgr->createSceneNode("bola");
   Ogre::Entity* ball = _sceneMgr->createEntity("ball.mesh");
   ball->setMaterialName("ball");
   ball->setCastShadows(true);
-  bola->scale(0.3,0.3,0.3);
-  bola->attachObject(ball);
-  bola->translate(0,0.4,-0.65);
-  _sceneMgr->getRootSceneNode()->addChild(bola);
-  
-  
+  _ball->scale(0.3,0.3,0.3);
+  _ball->attachObject(ball);
+  Ogre::Vector3 vball(0,0,-0.65);
+  _ball->translate(vball);
+  _sceneMgr->getRootSceneNode()->addChild(_ball);
+  ///Ball colission shape
+  OgreBulletCollisions::SphereCollisionShape *ballShape = 
+    new OgreBulletCollisions::SphereCollisionShape(ball->getBoundingRadius()*0.3);
+
+  OgreBulletDynamics::RigidBody *rigidbody = new 
+    OgreBulletDynamics::RigidBody("ball", _world);
+  rigidbody->setShape(_ball, ballShape, 0.05, 0.05, 0.3, vball, 
+		      Quaternion::IDENTITY);
+
+  rigidbody->setLinearVelocity(Ogre::Vector3(0,0,-1)); 
+
+  Ogre::Vector3 cube_scale(2,1,1);
   Ogre::SceneNode* cubo_n = _sceneMgr->createSceneNode("normal");
-  Ogre::Entity* normal = _sceneMgr->createEntity("Cube2.mesh");
-  normal->setMaterialName("Cube1");
-  normal->setCastShadows(true);
-   cubo_n->scale(2.5,1.3,1.3);
-  cubo_n->attachObject(normal);
-  cubo_n->translate(0,0,-8.5);
+  Ogre::Entity* cube = _sceneMgr->createEntity("Cube2.mesh");
+  cube->setMaterialName("Cube1");
+  cube->setCastShadows(true);
+  cubo_n->scale(cube_scale);
+  cubo_n->attachObject(cube);
   _sceneMgr->getRootSceneNode()->addChild(cubo_n);
-  
-   Ogre::SceneNode* cubo_g = _sceneMgr->createSceneNode("verde");
-  Ogre::Entity* verde = _sceneMgr->createEntity("Cube2.mesh");
-  verde->setMaterialName("Cube2");
-   verde->setCastShadows(true);
-  cubo_g->scale(2.5,1.3,1.3);
-  cubo_g->attachObject(verde);
+
+  AxisAlignedBox boundingB = cube->getBoundingBox();
+  Ogre::Vector3 size = boundingB.getSize();
+  size/=2.0f;
+  OgreBulletCollisions::BoxCollisionShape *cubeShape = 
+    new OgreBulletCollisions::BoxCollisionShape(size*cube_scale);
+
+  rigidbody =   new OgreBulletDynamics::RigidBody("caja1", _world);
+  rigidbody->setShape(cubo_n, cubeShape,
+  		     0.6 /* Restitucion */, 0 /* Friccion */,
+  		      0 /* Masa */, Ogre::Vector3(0,-0.2,-8.5) /* Posicion inicial */,
+  		     Quaternion::IDENTITY /* Orientacion */);
+
+
+  Ogre::SceneNode* cubo_g = _sceneMgr->createSceneNode("verde");
+  cube = _sceneMgr->createEntity("Cube2.mesh");
+  cube->setMaterialName("Cube2");
+  cube->setCastShadows(true);
+  cubo_g->scale(cube_scale);
+  cubo_g->attachObject(cube);
   cubo_g->translate(-1.4,0,-8.5);
   _sceneMgr->getRootSceneNode()->addChild(cubo_g);
-  
-  Ogre::SceneNode* cubo_r = _sceneMgr->createSceneNode("rojo");
-  Ogre::Entity* rojo = _sceneMgr->createEntity("Cube2.mesh");
-  rojo->setMaterialName("Cube4");
-  rojo->setCastShadows(true);
-  cubo_r->scale(2.5,1.3,1.3);
-  cubo_r->attachObject(rojo);
-  cubo_r->translate(-1.2,0,-4.5);
-  _sceneMgr->getRootSceneNode()->addChild(cubo_r);
-  
-  Ogre::SceneNode* cubo_b = _sceneMgr->createSceneNode("azul");
-  Ogre::Entity* azul = _sceneMgr->createEntity("Cube2.mesh");
-  azul->setMaterialName("Cube3");
-  azul->setCastShadows(true);
-  cubo_b->scale(2.5,1.3,1.3);
-  cubo_b->attachObject(azul);
-  cubo_b->translate(1.2,0,-4.5);
-  _sceneMgr->getRootSceneNode()->addChild(cubo_b);
-  
-   Ogre::SceneNode* cubo_y = _sceneMgr->createSceneNode("amarillo");
-  Ogre::Entity* amarillo = _sceneMgr->createEntity("Cube2.mesh");
-  amarillo->setMaterialName("Cube5");
-  amarillo->setCastShadows(true);
-  cubo_y->scale(2.5,1.3,1.3);
-  cubo_y->attachObject(amarillo);
-  cubo_y->translate(1.2,0,-6.5);
-  _sceneMgr->getRootSceneNode()->addChild(cubo_y);
-  
-  
+ 
   _nave= _sceneMgr->createSceneNode("nave");
   Ogre::Entity* ent2 = _sceneMgr->createEntity("Cube.mesh");
   ent2->setCastShadows(true);
@@ -135,6 +148,19 @@ PlayState::enter ()
   _nave->translate(0,0.5,0);
   _sceneMgr->getRootSceneNode()->addChild(_nave);
   
+ // AxisAlignedBox boundingB = cube->getBoundingBox();
+ //  Ogre::Vector3 size = boundingB.getSize(); 
+ //  OgreBulletCollisions::BoxCollisionShape *cubeShape = 
+ //    new OgreBulletCollisions::BoxCollisionShape(size);
+
+ //  rigidbody =   new OgreBulletDynamics::RigidBody("caja1", _world);
+ //  rigidbody->setShape(cubo_n, cubeShape,
+ //  		     0.6 Restitucion, 0.6 Friccion,
+ //  		      5.0 Masa, cubo_n->getPosition() Posicion inicial,
+ //  		     Quaternion::IDENTITY Orientacion);
+
+
+
   Ogre::Plane plane1(Ogre::Vector3::UNIT_Y, 0);
   Ogre::MeshManager::getSingleton().createPlane("plane1",
 	Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane1,
@@ -145,49 +171,44 @@ PlayState::enter ()
   groundEnt->setMaterialName("Ground");
   groundEnt->setCastShadows(false);
   _ground->attachObject(groundEnt);
-  _ground->translate(0,-0.2,0);
+  _ground->translate(0,-0.4,0);
   _sceneMgr->getRootSceneNode()->addChild(_ground);
-
+  
   
   _raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
   
   _overlayManager = Ogre::OverlayManager::getSingletonPtr();
-  _overlay = _overlayManager->getByName("Info");
-  _overlay->show();
-  Ogre::OverlayElement * oe = _overlayManager->getOverlayElement("logoGO");
-  oe->hide();
-  //   oe->hide();
-  oe = _overlayManager->getOverlayElement("logoClear");
-  oe->hide();
-
+  _overlayManager->getByName("Info")->show();
+  
+  _overlayManager->getOverlayElement("logoGO")->hide();
+  _overlayManager->getOverlayElement("logoClear")->hide();
+  
   _last_time = _time_count = 0;
   _key_pressed=_pick = _end_game = false;
   _exitGame = true;
-  _s << "0.0";
 }
 
 void
 PlayState::exit ()
 { 
-  delete _rect;
   _sceneMgr->destroyQuery(static_cast<Ogre::RaySceneQuery*>(_raySceneQuery));
-  _s.str(" ");
-  _overlay->hide();
+   SoundFXManager::getSingletonPtr()->unload("bomb.wav");
+   SoundFXManager::getSingletonPtr()->unload("impact.wav");
+
+  _overlayManager->destroy(_overlayManager->getByName("Info"));
+  // _overlay->hide();
+  _sceneMgr->destroyLight(_light);
   _sceneMgr->destroySceneNode(_ground);
-  _sceneMgr->destroySceneNode(_node);
+  _sceneMgr->destroySceneNode(_scenario);
   _sceneMgr->destroySceneNode(_nave);
-//   delete _node;
-//   delete _nave;
-//   delete _minesweeper;
+
 }
 
 void
 PlayState::pause()
 {  
   _pick=false;
-//   _minesweeper->hide();
-  _ground->setVisible(false);
-  _overlay->hide();
+  _overlayManager->getByName("Info")->hide();
 }
 
 void
@@ -195,8 +216,7 @@ PlayState::resume()
 {
   _pick=true;
   _ground->setVisible(true);
-//   _minesweeper->show();
-  _overlay->show();
+  _overlayManager->getByName("Info")->show();
 }
 
 bool
@@ -216,14 +236,13 @@ PlayState::frameStarted
 //   mines << _minesweeper->getFlags() << "/" << _minesweeper->getTotalMines();
   oe->setCaption(mines.str());
   
+  _world->stepSimulation(deltaT);
   oe = _overlayManager->getOverlayElement("timeinf");
   if (_pick){
     _last_time += deltaT;
-    _s.str("");
-    _s << std::setprecision(1)<<std::fixed << _last_time;
-    oe->setCaption(_s.str());
+    oe->setCaption("");
   }
-  else oe->setCaption(_s.str());
+  else oe->setCaption("");
   
   
   return true;
@@ -263,8 +282,7 @@ PlayState::keyPressed
     
     if(e.key == OIS::KC_R){
 //       r-=180;
-        _simpleEffect->play();
-
+      SoundFXManager::getSingletonPtr()->getMusic("impact.wav")->play();
 //       _minesweeper->yaw(Ogre::Degree(r*0.1));
     }
     
@@ -364,20 +382,17 @@ PlayState::mousePressed
 
 void PlayState::gameOver(){
   _pick = false;
-  Ogre::OverlayElement * oe = _overlayManager->getOverlayElement("logoGO");
-  oe->show();
-  _simpleEffect->play();
-//   _minesweeper->showMines();
+  _overlayManager->getOverlayElement("logoGO")->show();
+  SoundFXManager::getSingletonPtr()->getMusic("bomb.wav")->play();
+
   _end_game = true;
 }
 
 
 void PlayState::gameWin(){
   _pick = false;
-  Ogre::OverlayElement* oe = _overlayManager->getOverlayElement("logoClear");
-  oe->show();
+  _overlayManager->getOverlayElement("logoClear")->show();
   std::ofstream file("records.txt", std::ofstream::app | std::ofstream::out);
-  file << "Player " << _s.str() << std::endl;
   file.close();
   _end_game = true;
 }
