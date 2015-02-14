@@ -108,9 +108,10 @@ PlayState::enter ()
 
   rigidbody->setLinearVelocity(Ogre::Vector3(0,0,-1)); 
 
-  Ogre::Vector3 cube_scale(2,1,1);
+  Ogre::Vector3 cube_scale(0.7,0.3,0.3);
+  Ogre::Entity* cube = _sceneMgr->createEntity("cube.mesh");
   Ogre::SceneNode* cubo_n = _sceneMgr->createSceneNode("normal");
-  Ogre::Entity* cube = _sceneMgr->createEntity("Cube2.mesh");
+  
   cube->setMaterialName("Cube1");
   cube->setCastShadows(true);
   cubo_n->scale(cube_scale);
@@ -126,18 +127,25 @@ PlayState::enter ()
   rigidbody =   new OgreBulletDynamics::RigidBody("caja1", _world);
   rigidbody->setShape(cubo_n, cubeShape,
   		     0.6 /* Restitucion */, 0 /* Friccion */,
-  		      0 /* Masa */, Ogre::Vector3(0,-0.2,-8.5) /* Posicion inicial */,
+  		      0 /* Masa */, Ogre::Vector3(0,0,-8.5) /* Posicion inicial */,
   		     Quaternion::IDENTITY /* Orientacion */);
 
+  Ogre::Vector3 bbSize = cube->getMesh()->getBounds().getSize();
 
   Ogre::SceneNode* cubo_g = _sceneMgr->createSceneNode("verde");
-  cube = _sceneMgr->createEntity("Cube2.mesh");
+  cube = _sceneMgr->createEntity("cube.mesh");
   cube->setMaterialName("Cube2");
   cube->setCastShadows(true);
   cubo_g->scale(cube_scale);
   cubo_g->attachObject(cube);
-  cubo_g->translate(-1.4,0,-8.5);
   _sceneMgr->getRootSceneNode()->addChild(cubo_g);
+  
+  rigidbody =   new OgreBulletDynamics::RigidBody("caja2", _world);
+  rigidbody->setShape(cubo_g, cubeShape,
+  		     0.6 /* Restitucion */, 0 /* Friccion */,
+  		      0 /* Masa */, Ogre::Vector3(float(bbSize.x*cube_scale.x),0,-8.5) /* Posicion inicial */,
+  		     Quaternion::IDENTITY /* Orientacion */);
+
  
   _nave= _sceneMgr->createSceneNode("nave");
   Ogre::Entity* ent2 = _sceneMgr->createEntity("Cube.mesh");
