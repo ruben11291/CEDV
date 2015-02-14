@@ -108,6 +108,11 @@ PlayState::enter ()
 
   rigidbody->setLinearVelocity(Ogre::Vector3(0,0,-1)*2); 
 
+
+
+
+
+
   Ogre::Vector3 cube_scale(0.7,0.3,0.3);
   Ogre::Entity* cube = _sceneMgr->createEntity("cube.mesh");
   Ogre::SceneNode* cubo_n = _sceneMgr->createSceneNode("normal");
