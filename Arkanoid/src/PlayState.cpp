@@ -106,7 +106,7 @@ PlayState::enter ()
   rigidbody->setShape(_ball, ballShape, 0.05, 0.05, 0.3, vball, 
 		      Quaternion::IDENTITY);
 
-  rigidbody->setLinearVelocity(Ogre::Vector3(0,0,-1)); 
+  rigidbody->setLinearVelocity(Ogre::Vector3(0,0,-1)*2); 
 
   Ogre::Vector3 cube_scale(2,1,1);
   Ogre::SceneNode* cubo_n = _sceneMgr->createSceneNode("normal");
@@ -125,7 +125,7 @@ PlayState::enter ()
 
   rigidbody =   new OgreBulletDynamics::RigidBody("caja1", _world);
   rigidbody->setShape(cubo_n, cubeShape,
-  		     0.6 /* Restitucion */, 0 /* Friccion */,
+  		     20 /* Restitucion */, 0 /* Friccion */,
   		      0 /* Masa */, Ogre::Vector3(0,-0.2,-8.5) /* Posicion inicial */,
   		     Quaternion::IDENTITY /* Orientacion */);
 
@@ -143,21 +143,21 @@ PlayState::enter ()
   Ogre::Entity* ent2 = _sceneMgr->createEntity("Cube.mesh");
   ent2->setCastShadows(true);
   _nave->scale(0.2,0.2,0.2);
-  _nave->yaw(Ogre::Degree(-180));
+  // _nave->yaw(Ogre::Degree(-180));
   _nave->attachObject(ent2);
   _nave->translate(0,0.5,0);
   _sceneMgr->getRootSceneNode()->addChild(_nave);
   
- // AxisAlignedBox boundingB = cube->getBoundingBox();
- //  Ogre::Vector3 size = boundingB.getSize(); 
- //  OgreBulletCollisions::BoxCollisionShape *cubeShape = 
- //    new OgreBulletCollisions::BoxCollisionShape(size);
+  boundingB = ent2->getBoundingBox();
+  size = boundingB.getSize()* Vector3(0.2,0.2,0.2);
+  size /=2.0;
+  cubeShape =   new OgreBulletCollisions::BoxCollisionShape(size);
 
- //  rigidbody =   new OgreBulletDynamics::RigidBody("caja1", _world);
- //  rigidbody->setShape(cubo_n, cubeShape,
- //  		     0.6 Restitucion, 0.6 Friccion,
- //  		      5.0 Masa, cubo_n->getPosition() Posicion inicial,
- //  		     Quaternion::IDENTITY Orientacion);
+  rigidbody =   new OgreBulletDynamics::RigidBody("aircraft", _world);
+  rigidbody->setShape(_nave, cubeShape,
+		      10 /*Restitucion*/, 0,// Friccion,
+  		      0, _nave->getPosition(),
+		      Ogre::Quaternion(0,0,0.5,0));
 
 
 
