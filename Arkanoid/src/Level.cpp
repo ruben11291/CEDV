@@ -7,17 +7,49 @@ Level::Level(int difficult, Ogre::SceneManager * sceneManager){
   Ogre::Vector3 velocity(0,0,-1);
   ballCreation(velocity*difficult);
   orionCreation();
-  _section = new Section(_world,difficult, 0,100,0,100);//TODO
+  Ogre::AxisAlignedBox box_floor= _scenarioNode->getAttachedObject("floor")->getBoundingBox();
+  Ogre::Vector3 corner_sup = box_floor.getCorner( AxisAlignedBox::FAR_LEFT_TOP);
+  Ogre::Vector3 corner_inf =  box_floor.getCorner( AxisAlignedBox::NEAR_RIGHT_TOP);
+    
+  
+  
+  
+  
+  
+  _section = new Section(_world,difficult,/*x0*/ corner_sup.x+(2*0.863) ,/*xf*/ corner_inf.x-(2*0.863) ,/*y0*/ corner_sup.z+0.863 ,/*yf*/ corner_inf.z -0.863 );
 }
 
 Level::~Level(){
   delete _section;
   Ogre::SceneManager* mgr=Ogre::Root::getSingletonPtr()->getSceneManager("SceneManager");
+
+  std::vector<OgreBulletCollisions::CollisionShape *>::iterator il=_shapes.begin();
+  while(il!=_shapes.end()){
+    delete *il;
+    il++;
+  }
+  std::vector<OgreBulletDynamics::RigidBody*>::iterator ib=_bodies.begin();
+  while(ib!=_bodies.end()){
+    delete *ib;
+    ib++;
+  }
+  std::vector<OgreBulletCollisions::TriangleMeshCollisionShape*>::iterator it=_trimesh.begin();
+  while(it!=_trimesh.end()){
+    delete *it;
+    it++;
+  }
+  delete _debugDrawer;
+  delete _world;  
+
+  mgr->destroyEntity("floor");
+  mgr->destroyEntity("back");
+  mgr->destroyEntity("left");
+  mgr->destroyEntity("right");
+
   mgr->destroySceneNode("debugNode");
   mgr->destroySceneNode(_ballNode);
   mgr->destroySceneNode(_orionNode);
   mgr->destroySceneNode(_scenarioNode);
-  mgr->destroySceneNode(_ground);
 }
 
 void Level::worldCreation(){
@@ -45,34 +77,33 @@ void Level::worldCreation(){
 void Level::scenarioCreation(){
    //Floor
   _scenarioNode = _sceneMgr->createSceneNode("plano");
-  Ogre::Entity* ent1 = _sceneMgr->createEntity("Suelo.mesh");
+  Ogre::Entity* ent1 = _sceneMgr->createEntity("floor", "Suelo.mesh");
   ent1->setMaterialName("suelo");
   ent1->setCastShadows(true);
   _scenarioNode->attachObject(ent1);
 
 
-  //Lateral meshes
-  Ogre::Entity *ent3 = _sceneMgr->createEntity("laterales.mesh");
-  ent3->setCastShadows(true);
-  //_scenario->scale(1.30,1.30,1.30);
-  _scenarioNode->attachObject(ent3);
+  //Lateral left
+  Ogre::Entity *ent = _sceneMgr->createEntity("left","lat_left.mesh");
+  ent->setCastShadows(true);
+  _scenarioNode->attachObject(ent);
+  createCollision(_scenarioNode,ent,_world,std::string("left"));
+
+ //Lateral meshes
+  ent = _sceneMgr->createEntity("right","lat_right.mesh");
+  ent->setCastShadows(true);
+  _scenarioNode->attachObject(ent);
+  createCollision(_scenarioNode,ent, _world,std::string("right"));
+
+
+ //Lateral meshes
+  ent = _sceneMgr->createEntity("back","lat_back.mesh");
+  ent->setCastShadows(true);
+  _scenarioNode->attachObject(ent);
+  createCollision(_scenarioNode,ent,_world,std::string("back"));
   _sceneMgr->getRootSceneNode()->addChild(_scenarioNode);
-  
-  //Creation of static mesh
-  OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = new 
-    OgreBulletCollisions::StaticMeshToShapeConverter(ent3);
 
-  OgreBulletCollisions::TriangleMeshCollisionShape *latTrimesh = 
-    trimeshConverter->createTrimesh();
-
-  OgreBulletDynamics::RigidBody *laterals = new 
-    OgreBulletDynamics::RigidBody("laterals", _world);
-  laterals->setShape(_scenarioNode, latTrimesh, 0.8, 0.95, 0, Ogre::Vector3(0,-0.3,0), 
-		       Quaternion::IDENTITY);
-
-  delete trimeshConverter;
-
-}
+ }
 
 void Level::ballCreation(Ogre::Vector3 velocity){
   
@@ -96,6 +127,8 @@ void Level::ballCreation(Ogre::Vector3 velocity){
 		      Quaternion::IDENTITY);
 
   rigidbody->setLinearVelocity(velocity); 
+  _shapes.push_back(ballShape);
+  _bodies.push_back(rigidbody);
 }
 
 void Level::orionCreation(){
@@ -118,6 +151,8 @@ void Level::orionCreation(){
 		      20 /*Restitucion*/, 0,// Friccion,
   		      0, _orionNode->getPosition(),
 		      Ogre::Quaternion(0,0,0.5,0));
+  _shapes.push_back(cubeShape);
+  _bodies.push_back(rigidbody);
 }
 
 OgreBulletDynamics::DynamicsWorld* Level::getWorld(){
@@ -126,4 +161,25 @@ OgreBulletDynamics::DynamicsWorld* Level::getWorld(){
 
 void Level::translate(Ogre::Vector3 v){
   _orionNode->translate(v);
+}
+
+void Level::createCollision(Ogre::SceneNode * node,Ogre::Entity * ent,OgreBulletDynamics::DynamicsWorld* world, std::string name){
+  
+ //Creation of static mesh
+  OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = new 
+    OgreBulletCollisions::StaticMeshToShapeConverter(ent);
+
+  OgreBulletCollisions::TriangleMeshCollisionShape *latTrimesh = 
+    trimeshConverter->createTrimesh();
+
+  OgreBulletDynamics::RigidBody *lateral = new 
+    OgreBulletDynamics::RigidBody(name,world);
+  lateral->setShape(node, latTrimesh, 0.8, 0.95, 0, Ogre::Vector3(0,-0.3,0), 
+		       Quaternion::IDENTITY);
+
+  delete trimeshConverter;
+
+
+  _trimesh.push_back(latTrimesh);
+  _bodies.push_back(lateral);
 }

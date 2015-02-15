@@ -3,13 +3,13 @@
 Section::Section(){
 }
 Section::Section(OgreBulletDynamics::DynamicsWorld* world,int difficult, float x0,  float xf, float y0, float yf){
-  double dist_x = xf-x0;
-  double dist_y = yf-y0;
-  int cubes_line = 8;
+  double dist_x = abs(xf-x0);
+  int cubes_line = 12;
   float len_x_cube = dist_x/(float)cubes_line;
-  float len_y_cube = dist_y/(float)cubes_line;
-  Ogre::Vector3 scale(len_x_cube, len_y_cube, len_y_cube/*z==y*/);
+  //  float len_y_cube = dist_y/(float)cubes_line;
+  Ogre::Vector3 scale(len_x_cube, 0.2, 0.2);
   int ncubes, fixed, two_impact;
+  
   switch(difficult){
   case 0://easy level
     ncubes = cubes_line*4;
@@ -45,9 +45,8 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int ncubes, i
    OgreBulletDynamics::RigidBody * rigidbody;
 
   for(;ncubes > 0;ncubes--){
-    for(int i = 0;i<cubes_line;i++){
       cube = _sceneMgr->createEntity("cube.mesh");
-      cubo_n = _sceneMgr->createSceneNode("cube"+StringConverter::toString(i));
+      cubo_n = _sceneMgr->createSceneNode("cube"+StringConverter::toString(ncubes));
       //     cube->setMaterialName("Cube"+StringConverter::toString(i));
       cube->setCastShadows(true);
       cubo_n->scale(scale);
@@ -62,12 +61,12 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int ncubes, i
       cubeShape = 
 	new OgreBulletCollisions::BoxCollisionShape(size*scale);
       
-      rigidbody =   new OgreBulletDynamics::RigidBody("box"+StringConverter::toString(i), world);
+      rigidbody =   new OgreBulletDynamics::RigidBody("box"+StringConverter::toString(ncubes), world);
       rigidbody->setShape(cubo_n, cubeShape,
 			  50 /* Restitucion */, 0 /* Friccion */,
-			  0 /* Masa */, Ogre::Vector3(x0+i,0,y0) /* Posicion inicial */, 		     Quaternion::IDENTITY /* Orientacion */);
+			  0 /* Masa */, /*Ogre::Vector3(((int)x0%cubes_line)+(float)size.x+ncubes,0,y0*(ncubes%cubes_line)) /* Posicion inicial */ Ogre::Vector3(x0+size.x,0,y0+size.x), 		     Quaternion::IDENTITY /* Orientacion */);///TO DO WELL
       _cubes.push_back(new Cube(cube,cubo_n,rigidbody,cubeShape));
-    }
+    
   }
   
   std::vector <Cube*> tmp(_cubes);
@@ -85,9 +84,10 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int ncubes, i
 
 
 Section::~Section(){
-  std::vector<Cube*>::iterator it=_cubes.begin();
-  while(it!=_cubes.end()){
-    delete *it;
-    it++;
-  }
+
+   std::vector<Cube*>::iterator it=_cubes.begin();
+   while(it!=_cubes.end()){
+     delete *it;
+     it++;
+   }
 }

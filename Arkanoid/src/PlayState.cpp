@@ -36,7 +36,7 @@ PlayState::enter ()
   SoundFXManager::getSingletonPtr()->load("bomb.wav");
   SoundFXManager::getSingletonPtr()->load("impact.wav");
   
-  _level = new Level(4,_sceneMgr);
+  _level = new Level(2,_sceneMgr);
 
 
 
@@ -71,11 +71,11 @@ void
 PlayState::exit ()
 { 
   _sceneMgr->destroyQuery(static_cast<Ogre::RaySceneQuery*>(_raySceneQuery));
+  delete _level;
    SoundFXManager::getSingletonPtr()->unload("bomb.wav");
    SoundFXManager::getSingletonPtr()->unload("impact.wav");
-
-  _overlayManager->destroy(_overlayManager->getByName("Info"));
-  // _overlay->hide();
+  _sceneMgr->destroyEntity("planeEnt");
+  _overlayManager->getByName("Info")->hide();
   _sceneMgr->destroyLight(_light);
   _sceneMgr->destroySceneNode(_ground);
  

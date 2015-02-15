@@ -19,16 +19,22 @@ class Level{
   OgreBulletDynamics::DynamicsWorld * getWorld();
   void translate(Ogre::Vector3);
  private:
-  SceneNode * _ballNode, * _orionNode, *_scenarioNode, *_ground;
+  SceneNode * _ballNode, * _orionNode, *_scenarioNode;
   Section *_section;
   OgreBulletDynamics::DynamicsWorld *_world;
   OgreBulletCollisions::DebugDrawer * _debugDrawer;
   Ogre::SceneManager *_sceneMgr;
+  std::vector<OgreBulletCollisions::CollisionShape*> _shapes;
+  std::vector<OgreBulletDynamics::RigidBody*> _bodies;
+  std::vector<OgreBulletCollisions::TriangleMeshCollisionShape*> _trimesh;
+
   void worldCreation();
   void scenarioCreation();
   void orionCreation();
   void ballCreation(Ogre::Vector3);
-  
+  void createCollision(Ogre::SceneNode * node, Ogre::Entity * ent, OgreBulletDynamics::DynamicsWorld* world, std::string str);
+
+
 };
 
 #endif
