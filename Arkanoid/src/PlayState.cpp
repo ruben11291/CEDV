@@ -17,7 +17,7 @@ PlayState::enter ()
     _sceneMgr->setShadowTextureSize(512);
      
   _light = _sceneMgr->createLight("Light1");
-   _light->setPosition(-5,12,2);
+   _light->setPosition(9,7,2);
   _light->setType(Ogre::Light::LT_SPOTLIGHT);
   _light->setDirection(Ogre::Vector3(1,-1,0));
    _light->setSpotlightInnerAngle(Ogre::Degree(25.0f));
