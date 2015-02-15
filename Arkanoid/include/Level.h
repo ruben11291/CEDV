@@ -16,6 +16,8 @@ class Level{
  public:
   Level(int, Ogre::SceneManager *);
   ~Level();
+  OgreBulletDynamics::DynamicsWorld * getWorld();
+  void translate(Ogre::Vector3);
  private:
   SceneNode * _ballNode, * _orionNode, *_scenarioNode, *_ground;
   Section *_section;
@@ -26,6 +28,7 @@ class Level{
   void scenarioCreation();
   void orionCreation();
   void ballCreation(Ogre::Vector3);
+  
 };
 
 #endif

@@ -20,6 +20,7 @@
 #include <OIS/OIS.h>
 
 #include "GameState.h"
+#include "Level.h"
 #include <vector>
 #include <sstream>
 #include <iostream>
@@ -65,16 +66,13 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::SceneManager* _sceneMgr;
   Ogre::Camera* _camera;
   Ogre::OverlayManager* _overlayManager;
-  Ogre::SceneNode* _scenario,*_ball, *_ground,* _nave;
+  Ogre::SceneNode* _ground;
   Ogre::Light* _light;
   Ogre::RaySceneQuery *_raySceneQuery;
   Ogre::Real deltaT;
   Ogre::Rectangle2D* _rect;
   Ogre::MaterialPtr _material;
-  OgreBulletDynamics::DynamicsWorld * _world;
-  std::deque <OgreBulletDynamics::RigidBody *>         _bodies;
-  std::deque <OgreBulletCollisions::CollisionShape *>  _shapes;
-
+  Level* _level;
   bool _exitGame;
 
  private:

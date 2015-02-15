@@ -36,135 +36,7 @@ PlayState::enter ()
   SoundFXManager::getSingletonPtr()->load("bomb.wav");
   SoundFXManager::getSingletonPtr()->load("impact.wav");
   
-  //World's creation
- // Creacion del modulo de debug visual de Bullet ------------------
-   OgreBulletCollisions::DebugDrawer * _debugDrawer = new OgreBulletCollisions::DebugDrawer();
-  _debugDrawer->setDrawWireframe(true);	 
-  SceneNode *_debug = _sceneMgr->getRootSceneNode()->
-    createChildSceneNode("debugNode", Vector3::ZERO);
-  _debug->attachObject(static_cast <SimpleRenderable *>(_debugDrawer));
-
-
- // Creacion del mundo (definicion de los limites y la gravedad) ---
-  AxisAlignedBox worldBounds = AxisAlignedBox (
-    Vector3 (-10000, -10000, -10000), 
-    Vector3 (10000,  10000,  10000));
-  Vector3 gravity = Vector3(0, 0, 0);
-
-  _world = new OgreBulletDynamics::DynamicsWorld(_sceneMgr,
-						 worldBounds,gravity);
-  _world->setDebugDrawer (_debugDrawer);
-
-  //Floor
-  _scenario = _sceneMgr->createSceneNode("plano");
-  Ogre::Entity* ent1 = _sceneMgr->createEntity("Suelo.mesh");
-  ent1->setMaterialName("suelo");
-  ent1->setCastShadows(true);
-  _scenario->attachObject(ent1);
-
-
-  //Lateral meshes
-  Ogre::Entity *ent3 = _sceneMgr->createEntity("laterales.mesh");
-  ent3->setCastShadows(true);
-  //_scenario->scale(1.30,1.30,1.30);
-  _scenario->attachObject(ent3);
-  _sceneMgr->getRootSceneNode()->addChild(_scenario);
-  
-  //Creation of static mesh
-  OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = new 
-    OgreBulletCollisions::StaticMeshToShapeConverter(ent3);
-
-  OgreBulletCollisions::TriangleMeshCollisionShape *latTrimesh = 
-    trimeshConverter->createTrimesh();
-
-  OgreBulletDynamics::RigidBody *laterals = new 
-    OgreBulletDynamics::RigidBody("laterals", _world);
-  laterals->setShape(_scenario, latTrimesh, 0.8, 0.95, 0, Ogre::Vector3(0,-0.3,0), 
-		       Quaternion::IDENTITY);
-
-  delete trimeshConverter;
-
-
-  _world->setShowDebugShapes (true); 
-
-  /////////Ball creation
-  _ball = _sceneMgr->createSceneNode("bola");
-  Ogre::Entity* ball = _sceneMgr->createEntity("ball.mesh");
-  ball->setMaterialName("ball");
-  ball->setCastShadows(true);
-  _ball->scale(0.3,0.3,0.3);
-  _ball->attachObject(ball);
-  Ogre::Vector3 vball(0,0,-0.65);
-  _ball->translate(vball);
-  _sceneMgr->getRootSceneNode()->addChild(_ball);
-  ///Ball colission shape
-  OgreBulletCollisions::SphereCollisionShape *ballShape = 
-    new OgreBulletCollisions::SphereCollisionShape(ball->getBoundingRadius()*0.3);
-
-  OgreBulletDynamics::RigidBody *rigidbody = new 
-    OgreBulletDynamics::RigidBody("ball", _world);
-  rigidbody->setShape(_ball, ballShape, 0.05, 0.05, 0.3, vball, 
-		      Quaternion::IDENTITY);
-
-  rigidbody->setLinearVelocity(Ogre::Vector3(0,0,-1)*2); 
-
-  Ogre::Vector3 cube_scale(0.7,0.3,0.3);
-  Ogre::Entity* cube = _sceneMgr->createEntity("cube.mesh");
-  Ogre::SceneNode* cubo_n = _sceneMgr->createSceneNode("normal");
-  
-  cube->setMaterialName("Cube1");
-  cube->setCastShadows(true);
-  cubo_n->scale(cube_scale);
-  cubo_n->attachObject(cube);
-  _sceneMgr->getRootSceneNode()->addChild(cubo_n);
-
-  AxisAlignedBox boundingB = cube->getBoundingBox();
-  Ogre::Vector3 size = boundingB.getSize();
-  size/=2.0f;
-  OgreBulletCollisions::BoxCollisionShape *cubeShape = 
-    new OgreBulletCollisions::BoxCollisionShape(size*cube_scale);
-
-  rigidbody =   new OgreBulletDynamics::RigidBody("caja1", _world);
-  rigidbody->setShape(cubo_n, cubeShape,
-  		     50 /* Restitucion */, 0 /* Friccion */,
-  		      0 /* Masa */, Ogre::Vector3(0,0,-8.5) /* Posicion inicial */, 		     Quaternion::IDENTITY /* Orientacion */);
-
-  Ogre::Vector3 bbSize = cube->getMesh()->getBounds().getSize();
-
-  Ogre::SceneNode* cubo_g = _sceneMgr->createSceneNode("verde");
-  cube = _sceneMgr->createEntity("cube.mesh");
-  cube->setMaterialName("Cube2");
-  cube->setCastShadows(true);
-  cubo_g->scale(cube_scale);
-  cubo_g->attachObject(cube);
-  _sceneMgr->getRootSceneNode()->addChild(cubo_g);
-  
-  rigidbody =   new OgreBulletDynamics::RigidBody("caja2", _world);
-  rigidbody->setShape(cubo_g, cubeShape,
-  		     0.6 /* Restitucion */, 0 /* Friccion */,
-  		      0 /* Masa */, Ogre::Vector3(float(bbSize.x*cube_scale.x),0,-8.5) /* Posicion inicial */,
-  		     Quaternion::IDENTITY /* Orientacion */);
-
- 
-  _nave= _sceneMgr->createSceneNode("nave");
-  Ogre::Entity* ent2 = _sceneMgr->createEntity("Cube.mesh");
-  ent2->setCastShadows(true);
-  _nave->scale(0.2,0.2,0.2);
-  // _nave->yaw(Ogre::Degree(-180));
-  _nave->attachObject(ent2);
-  _nave->translate(0,0.5,0);
-  _sceneMgr->getRootSceneNode()->addChild(_nave);
-  
-  boundingB = ent2->getBoundingBox();
-  size = boundingB.getSize()* Vector3(0.2,0.2,0.2);
-  size /=2.0;
-  cubeShape =   new OgreBulletCollisions::BoxCollisionShape(size);
-
-  rigidbody =   new OgreBulletDynamics::RigidBody("aircraft", _world);
-  rigidbody->setShape(_nave, cubeShape,
-		      20 /*Restitucion*/, 0,// Friccion,
-  		      0, _nave->getPosition(),
-		      Ogre::Quaternion(0,0,0.5,0));
+  _level = new Level(4,_sceneMgr);
 
 
 
@@ -206,8 +78,7 @@ PlayState::exit ()
   // _overlay->hide();
   _sceneMgr->destroyLight(_light);
   _sceneMgr->destroySceneNode(_ground);
-  _sceneMgr->destroySceneNode(_scenario);
-  _sceneMgr->destroySceneNode(_nave);
+ 
 
 }
 
@@ -243,7 +114,8 @@ PlayState::frameStarted
 //   mines << _minesweeper->getFlags() << "/" << _minesweeper->getTotalMines();
   oe->setCaption(mines.str());
   
-  _world->stepSimulation(deltaT);
+  _level->getWorld()->stepSimulation(deltaT);
+
   oe = _overlayManager->getOverlayElement("timeinf");
   if (_pick){
     _last_time += deltaT;
@@ -281,10 +153,10 @@ PlayState::keyPressed
     if(e.key == OIS::KC_RIGHT){ vt+=Ogre::Vector3(1,0,0); _camera->moveRelative(vt * deltaT * tSpeed);
     }
 
-  if(e.key == OIS::KC_A)  _nave->translate(Ogre::Vector3(-0.6,0,0));
-  if(e.key == OIS::KC_D) _nave->translate(Ogre::Vector3(0.6,0,0));
-  if(e.key == OIS::KC_W)  _nave->translate(Ogre::Vector3(0,0,-0.1));
-  if(e.key == OIS::KC_S) _nave->translate(Ogre::Vector3(0,0,0.1));
+  if(e.key == OIS::KC_A)  _level->translate(Ogre::Vector3(-0.6,0,0));
+  if(e.key == OIS::KC_D) _level->translate(Ogre::Vector3(0.6,0,0));
+  if(e.key == OIS::KC_W)  _level->translate(Ogre::Vector3(0,0,-0.1));
+  if(e.key == OIS::KC_S) _level->translate(Ogre::Vector3(0,0,0.1));
     Ogre::Real r =0;
     
     if(e.key == OIS::KC_R){

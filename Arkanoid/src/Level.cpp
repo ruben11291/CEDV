@@ -119,3 +119,11 @@ void Level::orionCreation(){
   		      0, _orionNode->getPosition(),
 		      Ogre::Quaternion(0,0,0.5,0));
 }
+
+OgreBulletDynamics::DynamicsWorld* Level::getWorld(){
+  return _world;
+}
+
+void Level::translate(Ogre::Vector3 v){
+  _orionNode->translate(v);
+}
