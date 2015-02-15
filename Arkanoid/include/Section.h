@@ -12,14 +12,14 @@ class Section{
 	public:
 	Section();
 	~Section();
-	Section(OgreBulletDynamics::DynamicsWorld *, int difficult, float x0, float xf, float y0, float yf);
+	Section(OgreBulletDynamics::DynamicsWorld *, int difficult, Ogre::Vector3&, Ogre::Vector3&, Ogre::Vector3&, Ogre::Vector3&);
 	std::vector <Cube*>& getCubes();
 	
 
 
 	private:
 	std::vector <Cube*> _cubes;
-	void createTable(OgreBulletDynamics::DynamicsWorld *, int ncubes, int cubes_line, int fixed, int two_impact, Ogre::Vector3 scale, float x0, float y0);
+	void createTable(OgreBulletDynamics::DynamicsWorld *, int ncubes, int cubes_line, int fixed, int two_impact, Ogre::Vector3&, Ogre::Vector3&);
 
 };
 

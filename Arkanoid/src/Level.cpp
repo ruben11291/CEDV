@@ -7,16 +7,15 @@ Level::Level(int difficult, Ogre::SceneManager * sceneManager){
   Ogre::Vector3 velocity(0,0,-1);
   ballCreation(velocity*difficult);
   orionCreation();
-  Ogre::AxisAlignedBox box_floor= _scenarioNode->getAttachedObject("floor")->getBoundingBox();
-  Ogre::Vector3 corner_sup = box_floor.getCorner( AxisAlignedBox::FAR_LEFT_TOP);
-  Ogre::Vector3 corner_inf =  box_floor.getCorner( AxisAlignedBox::NEAR_RIGHT_TOP);
-    
+
+  Ogre::AxisAlignedBox box_floor= _scenarioNode->getAttachedObject("left")->getBoundingBox();
+  Ogre::Vector3 frb = box_floor.getCorner( AxisAlignedBox::FAR_RIGHT_BOTTOM);
+  Ogre::Vector3 nrb = box_floor.getCorner( AxisAlignedBox::NEAR_RIGHT_BOTTOM);
+  box_floor= _scenarioNode->getAttachedObject("right")->getBoundingBox();
+  Ogre::Vector3 flb = box_floor.getCorner( AxisAlignedBox::FAR_LEFT_BOTTOM);
+  Ogre::Vector3 nlb =  box_floor.getCorner( AxisAlignedBox::NEAR_LEFT_BOTTOM);
   
-  
-  
-  
-  
-  _section = new Section(_world,difficult,/*x0*/ corner_sup.x+(2*0.863) ,/*xf*/ corner_inf.x-(2*0.863) ,/*y0*/ corner_sup.z+0.863 ,/*yf*/ corner_inf.z -0.863 );
+  _section = new Section(_world,difficult, frb , nrb , flb , nlb);
 }
 
 Level::~Level(){
