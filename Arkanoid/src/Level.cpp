@@ -98,6 +98,9 @@ void Level::scenarioCreation(){
   _shapes.push_back(cubeShape);
   _bodies.push_back(rigidbody);
 
+  rigidbody->enableActiveState();
+  //  rigidbody->setKinematicObject(true);
+  rigidbody->disableDeactivation();
 
 
   //Lateral left
@@ -145,6 +148,10 @@ void Level::ballCreation(Ogre::Vector3 velocity){
 
   rigidbody->setLinearVelocity(velocity); 
   _ballbody = rigidbody;
+
+  // rigidbody->enableActiveState();
+  //rigidbody->setKinematicObject(true);
+  //rigidbody->disableDeactivation();
   _shapes.push_back(ballShape);
   _bodies.push_back(rigidbody);
 }
@@ -169,6 +176,11 @@ void Level::orionCreation(){
 		      20 /*Restitucion*/, 0,// Friccion,
   		      0, _orionNode->getPosition(),
 		      Ogre::Quaternion(0,0,0.5,0));
+  
+   rigidbody->enableActiveState();
+   //  rigidbody->setKinematicObject(true);
+   rigidbody->disableDeactivation();
+
   _shapes.push_back(cubeShape);
   _bodies.push_back(rigidbody);
 }
@@ -197,6 +209,8 @@ void Level::createCollision(Ogre::SceneNode * node,Ogre::Entity * ent,OgreBullet
 
   delete trimeshConverter;
 
+  lateral->enableActiveState();
+  lateral->disableDeactivation();
 
   _trimesh.push_back(latTrimesh);
   _bodies.push_back(lateral);
@@ -234,7 +248,7 @@ int Level::detectCollision() {
     if(_ballbody!=NULL){
       if (((obOB_A == orion_obj) || (obOB_B == orion_obj))) {
 	std::cout << _ballbody->getLinearVelocity()<<std::endl;
-	_ballbody->setLinearVelocity(Vector3(3,0,3));
+	//	_ballbody->setLinearVelocity(Vector3(3,0,3));
 	std::cout << "CON ORION" << std::endl;
 	return 1;
       }
@@ -243,15 +257,25 @@ int Level::detectCollision() {
 	//   std::cout << _ballbody->getLinearVelocity()<<std::endl;
 	
 	std::cout << "CON Limits" << std::endl;
-	return 1;
 	
+	 return 1;
       }
       else{
 	for(std::vector<Cube*>::iterator it=_section->getCubes().begin(); it!=_section->getCubes().end();it++){
 	  OgreBulletCollisions::Object* cube =  _world->findObject(&((*it)->getSceneNode()));
 	  if ((obOB_A == cube) || (obOB_B == cube)) {
-	    //	  _ballbody->setLinearVelocity(_ballbody->getLinearVelocity()*-1);
-	    
+	    Ogre::SceneNode* node = NULL;
+	    if ((obOB_A == cube) && (obOB_A)) {
+	      node = obOB_A->getRootNode(); delete obOB_A;//segmentation, hay que eliminar cubo tambien
+	    }
+	    else if ((obOB_B == cube) && (obOB_B)) {
+	      node = obOB_B->getRootNode(); delete obOB_B;
+	    }
+	    if(node){
+	      _sceneMgr->destroySceneNode(node);
+	    }
+	    //	  _ballbody->setLinearVelocity(_ballbody->getLinearVelocity()*-1);Ogre::SceneNode* node = NULL;
+
 	    std::cout << "CON CUBE" << std::endl;
 	    return 1;
 	  }
