@@ -8,23 +8,20 @@ Section::Section(){
 Section::Section(OgreBulletDynamics::DynamicsWorld* world,int difficult,  Ogre::Vector3& frb, Ogre::Vector3& nrb, Ogre::Vector3& flb, Ogre::Vector3& nlb){
 
   Ogre::Real dist_x = frb.distance(flb);
-  int cubes_line = 3;
-  float len_x_cube = 1;//dist_x/(float)cubes_line;
-  Ogre::Vector3 scale(len_x_cube, 0.2, 0.2), initialPoint(frb.x + len_x_cube,0, frb.z+ 0.2*2 );
+  int cubes_line = 7;
+  float len_x_cube = 0.55;//dist_x/(float)cubes_line;
+  Ogre::Vector3 scale(len_x_cube, 0.2, 0.2), initialPoint(frb.x + len_x_cube + 0.5,0, frb.z+ 0.2*2 );
   int ncubes, fixed, two_impact;
-  
+  ncubes = cubes_line* cubes_line;
   switch(difficult){
   case 0://easy level
-    ncubes = cubes_line*4;
     fixed = 0;
     two_impact = ncubes/5;
     break;
   case 1:
-    ncubes = cubes_line*6;
     fixed = two_impact = ncubes / 5;
     break;
   case 2:
-    ncubes = cubes_line * cubes_line;
     fixed = ncubes/5;
     two_impact = 2*ncubes/5;
     break;
@@ -70,7 +67,7 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int ncubes, i
       rigidbody =   new OgreBulletDynamics::RigidBody("box"+StringConverter::toString(n), world);
       rigidbody->setShape(cubo_n, cubeShape,
 			  50 /* Restitucion */, 0 /* Friccion */,
-			  0 /* Masa */,  initial_point+Ogre::Vector3(1.5*j,0, i), 		     Quaternion::IDENTITY /* Orien*/);
+			  0 /* Masa */,  initial_point+Ogre::Vector3(1.75*j,0, i), 		     Quaternion::IDENTITY /* Orien*/);
       _cubes.push_back(new Cube(cube,cubo_n,rigidbody,cubeShape));
       n++;
      }    

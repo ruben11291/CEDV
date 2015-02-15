@@ -36,7 +36,7 @@ PlayState::enter ()
   SoundFXManager::getSingletonPtr()->load("bomb.wav");
   SoundFXManager::getSingletonPtr()->load("impact.wav");
   
-  _level = new Level(0,_sceneMgr);
+  _level = new Level(2,_sceneMgr);
 
 
 
