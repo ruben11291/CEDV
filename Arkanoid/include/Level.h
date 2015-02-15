@@ -18,6 +18,8 @@ class Level{
   ~Level();
   OgreBulletDynamics::DynamicsWorld * getWorld();
   void translate(Ogre::Vector3);
+  void detectCollision();
+
  private:
   SceneNode * _ballNode, * _orionNode, *_scenarioNode;
   Section *_section;

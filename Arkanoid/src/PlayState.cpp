@@ -131,6 +131,8 @@ bool
 PlayState::frameEnded
 (const Ogre::FrameEvent& evt)
 {
+  _level->getWorld()->stepSimulation(deltaT);
+
   return _exitGame;
 }
 

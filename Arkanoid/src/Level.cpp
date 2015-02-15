@@ -5,7 +5,7 @@ Level::Level(int difficult, Ogre::SceneManager * sceneManager){
   worldCreation();
   scenarioCreation();
   Ogre::Vector3 velocity(0,0,-1);
-  ballCreation(velocity*difficult);
+  ballCreation(velocity*(difficult+1));
   orionCreation();
 
   Ogre::AxisAlignedBox box_floor= _scenarioNode->getAttachedObject("left")->getBoundingBox();
@@ -181,4 +181,42 @@ void Level::createCollision(Ogre::SceneNode * node,Ogre::Entity * ent,OgreBullet
 
   _trimesh.push_back(latTrimesh);
   _bodies.push_back(lateral);
+}
+
+void Level::DetectCollision() {
+
+ btCollisionWorld *bulletWorld = _world->getBulletCollisionWorld();
+  int numManifolds = bulletWorld->getDispatcher()->getNumManifolds();
+
+  for (int i=0;i<numManifolds;i++) {
+    btPersistentManifold* contactManifold = 
+      bulletWorld->getDispatcher()->getManifoldByIndexInternal(i);
+    btCollisionObject* obA = 
+      static_cast<btCollisionObject*>(contactManifold->getBody0());
+    btCollisionObject* obB = 
+      static_cast<btCollisionObject*>(contactManifold->getBody1());
+    
+
+    
+    Ogre::SceneNode* drain = _sceneManager->getSceneNode("drain");
+
+    OgreBulletCollisions::Object *obDrain = _world->findObject(drain);
+    OgreBulletCollisions::Object *obOB_A = _world->findObject(obA);
+    OgreBulletCollisions::Object *obOB_B = _world->findObject(obB);
+
+    if ((obOB_A == obDrain) || (obOB_B == obDrain)) {
+      Ogre::SceneNode* node = NULL;
+      if ((obOB_A != obDrain) && (obOB_A)) {
+	node = obOB_A->getRootNode(); delete obOB_A;
+      }
+      else if ((obOB_B != obDrain) && (obOB_B)) {
+	node = obOB_B->getRootNode(); delete obOB_B;
+      }
+      if (node) {
+	std::cout << node->getName() << std::endl;
+	_sceneManager->getRootSceneNode()->
+	  removeAndDestroyChild (node->getName());
+      }
+    } 
+  }
 }
