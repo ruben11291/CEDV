@@ -7,6 +7,7 @@ Level::Level(int difficult, Ogre::SceneManager * sceneManager){
   Ogre::Vector3 velocity(0,0,-1);
   ballCreation(velocity*(difficult+1));
   orionCreation();
+  
 
   Ogre::AxisAlignedBox box_floor= _scenarioNode->getAttachedObject("left")->getBoundingBox();
   Ogre::Vector3 frb = box_floor.getCorner( AxisAlignedBox::FAR_RIGHT_BOTTOM);
@@ -80,6 +81,23 @@ void Level::scenarioCreation(){
   ent1->setMaterialName("suelo");
   ent1->setCastShadows(true);
   _scenarioNode->attachObject(ent1);
+  
+  ent1 = _sceneMgr->createEntity("under_orion", "cube.mesh");
+  AxisAlignedBox boundingB = ent1->getBoundingBox();
+  Vector3 size = boundingB.getSize()* Vector3(100,1,1);
+  size /=2.0;
+  
+  OgreBulletCollisions::BoxCollisionShape* cubeShape =   new OgreBulletCollisions::BoxCollisionShape(size);
+  
+  OgreBulletDynamics::RigidBody *rigidbody =   new OgreBulletDynamics::RigidBody("under_orion", _world);
+  rigidbody->setShape(_scenarioNode, cubeShape,
+		      0 /*Restitucion*/, 0,// Friccion,
+  		      0, Ogre::Vector3(0,0,0),
+		      Ogre::Quaternion(0,0,0,0));
+  //_scenarioNode->attachObject(ent1);
+  _shapes.push_back(cubeShape);
+  _bodies.push_back(rigidbody);
+
 
 
   //Lateral left
@@ -126,6 +144,7 @@ void Level::ballCreation(Ogre::Vector3 velocity){
 		      Quaternion::IDENTITY);
 
   rigidbody->setLinearVelocity(velocity); 
+  _ballbody = rigidbody;
   _shapes.push_back(ballShape);
   _bodies.push_back(rigidbody);
 }
@@ -183,7 +202,7 @@ void Level::createCollision(Ogre::SceneNode * node,Ogre::Entity * ent,OgreBullet
   _bodies.push_back(lateral);
 }
 
-void Level::DetectCollision() {
+int Level::detectCollision() {
 
  btCollisionWorld *bulletWorld = _world->getBulletCollisionWorld();
   int numManifolds = bulletWorld->getDispatcher()->getNumManifolds();
@@ -192,31 +211,53 @@ void Level::DetectCollision() {
     btPersistentManifold* contactManifold = 
       bulletWorld->getDispatcher()->getManifoldByIndexInternal(i);
     btCollisionObject* obA = 
-      static_cast<btCollisionObject*>(contactManifold->getBody0());
+      (btCollisionObject*)(contactManifold->getBody0());
     btCollisionObject* obB = 
-      static_cast<btCollisionObject*>(contactManifold->getBody1());
+      (btCollisionObject*)(contactManifold->getBody1());
     
 
     
-    Ogre::SceneNode* drain = _sceneManager->getSceneNode("drain");
+    Ogre::SceneNode* orion = _sceneMgr->getSceneNode("nave");
+    Ogre::SceneNode* ball = _sceneMgr->getSceneNode("bola");
+    Ogre::SceneNode* plane = _sceneMgr->getSceneNode("plano");
 
-    OgreBulletCollisions::Object *obDrain = _world->findObject(drain);
-    OgreBulletCollisions::Object *obOB_A = _world->findObject(obA);
-    OgreBulletCollisions::Object *obOB_B = _world->findObject(obB);
+    OgreBulletCollisions::Object *orion_obj = _world->findObject(orion);
+    OgreBulletCollisions::Object *ball_obj = _world->findObject(ball);
 
-    if ((obOB_A == obDrain) || (obOB_B == obDrain)) {
-      Ogre::SceneNode* node = NULL;
-      if ((obOB_A != obDrain) && (obOB_A)) {
-	node = obOB_A->getRootNode(); delete obOB_A;
+    OgreBulletCollisions::Object * limits = _world->findObject(plane);
+ 
+    OgreBulletCollisions::Object * obOB_A = _world->findObject(obA);
+    OgreBulletCollisions::Object * obOB_B = _world->findObject(obB);
+
+
+  
+    if(_ballbody!=NULL){
+      if (((obOB_A == orion_obj) || (obOB_B == orion_obj))) {
+	std::cout << _ballbody->getLinearVelocity()<<std::endl;
+	_ballbody->setLinearVelocity(Vector3(3,0,3));
+	std::cout << "CON ORION" << std::endl;
+	return 1;
       }
-      else if ((obOB_B != obDrain) && (obOB_B)) {
-	node = obOB_B->getRootNode(); delete obOB_B;
+      else if ((obOB_A== limits) && (obOB_B== limits)) {
+	//   _ballbody->setLinearVelocity(_ballbody->getLinearVelocity()*-1); 
+	//   std::cout << _ballbody->getLinearVelocity()<<std::endl;
+	
+	std::cout << "CON Limits" << std::endl;
+	return 1;
+	
       }
-      if (node) {
-	std::cout << node->getName() << std::endl;
-	_sceneManager->getRootSceneNode()->
-	  removeAndDestroyChild (node->getName());
-      }
-    } 
+      else{
+	for(std::vector<Cube*>::iterator it=_section->getCubes().begin(); it!=_section->getCubes().end();it++){
+	  OgreBulletCollisions::Object* cube =  _world->findObject(&((*it)->getSceneNode()));
+	  if ((obOB_A == cube) || (obOB_B == cube)) {
+	    //	  _ballbody->setLinearVelocity(_ballbody->getLinearVelocity()*-1);
+	    
+	    std::cout << "CON CUBE" << std::endl;
+	    return 1;
+	  }
+	}
+      } 
+    }
   }
+
 }

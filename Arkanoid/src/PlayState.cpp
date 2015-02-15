@@ -37,7 +37,7 @@ PlayState::enter ()
   SoundFXManager::getSingletonPtr()->load("impact.wav");
   
   _level = new Level(2,_sceneMgr);
-
+  
 
 
   Ogre::Plane plane1(Ogre::Vector3::UNIT_Y, 0);
@@ -103,18 +103,25 @@ PlayState::frameStarted
 {
   std::stringstream mines,remaining;
   deltaT = evt.timeSinceLastFrame;
-  // int fps = 1.0 / deltaT;
 
   Ogre::OverlayElement *oe;
   oe = _overlayManager->getOverlayElement("fpsInfo");
-//   remaining << _minesweeper->getDiscovered() << "/" << (_minesweeper->getSquares()*_minesweeper->getSquares()*6)-_minesweeper->getTotalMines();
   oe->setCaption(remaining.str());
   
   oe = _overlayManager->getOverlayElement("minesinf");
-//   mines << _minesweeper->getFlags() << "/" << _minesweeper->getTotalMines();
   oe->setCaption(mines.str());
-  
+   
+
   _level->getWorld()->stepSimulation(deltaT);
+  try{
+    if( _level->detectCollision()){
+      SoundFXPtr  impact = SoundFXManager::getSingletonPtr()->load("impact.wav");
+      impact->play();
+    }
+  }
+  catch(...){
+    ;
+  }
 
   oe = _overlayManager->getOverlayElement("timeinf");
   if (_pick){
@@ -130,8 +137,9 @@ PlayState::frameStarted
 bool
 PlayState::frameEnded
 (const Ogre::FrameEvent& evt)
-{
-  _level->getWorld()->stepSimulation(deltaT);
+{  
+  
+_level->getWorld()->stepSimulation(evt.timeSinceLastFrame);
 
   return _exitGame;
 }

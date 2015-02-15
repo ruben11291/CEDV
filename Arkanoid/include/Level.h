@@ -18,10 +18,11 @@ class Level{
   ~Level();
   OgreBulletDynamics::DynamicsWorld * getWorld();
   void translate(Ogre::Vector3);
-  void detectCollision();
+  int detectCollision();
 
  private:
   SceneNode * _ballNode, * _orionNode, *_scenarioNode;
+  OgreBulletDynamics::RigidBody* _ballbody;
   Section *_section;
   OgreBulletDynamics::DynamicsWorld *_world;
   OgreBulletCollisions::DebugDrawer * _debugDrawer;
@@ -35,7 +36,6 @@ class Level{
   void orionCreation();
   void ballCreation(Ogre::Vector3);
   void createCollision(Ogre::SceneNode * node, Ogre::Entity * ent, OgreBulletDynamics::DynamicsWorld* world, std::string str);
-
 
 };
 
