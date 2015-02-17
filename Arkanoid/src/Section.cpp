@@ -29,7 +29,7 @@ Section::Section(OgreBulletDynamics::DynamicsWorld* world,int difficult,  Ogre::
   createTable(world,ncubes, cubes_line, fixed,two_impact, scale, initialPoint);
 }
 
-std::vector <Cube*>& Section::getCubes(){
+std::deque <Cube*>& Section::getCubes(){
   return _cubes;
 }
 
@@ -66,7 +66,7 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int ncubes, i
       
       rigidbody =   new OgreBulletDynamics::RigidBody("box"+StringConverter::toString(n), world);
       rigidbody->setShape(cubo_n, cubeShape,
-			  50 /* Restitucion */, 0 /* Friccion */,
+			  0 /* Restitucion */, 0 /* Friccion */,
 			  0 /* Masa */,  initial_point+Ogre::Vector3(1.75*j,0, i), 		     Quaternion::IDENTITY /* Orien*/);
       _cubes.push_back(new Cube(cube,cubo_n,rigidbody,cubeShape));
       n++;
@@ -74,7 +74,7 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int ncubes, i
   }
    srand(time(NULL));
  
-  for(std::vector<Cube*>::iterator it = _cubes.begin();it!=_cubes.end();it++){
+  for(std::deque<Cube*>::iterator it = _cubes.begin();it!=_cubes.end();it++){
     int pos = rand()%5+1;
     std::cout << pos<< std::endl;
     (*it)->getEntity().setMaterialName("Cube"+StringConverter::toString(pos));
@@ -88,7 +88,7 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int ncubes, i
 
 Section::~Section(){
 
-   std::vector<Cube*>::iterator it=_cubes.begin();
+   std::deque<Cube*>::iterator it=_cubes.begin();
    while(it!=_cubes.end()){
      delete *it;
      it++;

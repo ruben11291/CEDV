@@ -139,7 +139,7 @@ PlayState::frameEnded
 (const Ogre::FrameEvent& evt)
 {  
   
-_level->getWorld()->stepSimulation(evt.timeSinceLastFrame);
+  _level->getWorld()->stepSimulation(evt.timeSinceLastFrame);
 
   return _exitGame;
 }
