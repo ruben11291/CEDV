@@ -10,10 +10,10 @@ Level::Level(int difficult, Ogre::SceneManager * sceneManager){
   orionCreation();
   
 
-  Ogre::AxisAlignedBox box_floor= _scenarioNode->getAttachedObject("left")->getBoundingBox();
+  Ogre::AxisAlignedBox box_floor= _latLeftNode->getAttachedObject("left")->getBoundingBox();
   Ogre::Vector3 frb = box_floor.getCorner( AxisAlignedBox::FAR_RIGHT_BOTTOM);
   Ogre::Vector3 nrb = box_floor.getCorner( AxisAlignedBox::NEAR_RIGHT_BOTTOM);
-  box_floor= _scenarioNode->getAttachedObject("right")->getBoundingBox();
+  box_floor= _latRightNode->getAttachedObject("right")->getBoundingBox();
   Ogre::Vector3 flb = box_floor.getCorner( AxisAlignedBox::FAR_LEFT_BOTTOM);
   Ogre::Vector3 nlb =  box_floor.getCorner( AxisAlignedBox::NEAR_LEFT_BOTTOM);
   
@@ -51,6 +51,9 @@ Level::~Level(){
   mgr->destroySceneNode(_ballNode);
   mgr->destroySceneNode(_orionNode);
   mgr->destroySceneNode(_scenarioNode);
+  mgr->destroySceneNode(_latLeftNode);
+  mgr->destroySceneNode(_latRightNode);
+  mgr->destroySceneNode(_latBackNode);
 }
 
 void Level::worldCreation(){
@@ -81,7 +84,9 @@ void Level::scenarioCreation(){
   Ogre::Entity* ent1 = _sceneMgr->createEntity("floor", "Suelo.mesh");
   ent1->setMaterialName("suelo");
   ent1->setCastShadows(true);
+  _scenarioNode->translate(0,-0.3,0);
   _scenarioNode->attachObject(ent1);
+    _sceneMgr->getRootSceneNode()->addChild(_scenarioNode);
   // OgreBulletCollisions::CollisionShape *Shape;
   // Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,0,-1), 0);  
 
@@ -94,24 +99,29 @@ void Level::scenarioCreation(){
   
   
   //Lateral left
+  _latLeftNode = _sceneMgr->createSceneNode("latLeft");
   Ogre::Entity *ent = _sceneMgr->createEntity("left","lat_left.mesh");
   ent->setCastShadows(true);
-  _scenarioNode->attachObject(ent);
-  createCollision(_scenarioNode,ent,_world,std::string("left"));
+  _latLeftNode->attachObject(ent);
+  _sceneMgr->getRootSceneNode()->addChild(_latLeftNode);
+  createCollision(_latLeftNode,ent,_world,std::string("left"));
   
  //Lateral meshes
+  _latRightNode = _sceneMgr->createSceneNode("latRight");
   ent = _sceneMgr->createEntity("right","lat_right.mesh");
   ent->setCastShadows(true);
-  _scenarioNode->attachObject(ent);
-  createCollision(_scenarioNode,ent, _world,std::string("right"));
+  _latRightNode->attachObject(ent);
+  _sceneMgr->getRootSceneNode()->addChild(_latRightNode);
+  createCollision(_latRightNode,ent, _world,std::string("right"));
 
 
  //Lateral meshes
+  _latBackNode = _sceneMgr->createSceneNode("latBack");
   ent = _sceneMgr->createEntity("back","lat_back.mesh");
   ent->setCastShadows(true);
-  _scenarioNode->attachObject(ent);
-  createCollision(_scenarioNode,ent,_world,std::string("back"));
-  _sceneMgr->getRootSceneNode()->addChild(_scenarioNode);
+  _latBackNode->attachObject(ent);
+  _sceneMgr->getRootSceneNode()->addChild(_latBackNode);
+  createCollision(_latBackNode,ent,_world,std::string("back"));
 
  }
 
@@ -163,7 +173,7 @@ void Level::orionCreation(){
   
   OgreBulletDynamics::RigidBody *rigidbody =   new OgreBulletDynamics::RigidBody("aircraft", _world);
   rigidbody->setShape(_orionNode, cubeShape,
-		      0 /*Restitucion*/, 0,// Friccion,
+		      0.1 /*Restitucion*/, 0.1,// Friccion,
   		      0, _orionNode->getPosition(),
 		      Ogre::Quaternion(0,0,0.5,0));
   rigidbody->setKinematicObject(true);
@@ -220,8 +230,10 @@ int Level::detectCollision() {
     OgreBulletCollisions::Object *orion_obj = _world->findObject(_sceneMgr->getSceneNode("nave"));
     OgreBulletCollisions::Object *ball_obj = _world->findObject( _sceneMgr->getSceneNode("bola"));
 
-    OgreBulletCollisions::Object * limits = _world->findObject(_sceneMgr->getSceneNode("plano"));
- 
+    OgreBulletCollisions::Object * latLeft = _world->findObject(_sceneMgr->getSceneNode("latLeft"));
+    OgreBulletCollisions::Object * latRight = _world->findObject(_sceneMgr->getSceneNode("latRight"));
+    OgreBulletCollisions::Object * latBack = _world->findObject(_sceneMgr->getSceneNode("latBack"));
+      
     OgreBulletCollisions::Object * obOB_A = _world->findObject(obA);
     OgreBulletCollisions::Object * obOB_B = _world->findObject(obB);
     OgreBulletCollisions::Object * finish = NULL;//to get structure
@@ -249,8 +261,16 @@ int Level::detectCollision() {
 	  std::cout << "CON ORION" << std::endl;
 	  return 1;
 	}
-	else if(aux == limits){
-	  std::cout << "CON Limits" << std::endl;
+	else if(aux == latLeft){
+	  std::cout << "CON Izquierdo" << std::endl;
+	  return 1;
+	}
+	else if(aux ==  latRight){
+	   std::cout << "CON Derecho" << std::endl;
+	  return 1;
+	}
+	else if(aux ==  latBack){
+	   std::cout << "CON Atras" << std::endl;
 	  return 1;
 	}
 	// else if(aux == finish){

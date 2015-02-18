@@ -24,7 +24,7 @@ void translate(Ogre::Vector3);
 int detectCollision();
 
 private:
-SceneNode * _ballNode, * _orionNode, *_scenarioNode;
+SceneNode * _ballNode, * _orionNode, *_scenarioNode, *_latLeftNode, *_latRightNode, *_latBackNode;
 OgreBulletDynamics::RigidBody* _ballbody;
 btScalar _ballVelocity;
 Section *_section;

@@ -114,7 +114,7 @@ PlayState::frameStarted
 
   _level->getWorld()->stepSimulation(deltaT);
   try{
-    if( _level->detectCollision()){
+    if( _level->detectCollision() == 1){
       SoundFXPtr  impact = SoundFXManager::getSingletonPtr()->load("impact.wav");
       impact->play();
     }
