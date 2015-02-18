@@ -66,7 +66,7 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int ncubes, i
       
       rigidbody =   new OgreBulletDynamics::RigidBody("box"+StringConverter::toString(n), world);
       rigidbody->setShape(cubo_n, cubeShape,
-			  0 /* Restitucion */, 0 /* Friccion */,
+			  0.2 /* Restitucion */, 0 /* Friccion */,
 			  0 /* Masa */,  initial_point+Ogre::Vector3(1.75*j,0, i), 		     Quaternion::IDENTITY /* Orien*/);
       _cubes.push_back(new Cube(cube,cubo_n,rigidbody,cubeShape));
       n++;

@@ -84,7 +84,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::Real _time_count,_last_time;
   void gameOver();
   void gameWin();
-
+  bool checkWin();
 };
 
 #endif

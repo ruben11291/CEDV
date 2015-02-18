@@ -113,7 +113,7 @@ PlayState::frameStarted
    
 
   _level->getWorld()->stepSimulation(deltaT);
-    if( _level->detectCollision()){
+    if( _level->detectCollision() == 1){
       SoundFXPtr  impact = SoundFXManager::getSingletonPtr()->load("impact.wav");
       impact->play();
       if(checkWin())
@@ -280,4 +280,8 @@ Ogre::Ray PlayState::setRayQuery(int posx, int posy, int mask) {
    _raySceneQuery->setSortByDistance(true);
    _raySceneQuery->setQueryMask(mask);
    return (rayMouse);
+}
+
+bool PlayState::checkWin(){
+  return false;
 }
