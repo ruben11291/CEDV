@@ -238,11 +238,6 @@ int Level::detectCollision() {
       if(obOB_A == ball_obj || obOB_B == ball_obj){
 
 	aux = (obOB_A== ball_obj)?obOB_B:obOB_A;//it contains the other element nor ball
-	//	btVector3 massCentre = ((btRigidBody*)((RigidBody*)aux)->getBulletRigidBody())->getCenterOfMassPosition();
-	//btManifoldPoint& pt = contactManifold->getContactPoint(0);
-	
-	//	std::cout <<"Position world BA " << pt.getPositionWorldOnB().x() <<pt.getPositionWorldOnB().y()<< pt.getPositionWorldOnB().z()<< " "<< pt.getPositionWorldOnA().x()<<pt.getPositionWorldOnA().y()<<pt.getPositionWorldOnA().z()<<std::endl;
-	
 	if(aux == orion_obj){
 	  std::cout << _ballbody->getLinearVelocity()<<std::endl;
 	  //  _ballbody->setLinearVelocity(/*getVelocity(getCenterOfMassPosition()*/);
@@ -259,7 +254,7 @@ int Level::detectCollision() {
 	else{
 	  std::cout << "CON Cuboo" << std::endl;
 	  if(collisionInCubes(aux)) 
-	    return 1;//checkWin();
+	    return 1;
 	}
       }
     }

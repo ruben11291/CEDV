@@ -113,16 +113,13 @@ PlayState::frameStarted
    
 
   _level->getWorld()->stepSimulation(deltaT);
-  try{
     if( _level->detectCollision()){
       SoundFXPtr  impact = SoundFXManager::getSingletonPtr()->load("impact.wav");
       impact->play();
+      if(checkWin())
+	_end_game = true;
     }
-  }
-  catch(...){
-    ;
-  }
-
+  
   oe = _overlayManager->getOverlayElement("timeinf");
   if (_pick){
     _last_time += deltaT;
@@ -215,11 +212,6 @@ PlayState::mouseMoved
        vt+=Ogre::Vector3(0,0,-e.state.Z.rel);
   }
  _camera->moveRelative(vt*deltaT);
-/*
-   if (_key_pressed){
-     _minesweeper->yaw(Ogre::Radian(_mouse_position.X.rel - e.state.X.rel*deltaT));
-     _minesweeper->pitch(Ogre::Radian(_mouse_position.Y.rel - e.state.Y.rel*deltaT));
-   }*/
   
 }
 
@@ -235,38 +227,6 @@ PlayState::mousePressed
   Ogre::RaySceneQueryResult::iterator it;
   Ogre::SceneNode * _selectedNode;
 
-  r = setRayQuery(posx, posy, 0);//MODIFICAR.-------------------------------------------
-  result = _raySceneQuery->execute();
-  it = result.begin();
-  if (it!=result.end()){
-    _selectedNode = it->movable->getParentSceneNode();
-  }
-  else _selectedNode=0;
- 
-//   switch(id){
-//   case OIS::MB_Left:
-//     if (_selectedNode && !_end_game){
-//       _pick = true;
-//       _minesweeper->sendMove(_selectedNode);
-//       
-//       if(_minesweeper->isGameOver())
-// 	gameOver();
-//       else if(_minesweeper->isWin())
-// 	gameWin();
-//     }
-//     break;
-//   case OIS::MB_Middle:
-//     _key_pressed = true;
-//     _mouse_position = e.state;
-//     break;
-//   case OIS::MB_Right:
-//     if (_selectedNode && !_end_game){
-//       _minesweeper->setFlag(_selectedNode);
-//     }
-//     break;
-//   default:
-//     ;
-//   }
 }
 
 void PlayState::gameOver(){
