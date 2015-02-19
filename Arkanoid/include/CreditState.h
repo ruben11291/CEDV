@@ -63,7 +63,7 @@ class CreditState : public Ogre::Singleton<CreditState>, public GameState
   Ogre::Overlay *_overlay;
   Ogre::Rectangle2D* _rect;
   CEGUI::Window * _return;
-  Ogre::SceneNode * _node;
+  Ogre::SceneNode * _node, *_planetMars, *_planetEarth;
   bool _exitGame;
 
 

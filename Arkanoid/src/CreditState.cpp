@@ -31,6 +31,19 @@ CreditState::enter ()
   
   createBackground();
   
+  Ogre::Entity* ent = _sceneMgr->createEntity("planetMars","Sphere.mesh");
+  ent->setMaterialName("Marte");
+  _planetMars = _sceneMgr->getRootSceneNode()->createChildSceneNode("Mars");
+  _planetMars->translate(5,10,0);
+  _planetMars->scale(0.5,0.5,0.5);
+  _planetMars->attachObject(ent);
+  
+  ent = _sceneMgr->createEntity("planetEarth","Sphere.mesh");
+  ent->setMaterialName("Tierra");
+  _planetEarth = _sceneMgr->getRootSceneNode()->createChildSceneNode("Earth");
+  _planetEarth->translate(-3,9,0);
+  _planetEarth->scale(1.4,1.4,1.4);
+  _planetEarth->attachObject(ent);
   _exitGame = true;
 }
 
@@ -66,7 +79,11 @@ void
 CreditState::exit ()
 { 
   delete _rect;
+  _sceneMgr->destroyEntity("planetMars");
+  _sceneMgr->destroyEntity("planetEarth");
   _sceneMgr->destroySceneNode(_node);
+  _sceneMgr->destroySceneNode(_planetMars);
+  _sceneMgr->destroySceneNode(_planetEarth);
   _overlay->hide();
 }
 
