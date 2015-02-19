@@ -45,6 +45,17 @@ IntroState::enter ()
   
   createBackground();
   
+  //CEGUI
+  renderer = &CEGUI::OgreRenderer::bootstrapSystem();
+  CEGUI::Scheme::setDefaultResourceGroup("Schemes");
+  CEGUI::Imageset::setDefaultResourceGroup("Imagesets");
+  CEGUI::Font::setDefaultResourceGroup("Fonts");
+  CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
+  CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
+
+  CEGUI::SchemeManager::getSingleton().create("OgreTray.scheme");
+  CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-10");
+  CEGUI::System::getSingleton().setDefaultMouseCursor("OgreTrayImages","MouseArrow");
   createGUI();
   
   // Reproducción del track principal...
@@ -99,18 +110,7 @@ void IntroState::createBackground(){
 
 void IntroState::createGUI()
 {
-  //CEGUI
-  renderer = &CEGUI::OgreRenderer::bootstrapSystem();
-  CEGUI::Scheme::setDefaultResourceGroup("Schemes");
-  CEGUI::Imageset::setDefaultResourceGroup("Imagesets");
-  CEGUI::Font::setDefaultResourceGroup("Fonts");
-  CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
-  CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
-
-  CEGUI::SchemeManager::getSingleton().create("OgreTray.scheme");
-  CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-10");
-  CEGUI::System::getSingleton().setDefaultMouseCursor("OgreTrayImages","MouseArrow");
-
+  
   //Sheet
   _sheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","Ex1/Sheet");
   
@@ -216,10 +216,18 @@ void
 IntroState::pause ()
 {
   _overlay->hide();
-  CEGUI::WindowManager::getSingleton().getWindow("Ex1/QuitButton")->hide();
- CEGUI::WindowManager::getSingleton().getWindow("Ex1/RecordsButton")->hide();
-  CEGUI::WindowManager::getSingleton().getWindow("Ex1/CreditsButton")->hide();
-  CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->hide();
+//   CEGUI::WindowManager::getSingleton().getWindow("Ex1/QuitButton")->hide();
+//  CEGUI::WindowManager::getSingleton().getWindow("Ex1/RecordsButton")->hide();
+//   CEGUI::WindowManager::getSingleton().getWindow("Ex1/CreditsButton")->hide();
+//   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->hide();
+  
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/QuitButton");
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/RecordsButton");
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/CreditsButton");
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Sheet");
+ 
+  CEGUI::WindowManager::getSingleton().destroyWindow("Ex1/Sheet");
+  
   _node->setVisible(false,true);
 
 }
@@ -231,11 +239,12 @@ IntroState::resume ()
 
   std::cout << "resume"<<std::endl;
   _overlay->show();
-  CEGUI::WindowManager::getSingleton().getWindow("Ex1/QuitButton")->show(); 
-
-  CEGUI::WindowManager::getSingleton().getWindow("Ex1/RecordsButton")->show();
-  CEGUI::WindowManager::getSingleton().getWindow("Ex1/CreditsButton")->show();
-  CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->show();
+//   CEGUI::WindowManager::getSingleton().getWindow("Ex1/QuitButton")->show(); 
+// 
+//   CEGUI::WindowManager::getSingleton().getWindow("Ex1/RecordsButton")->show();
+//   CEGUI::WindowManager::getSingleton().getWindow("Ex1/CreditsButton")->show();
+//   CEGUI::WindowManager::getSingleton().getWindow("Ex1/Sheet")->show();
+  createGUI();
   std::cout <<"RESUME END"<<std::endl;
 }
 
