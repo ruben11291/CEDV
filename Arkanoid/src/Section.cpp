@@ -9,23 +9,27 @@ Section::Section(OgreBulletDynamics::DynamicsWorld* world,int difficult,  Ogre::
 
   Ogre::Real dist_x = frb.distance(flb);
   int cubes_line = 7;
-  float len_x_cube = 0.55;//dist_x/(float)cubes_line;
+  float len_x_cube = 0.68;//dist_x/(float)cubes_line;
   Ogre::Vector3 scale(len_x_cube, 0.2, 0.2), initialPoint(frb.x + len_x_cube + 0.5,0, frb.z+ 0.2*2 );
-  _ncubes = cubes_line* cubes_line;
+//   _ncubes = cubes_line* cubes_line;
+  _ncubesCol = cubes_line;
   switch(difficult){
   case 0://easy level
     _fixed = 0;
-    _two_impact = _ncubes/5;
+    _ncubesRow = 8;
+    _two_impact = (_ncubesRow*_ncubesCol)/5;
     break;
   case 1:
-    _fixed = _two_impact = _ncubes / 5;
+    _fixed = _two_impact = (_ncubesRow*_ncubesCol) / 5;
+    _ncubesRow = 9;
     break;
   case 2:
-    _fixed = _ncubes/5;
-    _two_impact = 2*_ncubes/5;
+    _ncubesRow = 10;
+    _fixed = (_ncubesRow*_ncubesCol)/5;
+    _two_impact = 2*(_ncubesRow*_ncubesCol)/5;
     break;
   }
-  createTable(world, _ncubes, cubes_line, _fixed, _two_impact, scale, initialPoint);
+  createTable(world, _ncubesRow, _ncubesCol, _fixed, _two_impact, scale, initialPoint);
 }
 
 std::deque <Cube*>& Section::getCubes(){
@@ -33,7 +37,7 @@ std::deque <Cube*>& Section::getCubes(){
 }
 
 
-void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int ncubes, int cubes_line, int fixed, int two_impact, Ogre::Vector3& scale, Ogre::Vector3& initial_point){
+void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int nCubesR, int nCubesC, int fixed, int two_impact, Ogre::Vector3& scale, Ogre::Vector3& initial_point){
 
   Ogre::Entity* cube;
    Ogre::SceneNode* cubo_n;
@@ -44,8 +48,8 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int ncubes, i
    OgreBulletDynamics::RigidBody * rigidbody;
    srand(time(NULL));
    
-   for(int i=0,n=0;i<sqrt(ncubes);i++){
-     for(int j=0;j<sqrt(ncubes);j++){
+   for(int i=0,n=0;i<nCubesR;i++){
+     for(int j=0;j<nCubesC;j++){
        cube = _sceneMgr->createEntity("cube.mesh");
        cubo_n = _sceneMgr->createSceneNode("cube"+StringConverter::toString(n));
        //cube->setMaterialName("Cube1");
@@ -66,7 +70,7 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int ncubes, i
       rigidbody =   new OgreBulletDynamics::RigidBody("box"+StringConverter::toString(n), world);
       rigidbody->setShape(cubo_n, cubeShape,
 			  0.2 /* Restitucion */, 0 /* Friccion */,
-			  0 /* Masa */,  initial_point+Ogre::Vector3(1.75*j,0, i), 		     Quaternion::IDENTITY /* Orien*/);
+			  0 /* Masa */,  initial_point+Ogre::Vector3(1.70*j,0, i), 		     Quaternion::IDENTITY /* Orien*/);
       _cubes.push_back(new Cube(cube,cubo_n,rigidbody,cubeShape));
       n++;
      }    

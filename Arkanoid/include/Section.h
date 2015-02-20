@@ -20,8 +20,8 @@ class Section{
 
 	private:
 	std::deque <Cube*> _cubes;
-	void createTable(OgreBulletDynamics::DynamicsWorld *, int ncubes, int cubes_line, int fixed, int two_impact, Ogre::Vector3&, Ogre::Vector3&);
-	int _two_impact, _fixed, _ncubes;
+	void createTable(OgreBulletDynamics::DynamicsWorld *, int ncubesR, int ncubesC, int fixed, int two_impact, Ogre::Vector3&, Ogre::Vector3&);
+	int _two_impact, _fixed, _ncubes, _ncubesRow, _ncubesCol;
 
 };
 
