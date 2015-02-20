@@ -3,7 +3,7 @@
 Cube::Cube(){
 }
 
-Cube::Cube( Entity * cube,  SceneNode* node,  OgreBulletDynamics::RigidBody* rigidbody,  OgreBulletCollisions::CollisionShape* sh):sceneNode(node),entity(cube), rigidBody(rigidbody),shape(sh),type(0) {
+Cube::Cube( Entity * cube,  SceneNode* node,  OgreBulletDynamics::RigidBody* rigidbody,  OgreBulletCollisions::CollisionShape* sh):sceneNode(node),entity(cube), rigidBody(rigidbody),shape(sh),type(0),_remaining(1) {
  
 }
 
@@ -32,6 +32,12 @@ int Cube::getType(){
   return type;
 }
 
+int Cube::getRemaining(){
+  return _remaining;
+}
+void Cube::setRemaining(int rem){
+  _remaining= rem;
+}
 
 Cube& Cube::operator=(const Cube& cub){
   this->sceneNode = new Ogre::SceneNode(cub.getSceneNode());
@@ -50,6 +56,6 @@ Cube::Cube(const Cube& cub){
   this->type = cub.type;
 }
 
-void Cube::setType(int& type){
+void Cube::setType(int type){
   this->type = type;
 }

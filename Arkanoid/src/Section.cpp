@@ -11,22 +11,21 @@ Section::Section(OgreBulletDynamics::DynamicsWorld* world,int difficult,  Ogre::
   int cubes_line = 7;
   float len_x_cube = 0.55;//dist_x/(float)cubes_line;
   Ogre::Vector3 scale(len_x_cube, 0.2, 0.2), initialPoint(frb.x + len_x_cube + 0.5,0, frb.z+ 0.2*2 );
-  int ncubes, fixed, two_impact;
-  ncubes = cubes_line* cubes_line;
+  _ncubes = cubes_line* cubes_line;
   switch(difficult){
   case 0://easy level
-    fixed = 0;
-    two_impact = ncubes/5;
+    _fixed = 0;
+    _two_impact = _ncubes/5;
     break;
   case 1:
-    fixed = two_impact = ncubes / 5;
+    _fixed = _two_impact = _ncubes / 5;
     break;
   case 2:
-    fixed = ncubes/5;
-    two_impact = 2*ncubes/5;
+    _fixed = _ncubes/5;
+    _two_impact = 2*_ncubes/5;
     break;
   }
-  createTable(world,ncubes, cubes_line, fixed,two_impact, scale, initialPoint);
+  createTable(world, _ncubes, cubes_line, _fixed, _two_impact, scale, initialPoint);
 }
 
 std::deque <Cube*>& Section::getCubes(){
@@ -73,15 +72,51 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int ncubes, i
      }    
   }
    srand(time(NULL));
- 
-  for(std::deque<Cube*>::iterator it = _cubes.begin();it!=_cubes.end();it++){
-    int pos = rand()%5+1;
-    std::cout << pos<< std::endl;
-    (*it)->getEntity().setMaterialName("Cube"+StringConverter::toString(pos));
-    //cube->getEntity().setMaterialName("Cube2");
-    int value=(pos%5 == 0)?0:(fixed--)?1:(two_impact--)?2:3;
-    (*it)->setType(value);
+   
+   std::deque<Cube*> tmp(_cubes);
+   while(fixed && tmp.size() > 0 ){
+     //   int kind = rand()%5+1;
+       int pos = rand()%tmp.size();
+       if(tmp[pos]!=NULL){
+	 // tmp[pos]->getEntity().setMaterialName("Cube"+StringConverter::toString(kind));
+	 tmp[pos]->getEntity().setMaterialName("Cube1");
+	 tmp[pos]->setType(1);
+	 tmp[pos]->setRemaining(-1);
+	 fixed--;
+	 tmp.erase(tmp.begin()+pos);
+
+       }
+   }
+   while(two_impact && tmp.size() > 0 ){
+     int kind = (rand()%4+1)+1;
+     int pos = rand()%tmp.size();
+     if(tmp[pos]!=NULL){
+       tmp[pos]->getEntity().setMaterialName("Cube"+StringConverter::toString(kind));
+       tmp[pos]->setType(2);
+       two_impact--;
+       tmp[pos]->setRemaining(2);
+       tmp.erase(tmp.begin()+pos);
+     }
+   }
+      
+  for(std::deque<Cube*>::iterator it = tmp.begin();it!=tmp.end();it++){
+    int kind = (rand()%4+1)+1;
+    (*it)->getEntity().setMaterialName("Cube"+StringConverter::toString(kind));
+    (*it)->setType(0);
+    (*it)->setRemaining(1);
   }
+
+
+  // for(std::deque<Cube*>::iterator it = _cubes.begin();it!=_cubes.end();it++){
+  //   int pos = rand()%5+1;
+  //   std::cout << pos<< std::endl;
+  //   (*it)->getEntity().setMaterialName("Cube"+StringConverter::toString(pos));
+  //   //cube->getEntity().setMaterialName("Cube2");
+  //   int value=(pos%5 == 0)?0:(fixed--)?1:(two_impact--)?2:0;
+  //   (*it)->setType(value);
+  //   (*it)->setRemaining((pos==);
+
+  // }
  
 }
 
@@ -93,4 +128,8 @@ Section::~Section(){
      delete *it;
      it++;
    }
+}
+
+bool Section::isWin(){
+  return (int)_cubes.size() == (int) _fixed;
 }

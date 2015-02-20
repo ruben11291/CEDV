@@ -24,10 +24,13 @@ class Cube{
 	Cube& operator=(const Cube&);
 	Cube(const Cube&);
 	int getType();
-	void setType(int&);
+	void setType(int);
+	int getRemaining();
+	void setRemaining(int);
 
 	private:
 	int type;
+	int _remaining;
 	Ogre::SceneNode * sceneNode;
 	Ogre::Entity * entity;
 	OgreBulletDynamics::RigidBody * rigidBody;

@@ -53,9 +53,7 @@ PlayState::enter ()
   _ground->translate(0,-0.4,0);
   _sceneMgr->getRootSceneNode()->addChild(_ground);
   
-  
-  _raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
-  
+   
   _overlayManager = Ogre::OverlayManager::getSingletonPtr();
   _overlayManager->getByName("Info")->show();
   
@@ -70,7 +68,6 @@ PlayState::enter ()
 void
 PlayState::exit ()
 { 
-  _sceneMgr->destroyQuery(static_cast<Ogre::RaySceneQuery*>(_raySceneQuery));
   delete _level;
    SoundFXManager::getSingletonPtr()->unload("bomb.wav");
    SoundFXManager::getSingletonPtr()->unload("impact.wav");
@@ -110,22 +107,42 @@ PlayState::frameStarted
   
   oe = _overlayManager->getOverlayElement("minesinf");
   oe->setCaption(mines.str());
-   
+  std::cout << "KEY PRESSED "<<_key_pressed << std::endl;
+  if(_key_pressed){
+    std::cout << "KEY PULSED"<< std::endl;
+    switch(_event){
+    case OIS::KC_A:
+       _level->translate(Ogre::Vector3(-6,0,0)*deltaT);
+       break;
+    case OIS::KC_D:
+      _level->translate(Ogre::Vector3(6,0,0)*deltaT);
+      break;
+    default:
+      ;
+      break;
+    }
+  }
 
-  _level->getWorld()->stepSimulation(deltaT);
+   
+  if(!_end_game){
+    _level->getWorld()->stepSimulation(deltaT);
     if( _level->detectCollision() == 1){
       SoundFXPtr  impact = SoundFXManager::getSingletonPtr()->load("impact.wav");
       impact->play();
-      if(checkWin())
-	_end_game = true;
+      if(checkWin(*_level))
+	gameWin();
     }
-  
-  oe = _overlayManager->getOverlayElement("timeinf");
+    else if(_level->isLose()){
+      gameOver();
+    }
+    oe = _overlayManager->getOverlayElement("timeinf");
+  }
+
   if (_pick){
     _last_time += deltaT;
-    oe->setCaption("");
+    oe->setCaption(StringConverter::toString(_level->getPuntuation()));
   }
-  else oe->setCaption("");
+  else oe->setCaption(StringConverter::toString(_level->getPuntuation()));
   
   
   return true;
@@ -145,6 +162,8 @@ void
 PlayState::keyPressed
 (const OIS::KeyEvent &e)
 {
+  _event = e.key;
+  _key_pressed = true;
   // Tecla p --> PauseState.
   if (e.key == OIS::KC_P && !_end_game) {
     pushState(PauseState::getSingletonPtr());
@@ -160,18 +179,12 @@ PlayState::keyPressed
     if(e.key == OIS::KC_RIGHT){ vt+=Ogre::Vector3(1,0,0); _camera->moveRelative(vt * deltaT * tSpeed);
     }
 
-  if(e.key == OIS::KC_A)  _level->translate(Ogre::Vector3(-0.6,0,0));
-  if(e.key == OIS::KC_D) _level->translate(Ogre::Vector3(0.6,0,0));
-  if(e.key == OIS::KC_W)  _level->translate(Ogre::Vector3(0,0,-0.1));
-  if(e.key == OIS::KC_S) _level->translate(Ogre::Vector3(0,0,0.1));
-    Ogre::Real r =0;
+  if(e.key == OIS::KC_A)  _level->translate(Ogre::Vector3(6,0,0)*deltaT);
+  if(e.key == OIS::KC_D) _level->translate(Ogre::Vector3(6,0,0)*deltaT);
+  //if(e.key == OIS::KC_W)  _level->translate(Ogre::Vector3(0,0,-0.1));
+  //  if(e.key == OIS::KC_S) _level->translate(Ogre::Vector3(0,0,0.1));
     
-    if(e.key == OIS::KC_R){
-//       r-=180;
-      SoundFXManager::getSingletonPtr()->getMusic("impact.wav")->play();
-//       _minesweeper->yaw(Ogre::Degree(r*0.1));
-    }
-    
+   
     if(e.key == OIS::KC_I){ vt+=Ogre::Vector3(0,-1,0); _camera->moveRelative(vt * deltaT * tSpeed);}
     if(e.key == OIS::KC_K){  vt+=Ogre::Vector3(0,1,0); _camera->moveRelative(vt * deltaT * tSpeed);}
     if(e.key == OIS::KC_J){  vt+=Ogre::Vector3(0,-1,0); _camera->moveRelative(vt * deltaT * tSpeed);}
@@ -190,6 +203,7 @@ void
 PlayState::keyReleased
 (const OIS::KeyEvent &e)
 {
+  _key_pressed = false;
   if (e.key == OIS::KC_ESCAPE) {
     popState();
   }
@@ -200,18 +214,6 @@ void
 PlayState::mouseMoved
 (const OIS::MouseEvent &e)
 {
-  Ogre::Vector3 vt(0,0,0);     
-  Ogre::Real deltaT = 0.02;
-   
-  if (e.state.Z.rel > 0){
-    if(_camera->getPosition().length() >10.0){
-       vt+=Ogre::Vector3(0,0,-e.state.Z.rel);
-    }
-  }
-  else{
-       vt+=Ogre::Vector3(0,0,-e.state.Z.rel);
-  }
- _camera->moveRelative(vt*deltaT);
   
 }
 
@@ -219,13 +221,7 @@ void
 PlayState::mousePressed
 (const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-  int posx = e.state.X.abs;
-  int posy = e.state.Y.abs;
-  Ogre::Vector3 vt(0,0,0);     
-  Ogre::Ray r;
-  Ogre::RaySceneQueryResult result;
-  Ogre::RaySceneQueryResult::iterator it;
-  Ogre::SceneNode * _selectedNode;
+ 
 
 }
 
@@ -251,8 +247,6 @@ PlayState::mouseReleased
 (const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
   
-  if(id == OIS::MB_Middle)
-     _key_pressed=false;
 
 }
 
@@ -273,15 +267,7 @@ PlayState::getSingleton ()
 }
 
 
-Ogre::Ray PlayState::setRayQuery(int posx, int posy, int mask) {
-   Ogre::Ray rayMouse = _camera->getCameraToViewportRay
-    (posx/float(_root->getAutoCreatedWindow()->getWidth()), posy/float(_root->getAutoCreatedWindow()->getHeight()));
-   _raySceneQuery->setRay(rayMouse);
-   _raySceneQuery->setSortByDistance(true);
-   _raySceneQuery->setQueryMask(mask);
-   return (rayMouse);
-}
 
-bool PlayState::checkWin(){
-  return false;
+bool PlayState::checkWin(Level& level){
+  return level.isWin();
 }

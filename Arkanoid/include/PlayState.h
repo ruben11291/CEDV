@@ -18,7 +18,7 @@
 
 #include <Ogre.h>
 #include <OIS/OIS.h>
-
+#include <OISKeyboard.h>
 #include "GameState.h"
 #include "Level.h"
 #include <vector>
@@ -68,7 +68,6 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::OverlayManager* _overlayManager;
   Ogre::SceneNode* _ground;
   Ogre::Light* _light;
-  Ogre::RaySceneQuery *_raySceneQuery;
   Ogre::Real deltaT;
   Ogre::Rectangle2D* _rect;
   Ogre::MaterialPtr _material;
@@ -76,15 +75,15 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   bool _exitGame;
 
  private:
-  Ogre::Ray setRayQuery(int posx, int posy, int mask);
   OIS::MouseState _mouse_position;
   bool _key_pressed;
+  OIS::KeyCode _event;
   bool _end_game;
   bool _pick;
   Ogre::Real _time_count,_last_time;
   void gameOver();
   void gameWin();
-  bool checkWin();
+  bool checkWin(Level&);
 };
 
 #endif

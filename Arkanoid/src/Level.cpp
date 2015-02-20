@@ -8,7 +8,7 @@ Level::Level(int difficult, Ogre::SceneManager * sceneManager){
   _ballVelocity =3;
   ballCreation(velocity*_ballVelocity);
   orionCreation();
-  
+  _puntuation = 0;
 
   Ogre::AxisAlignedBox box_floor= _latLeftNode->getAttachedObject("left")->getBoundingBox();
   Ogre::Vector3 frb = box_floor.getCorner( AxisAlignedBox::FAR_RIGHT_BOTTOM);
@@ -236,14 +236,10 @@ int Level::detectCollision() {
       
     OgreBulletCollisions::Object * obOB_A = _world->findObject(obA);
     OgreBulletCollisions::Object * obOB_B = _world->findObject(obB);
-    OgreBulletCollisions::Object * finish = NULL;//to get structure
-
     OgreBulletCollisions::Object * aux;
 
-    
-
     if(_ballbody!=NULL && contactManifold->getNumContacts()){
-      if(obOB_A == ball_obj || obOB_B == ball_obj && obOB_A && obOB_B){
+      if((obOB_A == ball_obj || obOB_B == ball_obj) && (obOB_A && obOB_B)){
 	
 	if(!((RigidBody*)obOB_A)->isStaticObject())
 	  ((RigidBody*)obOB_A)->enableActiveState();
@@ -294,14 +290,43 @@ bool Level::collisionInCubes( OgreBulletCollisions::Object* element){
   for(std::deque<Cube*>::iterator it=_section->getCubes().begin(); it!=_section->getCubes().end();it++){
     OgreBulletCollisions::Object* cube =  _world->findObject(&((*it)->getSceneNode()));
     if (element == cube){
-      delete *it;
-      _section->getCubes().erase(it);
+      switch((*it)->getType()){
+      case 0://normal
+	delete *it;
+	std::cout << "one touch"<<std::endl;
+	_section->getCubes().erase(it);
+	_puntuation += 10; //adding 10 points
+	break;
+      case 1://fixed
+	//do nothing
+	break;
+      case 2://two touches
+	if((*it)->getRemaining() == 1){
+	  std::cout << "two touches"<< std::endl;
+	  delete *it;
+	  _section->getCubes().erase(it);
+	  _puntuation += 30; //adding 10 points
+	}
+	else (*it)->setRemaining((*it)->getRemaining()-1);
+	break;
+      default:
+	exit(-1);
+      }
       return true;
     }
   }
   return false;
 }
 
-// OgreBulletDynamics::RigidBody * getBall(){
-//   return _ballbody;
-// }
+int Level::getPuntuation(){
+  return _puntuation;
+}
+
+bool Level::isWin(){
+  return _section->isWin();
+}
+
+bool Level::isLose(){
+  float tmp =_ballbody->getSceneNode()->getPosition().z;
+  return tmp >= 1;
+}
