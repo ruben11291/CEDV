@@ -248,30 +248,31 @@ int Level::detectCollision() {
 	  ret= 1;
 	}
 	else if(aux ==  latRight){
-	   std::cout << "CON Derecho" << std::endl;
+	  std::cout << "CON Derecho" << std::endl;
 	  ret= 1;
 	}
 	else if(aux ==  latBack){
-	   std::cout << "CON Atras" << std::endl;
+	  std::cout << "CON Atras" << std::endl;
 	  ret= 1;
 	}
-	// else if(aux == finish){
-	//   std::cout << "CON finish" << std::endl;
-	// }
+	
 	else{
 	  std::cout << "CON Cuboo" << std::endl;
 	  if(collisionInCubes(aux)) 
 	    ret= 1;
+	  
 	}
       }
     }
   }
+  
   Ogre::Vector3 currentVelocityDirection = _ballbody->getLinearVelocity();
   btScalar currentVelocty = currentVelocityDirection.length();
   if (currentVelocty < _ballVelocity)
     {
-      currentVelocityDirection *= _ballVelocity/currentVelocty;
+    currentVelocityDirection *= _ballVelocity/currentVelocty;
       _ballbody->setLinearVelocity(Ogre::Vector3(currentVelocityDirection.x, 0,currentVelocityDirection.z));
+      
     }
   return ret;
 }
@@ -322,22 +323,12 @@ bool Level::isLose(){
 }
 
 void Level::resetBall(){
-  // if(_ballbody){
-  //   OgreBulletCollisions::SphereCollisionShape *ballShape = 
-  //     new OgreBulletCollisions::SphereCollisionShape(ball->getBoundingRadius()*0.3);
-    
-  //   OgreBulletDynamics::RigidBody *rigidbody = new 
-  //     OgreBulletDynamics::RigidBody("ball", _world);
-  //   _ballbody->setShape(_ballNode, ballShape, 0, 0, 0.3, Ogre::Vector3(0,0,-1)), 
-  // 		      Quaternion::IDENTITY);
-  //  _ballbody->getSceneNode()->setPosition(Ogre::Vector3(0,0,-1));
 
   Ogre::Vector3 position(0,0,-1); //Have to be initialized
   btTransform transform; //Declaration of the btTransform
   transform.setIdentity(); //This function put the variable of the object to default. The ctor of btTransform doesnt do it.
   transform.setOrigin(OgreBulletCollisions::OgreBtConverter::to(position)); //Set the new position/origin
   _ballbody->getBulletRigidBody()->setWorldTransform(transform);
-  //  _ballbody->setLinearVelocity(Ogre::Vector3(0,0,0));
 }
   
 
