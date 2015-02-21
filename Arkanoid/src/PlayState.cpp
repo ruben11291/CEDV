@@ -35,9 +35,8 @@ PlayState::enter ()
 
   SoundFXManager::getSingletonPtr()->load("bomb.wav");
   SoundFXManager::getSingletonPtr()->load("impact.wav");
-  
-  _level = new Level(2,_sceneMgr);
-  
+  _lifes = 3;
+  _level = new Level(1,2,_sceneMgr);
 
 
   Ogre::Plane plane1(Ogre::Vector3::UNIT_Y, 0);
@@ -103,10 +102,9 @@ PlayState::frameStarted
 
   Ogre::OverlayElement *oe;
   oe = _overlayManager->getOverlayElement("fpsInfo");
-  oe->setCaption(remaining.str());
+  oe->setCaption(StringConverter::toString(_level->getId()));
   
-  oe = _overlayManager->getOverlayElement("minesinf");
-  oe->setCaption(mines.str());
+ 
   std::cout << "KEY PRESSED "<<_key_pressed << std::endl;
   if(_key_pressed){
     std::cout << "KEY PULSED"<< std::endl;
@@ -133,16 +131,23 @@ PlayState::frameStarted
 	gameWin();
     }
     else if(_level->isLose()){
-      gameOver();
+      if(_lifes ==0)
+	gameOver();
+      else{
+	_lifes--;
+	_level->resetBall();
+	_level->setInitialVelocityBall();
+      }
     }
-    oe = _overlayManager->getOverlayElement("timeinf");
   }
+  oe = _overlayManager->getOverlayElement("minesinf");
+  oe->setCaption(StringConverter::toString(_lifes));
+  oe = _overlayManager->getOverlayElement("timeinf");
 
-  if (_pick){
+  // if (_pick){
     _last_time += deltaT;
     oe->setCaption(StringConverter::toString(_level->getPuntuation()));
-  }
-  else oe->setCaption(StringConverter::toString(_level->getPuntuation()));
+    //}
   
   
   return true;
@@ -181,9 +186,6 @@ PlayState::keyPressed
 
   if(e.key == OIS::KC_A)  _level->translate(Ogre::Vector3(6,0,0)*deltaT);
   if(e.key == OIS::KC_D) _level->translate(Ogre::Vector3(6,0,0)*deltaT);
-  //if(e.key == OIS::KC_W)  _level->translate(Ogre::Vector3(0,0,-0.1));
-  //  if(e.key == OIS::KC_S) _level->translate(Ogre::Vector3(0,0,0.1));
-    
    
     if(e.key == OIS::KC_I){ vt+=Ogre::Vector3(0,-1,0); _camera->moveRelative(vt * deltaT * tSpeed);}
     if(e.key == OIS::KC_K){  vt+=Ogre::Vector3(0,1,0); _camera->moveRelative(vt * deltaT * tSpeed);}
@@ -191,13 +193,14 @@ PlayState::keyPressed
     if(e.key == OIS::KC_L){ vt+=Ogre::Vector3(0,1,0); _camera->moveRelative(vt * deltaT * tSpeed);}
  
     
-    if(_end_game){
-      if(e.key == OIS::KC_SPACE){
+    if(e.key == OIS::KC_SPACE){
+      if(_end_game)
 	popState();
-      }
     }
+    
   }
 }
+
 
 void
 PlayState::keyReleased
@@ -270,4 +273,9 @@ PlayState::getSingleton ()
 
 bool PlayState::checkWin(Level& level){
   return level.isWin();
+}
+
+void PlayState::resetBall(){
+  if(_level)
+    _level->resetBall();
 }

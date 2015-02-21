@@ -17,7 +17,7 @@ using namespace OgreBulletDynamics;
 class Level{
 
  public:
-  Level(int, Ogre::SceneManager *);
+  Level(int,int,Ogre::SceneManager *);
   ~Level();
   OgreBulletDynamics::DynamicsWorld * getWorld();
   void translate(Ogre::Vector3);
@@ -25,6 +25,9 @@ class Level{
   int getPuntuation();
   bool isWin();
   bool isLose();
+  void resetBall();
+  void setInitialVelocityBall();
+  int getId();
 
  private:
   SceneNode * _ballNode, * _orionNode, *_scenarioNode, *_latLeftNode, *_latRightNode, *_latBackNode;
@@ -37,7 +40,7 @@ class Level{
   std::deque<OgreBulletCollisions::CollisionShape*> _shapes;
   std::deque<OgreBulletDynamics::RigidBody*> _bodies;
   std::deque<OgreBulletCollisions::TriangleMeshCollisionShape*> _trimesh;
-  int _puntuation;
+  int _puntuation, _id;
   
   void worldCreation();
   void scenarioCreation();

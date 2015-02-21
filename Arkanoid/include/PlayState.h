@@ -73,6 +73,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::MaterialPtr _material;
   Level* _level;
   bool _exitGame;
+  int _lifes; //cambiar luego-> crear clase Arkanoid <lista de levels> <caracteristicas horizontales a todos>
 
  private:
   OIS::MouseState _mouse_position;
@@ -84,6 +85,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   void gameOver();
   void gameWin();
   bool checkWin(Level&);
+  void resetBall();
 };
 
 #endif

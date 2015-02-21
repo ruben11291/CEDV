@@ -1,7 +1,8 @@
 #include "Level.h"
 
-Level::Level(int difficult, Ogre::SceneManager * sceneManager){
+Level::Level(int id,int difficult, Ogre::SceneManager * sceneManager){
   _sceneMgr = sceneManager;
+  _id=id;
   worldCreation();
   scenarioCreation();
   Ogre::Vector3 velocity(0,0,-1);
@@ -87,16 +88,7 @@ void Level::scenarioCreation(){
   _scenarioNode->translate(0,-0.3,0);
   _scenarioNode->attachObject(ent1);
     _sceneMgr->getRootSceneNode()->addChild(_scenarioNode);
-  // OgreBulletCollisions::CollisionShape *Shape;
-  // Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,0,-1), 0);  
-
-  // OgreBulletDynamics::RigidBody *rigidbody =   new OgreBulletDynamics::RigidBody("under_orion", _world);
-  // rigidbody->setStaticShape(Shape, 0.0, 0.8); 
-  // _shapes.push_back(Shape);
-  // _bodies.push_back(rigidbody);
-  
-  
-  
+   
   
   //Lateral left
   _latLeftNode = _sceneMgr->createSceneNode("latLeft");
@@ -173,8 +165,8 @@ void Level::orionCreation(){
   
   OgreBulletDynamics::RigidBody *rigidbody =   new OgreBulletDynamics::RigidBody("aircraft", _world);
   rigidbody->setShape(_orionNode, cubeShape,
-		      0.3 /*Restitucion*/, 0.1,// Friccion,
-  		      0, _orionNode->getPosition(),
+		      0.2 /*Restitucion*/, 0.2,// Friccion,
+  		      0/*Mass*/, _orionNode->getPosition(),
 		      Ogre::Quaternion(0,0,0.5,0));
   rigidbody->setKinematicObject(true);
   rigidbody->disableDeactivation();
@@ -248,8 +240,6 @@ int Level::detectCollision() {
 	
 	aux = (obOB_A== ball_obj)?obOB_B:obOB_A;//it contains the other element nor ball
 	if(aux == orion_obj){
-	  std::cout << _ballbody->getLinearVelocity()<<std::endl;
-	  //  _ballbody->setLinearVelocity(/*getVelocity(getCenterOfMassPosition()*/);
 	  std::cout << "CON ORION" << std::endl;
 	  ret = 1;
 	}
@@ -329,4 +319,32 @@ bool Level::isWin(){
 bool Level::isLose(){
   float tmp =_ballbody->getSceneNode()->getPosition().z;
   return tmp >= 1;
+}
+
+void Level::resetBall(){
+  // if(_ballbody){
+  //   OgreBulletCollisions::SphereCollisionShape *ballShape = 
+  //     new OgreBulletCollisions::SphereCollisionShape(ball->getBoundingRadius()*0.3);
+    
+  //   OgreBulletDynamics::RigidBody *rigidbody = new 
+  //     OgreBulletDynamics::RigidBody("ball", _world);
+  //   _ballbody->setShape(_ballNode, ballShape, 0, 0, 0.3, Ogre::Vector3(0,0,-1)), 
+  // 		      Quaternion::IDENTITY);
+  //  _ballbody->getSceneNode()->setPosition(Ogre::Vector3(0,0,-1));
+
+  Ogre::Vector3 position(0,0,-1); //Have to be initialized
+  btTransform transform; //Declaration of the btTransform
+  transform.setIdentity(); //This function put the variable of the object to default. The ctor of btTransform doesnt do it.
+  transform.setOrigin(OgreBulletCollisions::OgreBtConverter::to(position)); //Set the new position/origin
+  _ballbody->getBulletRigidBody()->setWorldTransform(transform);
+  //  _ballbody->setLinearVelocity(Ogre::Vector3(0,0,0));
+}
+  
+
+void Level::setInitialVelocityBall(){
+   _ballbody->setLinearVelocity(Ogre::Vector3(0,0,-1)*_ballVelocity);
+}
+
+int Level::getId(){
+  return _id;
 }

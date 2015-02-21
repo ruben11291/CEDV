@@ -6,8 +6,6 @@ Section::Section(){
 
 
 Section::Section(OgreBulletDynamics::DynamicsWorld* world,int difficult,  Ogre::Vector3& frb, Ogre::Vector3& nrb, Ogre::Vector3& flb, Ogre::Vector3& nlb){
-
-  Ogre::Real dist_x = frb.distance(flb);
   int cubes_line = 7;
   float len_x_cube = 0.68;//dist_x/(float)cubes_line;
   Ogre::Vector3 scale(len_x_cube, 0.2, 0.2), initialPoint(frb.x + len_x_cube + 0.5,0, frb.z+ 0.2*2 );
@@ -52,7 +50,6 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int nCubesR, 
      for(int j=0;j<nCubesC;j++){
        cube = _sceneMgr->createEntity("cube.mesh");
        cubo_n = _sceneMgr->createSceneNode("cube"+StringConverter::toString(n));
-       //cube->setMaterialName("Cube1");
       
       cube->setCastShadows(true);
       cubo_n->scale(scale);
@@ -82,7 +79,6 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int nCubesR, 
      //   int kind = rand()%5+1;
        int pos = rand()%tmp.size();
        if(tmp[pos]!=NULL){
-	 // tmp[pos]->getEntity().setMaterialName("Cube"+StringConverter::toString(kind));
 	 tmp[pos]->getEntity().setMaterialName("Cube1");
 	 tmp[pos]->setType(1);
 	 tmp[pos]->setRemaining(-1);
@@ -109,19 +105,6 @@ void Section::createTable(OgreBulletDynamics::DynamicsWorld* world,int nCubesR, 
     (*it)->setType(0);
     (*it)->setRemaining(1);
   }
-
-
-  // for(std::deque<Cube*>::iterator it = _cubes.begin();it!=_cubes.end();it++){
-  //   int pos = rand()%5+1;
-  //   std::cout << pos<< std::endl;
-  //   (*it)->getEntity().setMaterialName("Cube"+StringConverter::toString(pos));
-  //   //cube->getEntity().setMaterialName("Cube2");
-  //   int value=(pos%5 == 0)?0:(fixed--)?1:(two_impact--)?2:0;
-  //   (*it)->setType(value);
-  //   (*it)->setRemaining((pos==);
-
-  // }
- 
 }
 
 
