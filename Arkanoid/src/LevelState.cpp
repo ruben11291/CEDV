@@ -72,9 +72,9 @@ void LevelState::createGUI()
   _level2->setText("Normal");
   _level2->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
   _level2->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.42,0)));
-//   _level2->subscribeEvent(CEGUI::PushButton::EventClicked,
-//  			     CEGUI::Event::Subscriber(&IntroState::credit, 
-// 						      this));
+  _level2->subscribeEvent(CEGUI::PushButton::EventClicked,
+ 			     CEGUI::Event::Subscriber(&LevelState::start, 
+						      this));
   
   _sheet->addChildWindow(_level2);
   
@@ -85,8 +85,8 @@ void LevelState::createGUI()
   _level3->setSize(CEGUI::UVector2(CEGUI::UDim(0.4,0),CEGUI::UDim(0.1,0)));
   _level3->setPosition(CEGUI::UVector2(CEGUI::UDim(0.3,0),CEGUI::UDim(0.62,0)));
   _sheet->addChildWindow(_level3);
-//   _level3->subscribeEvent(CEGUI::PushButton::EventClicked,
-// 			     CEGUI::Event::Subscriber(&IntroState::record,this));
+  _level3->subscribeEvent(CEGUI::PushButton::EventClicked,
+			     CEGUI::Event::Subscriber(&LevelState::start,this));
   _sheet->addChildWindow(_level3);
 
   
