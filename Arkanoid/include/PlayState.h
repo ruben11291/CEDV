@@ -71,9 +71,12 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
   Ogre::Real deltaT;
   Ogre::Rectangle2D* _rect;
   Ogre::MaterialPtr _material;
-  Level* _level;
   bool _exitGame;
   int _lifes; //cambiar luego-> crear clase Arkanoid <lista de levels> <caracteristicas horizontales a todos>
+  std::vector<Level*> _levels;
+  Level * _level;
+  int _difficult;
+  void setDifficult(int);
 
  private:
   OIS::MouseState _mouse_position;

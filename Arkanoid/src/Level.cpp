@@ -139,6 +139,8 @@ void Level::ballCreation(Ogre::Vector3 velocity){
 		      Quaternion::IDENTITY);
 
   rigidbody->setLinearVelocity(velocity); 
+  rigidbody->setAngularVelocity(Vector3::ZERO); 
+
   _ballbody = rigidbody;
 
   // rigidbody->enableActiveState();
@@ -165,7 +167,7 @@ void Level::orionCreation(){
   
   OgreBulletDynamics::RigidBody *rigidbody =   new OgreBulletDynamics::RigidBody("aircraft", _world);
   rigidbody->setShape(_orionNode, cubeShape,
-		      0.2 /*Restitucion*/, 0.2,// Friccion,
+		      0.99 /*Restitucion*/, 0.5,// Friccion,
   		      0/*Mass*/, _orionNode->getPosition(),
 		      Ogre::Quaternion(0,0,0.5,0));
   rigidbody->setKinematicObject(true);
@@ -194,7 +196,7 @@ void Level::createCollision(Ogre::SceneNode * node,Ogre::Entity * ent,OgreBullet
 
   OgreBulletDynamics::RigidBody *lateral = new 
     OgreBulletDynamics::RigidBody(name,world);
-  lateral->setShape(node, latTrimesh, 0.2, 0.2, 0, Ogre::Vector3(0,-0.3,0), 
+  lateral->setShape(node, latTrimesh, 0.99, 0.5, 0, Ogre::Vector3(0,-0.3,0), 
 		       Quaternion::IDENTITY);
 
   delete trimeshConverter;
@@ -232,13 +234,34 @@ int Level::detectCollision() {
 
     if(_ballbody!=NULL && contactManifold->getNumContacts()){
       if((obOB_A == ball_obj || obOB_B == ball_obj) && (obOB_A && obOB_B)){
-	
+
 	if(!((RigidBody*)obOB_A)->isStaticObject())
 	  ((RigidBody*)obOB_A)->enableActiveState();
 	if(!((RigidBody*)obOB_B)->isStaticObject())
 	  ((RigidBody*)obOB_B)->enableActiveState();
 	
 	aux = (obOB_A== ball_obj)?obOB_B:obOB_A;//it contains the other element nor ball
+
+
+	//ESTO ES LO QUE HE HECHO---------
+	// btManifoldPoint& pt = contactManifold->getContactPoint(0);
+	// btVector3 ptA = pt.getPositionWorldOnA();
+        // btVector3 ptB = pt.getPositionWorldOnB();
+	// // double ptdist = pt.getDistance();
+	// btVector3 average =ptA;// (ptA+ptB)/2;
+	// btVector3 current = _ballbody->getBulletRigidBody()->getLinearVelocity();
+	// btVector3 cm = ((RigidBody*)(aux))->getBulletRigidBody()->getCenterOfMassPosition();
+	// Ogre::Vector3 baverage(average.getX(),average.getY(),average.getZ());
+	// Ogre::Vector3 bcm(cm.getX(),cm.getY(),cm.getZ());
+	// bcm.normalise();
+	// baverage.normalise();
+	// Ogre::Vector3 cm_coll = baverage-bcm;
+	// //btVector3 CM_Collision = average.normalize() -cm.normalize();
+	// btVector3 CM_Collision(cm_coll.x, 0, cm_coll.z);
+	// btScalar angle = CM_Collision.angle(current);//obtains the angle between the velocity and the vector point_collision-centre_mass
+	// btVector3 updated_velocity = current.rotate(btVector3(1,1,1),angle);//rotate in the 
+	//-----------------------------
+
 	if(aux == orion_obj){
 	  std::cout << "CON ORION" << std::endl;
 	  ret = 1;
@@ -246,10 +269,12 @@ int Level::detectCollision() {
 	else if(aux == latLeft){
 	  std::cout << "CON Izquierdo" << std::endl;
 	  ret= 1;
+
 	}
 	else if(aux ==  latRight){
 	  std::cout << "CON Derecho" << std::endl;
 	  ret= 1;
+
 	}
 	else if(aux ==  latBack){
 	  std::cout << "CON Atras" << std::endl;
@@ -259,21 +284,22 @@ int Level::detectCollision() {
 	else{
 	  std::cout << "CON Cuboo" << std::endl;
 	  if(collisionInCubes(aux)) 
-	    ret= 1;
-	  
+	    ret= 1;	  
 	}
+	//	_ballbody->getBulletRigidBody()->setLinearVelocity(updated_velocity*_ballVelocity);
+	
+	_ballbody->setAngularVelocity(Vector3::ZERO); 
+	btVector3 currentVelocityDirection = _ballbody->getBulletRigidBody()->getLinearVelocity();
+	btScalar currentVelocity = currentVelocityDirection.length();
+	if (currentVelocity < _ballVelocity)
+	  {
+	    currentVelocityDirection *=(float) _ballVelocity/(float)currentVelocity;
+	    _ballbody->setLinearVelocity(Ogre::Vector3(currentVelocityDirection.x(), 0,currentVelocityDirection.z()));
+	    
+	}  
       }
-    }
+    } 
   }
-  
-  Ogre::Vector3 currentVelocityDirection = _ballbody->getLinearVelocity();
-  btScalar currentVelocty = currentVelocityDirection.length();
-  if (currentVelocty < _ballVelocity)
-    {
-    currentVelocityDirection *= _ballVelocity/currentVelocty;
-      _ballbody->setLinearVelocity(Ogre::Vector3(currentVelocityDirection.x, 0,currentVelocityDirection.z));
-      
-    }
   return ret;
 }
 

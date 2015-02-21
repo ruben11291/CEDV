@@ -36,8 +36,11 @@ PlayState::enter ()
   SoundFXManager::getSingletonPtr()->load("bomb.wav");
   SoundFXManager::getSingletonPtr()->load("impact.wav");
   _lifes = 3;
-  _level = new Level(1,2,_sceneMgr);
-
+  //  _levels = new std::vector<Level*>(3);
+  // _levels.push_back(new Level(1,_difficult,_sceneMgr));
+  // _levels.push_back(new Level(2,_difficult,_sceneMgr));
+  // _levels.push_back(new Level(3,_difficult,_sceneMgr));
+  _level = new Level(1,_difficult,_sceneMgr);
 
   Ogre::Plane plane1(Ogre::Vector3::UNIT_Y, 0);
   Ogre::MeshManager::getSingleton().createPlane("plane1",
@@ -67,8 +70,10 @@ PlayState::enter ()
 void
 PlayState::exit ()
 { 
-  delete _level;
-   SoundFXManager::getSingletonPtr()->unload("bomb.wav");
+  // for(std::vector<Level*>::iterator it=_levels.begin();it!=_levels.end();it++){
+  //   delete it;
+  // }
+  SoundFXManager::getSingletonPtr()->unload("bomb.wav");
    SoundFXManager::getSingletonPtr()->unload("impact.wav");
   _sceneMgr->destroyEntity("planeEnt");
   _overlayManager->getByName("Info")->hide();
@@ -194,8 +199,9 @@ PlayState::keyPressed
  
     
     if(e.key == OIS::KC_SPACE){
-      if(_end_game)
-	popState();
+      if(_end_game && checkWin(*_level))
+	_level = new Level(1,_difficult,_sceneMgr);
+      else if (_end_game) popState();
     }
     
   }
@@ -278,4 +284,8 @@ bool PlayState::checkWin(Level& level){
 void PlayState::resetBall(){
   if(_level)
     _level->resetBall();
+}
+
+void PlayState::setDifficult(int dif){
+  _difficult=dif;
 }
